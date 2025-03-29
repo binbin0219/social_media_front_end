@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Change this if you're using another database
+  url      = env("DATABASE_URL") // Your database connection string
+}
+
+model User {
+  id                  Int      @id @default(autoincrement()) // Primary Key
+  account_name        String   @db.VarChar(50) @unique
+  gender              String?  @db.VarChar(20)
+  username            String   @db.VarChar(50)
+  first_name          String   @db.VarChar(50)
+  last_name           String   @db.VarChar(50)
+  password            String   @db.VarChar(200)
+  occupation          String?  @db.VarChar(50)
+  relationship_status String?  @db.VarChar(50)
+  country             String?  @db.VarChar(50)
+  region              String?  @db.VarChar(50)
+  phone_number        Json?    @db.JsonB
+  create_at           DateTime @default(now()) // Timestamp with default value
+
+  posts              Post[]
+  Comment            Comment[]
+  UserNotification   Notification[] @relation("UserNotification")
+  SenderNotification Notification[] @relation("SenderNotification")
+  UserFriendship     Friendship[]   @relation("UserFriendship")
+  FriendFriendship   Friendship[]   @relation("FriendFriendship")
+  SenderFriendship   Friendship[]   @relation("SenderFriendship")
+  Like               Like[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement()) // Primary Key
+  user_id   Int
+  title     String?  @db.Text
+  content   String?  @db.Text
+  create_at DateTime @default(now()) // Timestamp with default value
+
+  user    User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Comment Comment[]
+  Like    Like[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement()) // Primary Key
+  post_id   Int
+  user_id   Int
+  content   String   @db.Text
+  create_at DateTime @default(now()) // Timestamp with default value
+  update_at DateTime @updatedAt
+
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        Int      @id @default(autoincrement()) // Primary Key
+  post_id   Int
+  user_id   Int
+  create_at DateTime @default(now()) // Timestamp with default value
+
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement()) // Primary Key
+  user_id   Int
+  sender_id Int
+  type      String   @db.VarChar(100)
+  content   String   @db.Text
+  link      String?  @db.Text
+  seen      Boolean  @default(false)
+  create_at DateTime @default(now()) // Timestamp with default value
+
+  user   User @relation("UserNotification", fields: [user_id], references: [id], onDelete: Cascade)
+  sender User @relation("SenderNotification", fields: [sender_id], references: [id], onDelete: Cascade)
+}
+
+enum FriendshipStatus {
+  pending
+  accepted
+  rejected
+}
+
+model Friendship {
+  id        Int      @id @default(autoincrement()) // Primary Key
+  user_id   Int
+  friend_id Int
+  sender_id Int
+  status    FriendshipStatus
+  create_at DateTime @default(now()) // Timestamp with default value
+
+  user   User @relation("UserFriendship", fields: [user_id], references: [id], onDelete: Cascade)
+  friend User @relation("FriendFriendship", fields: [friend_id], references: [id], onDelete: Cascade)
+  sender User @relation("SenderFriendship", fields: [sender_id], references: [id], onDelete: Cascade)
+}

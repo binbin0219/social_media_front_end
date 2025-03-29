@@ -1,0 +1,11 @@
+.bar {
+    position: sticky;
+    width: 100%;
+    top: 0;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0 5px 0;
+    border-bottom: 3px solid #dbdbdb;
+    z-index: 1000;
+}

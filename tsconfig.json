@@ -19,9 +19,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./app/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/models/*": ["./lib/models/*"],
+      "@/components/*": ["./app/components/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/global.js"],
   "exclude": ["node_modules"]
 }

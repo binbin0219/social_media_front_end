@@ -1,0 +1,15 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Login - Blogify",
+    description: "Blogify login page",
+}
+export default function RootLayout({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
+    return (
+        children
+    );
+}

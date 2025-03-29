@@ -1,0 +1,48 @@
+@keyframes highlight-border {
+    0% {
+        border: 2px solid #2CAF50;
+    }
+    100% {
+        border: 2px solid transparent;
+    }
+}
+
+.post-new {
+    animation: highlight-border 2s ease-out;
+}
+
+/* post like */
+.post .icon-like,
+.post .icon-liked {
+    display: block;
+}
+.post[data-liked="true"] .icon-like {
+    display: none;
+}
+.post[data-liked="false"] .icon-liked {
+    display: none;
+}
+
+/* post comment */
+.post .icon-comment-opened,
+.post .icon-comment-closed {
+    display: none;
+}
+.post[data-comment-expanded="true"] {
+    .icon-comment-opened {
+        display: block;
+    }
+
+    .post-comment-section {
+        display: block;
+    }
+}
+.post[data-comment-expanded="false"] {
+    .icon-comment-closed {
+        display: block;
+    }
+
+    .post-comment-section {
+        display: none;
+    }
+}

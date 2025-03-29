@@ -1,0 +1,323 @@
+"use client"
+import React, { useEffect } from 'react'
+import './style.css';
+import { useSelector } from 'react-redux';
+import UserIcon from '../UserIcon/UserIcon';
+import { RootState } from '@/redux/store';
+
+export const Navbar = () => {
+    const currentUser = useSelector((state: RootState) => state.currentUser);
+    const notificationIcons = {
+        "like": 
+        `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-heart absolute bottom-0 right-0 stroke-red-600 fill-red-600">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+            </svg>
+        `,
+        "comment":
+        `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message absolute bottom-0 right-0 fill-sky-300 stroke-sky-300">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M8 9h8" />
+                <path d="M8 13h6" />
+                <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+            </svg>
+        `,
+        "friend_request":
+        `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-plus absolute bottom-0 right-0 fill-red-500 stroke-red-500">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M5 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                <path d="M3 21v-2a4 4 0 0 1 4 -4h4c.96 0 1.84 .338 2.53 .901" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                <path d="M16 19h6" />
+                <path d="M19 16v6" />
+            </svg>
+        `
+    }
+
+    useEffect(() => {
+        const no_notifications = document.getElementById('no_notification');
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load notifications
+            if(!currentUser) return;
+            const notifications = currentUser.notifications ?? [];
+            if(notifications && notifications.length > 0) {
+                notifications.forEach(notification => {
+                    const notificationElement = createNotificationElement(notification);
+                    document.getElementById('notification_list').appendChild(notificationElement);
+                })
+
+                // Remove no notifications message
+                no_notifications.remove();
+            }
+        })
+
+        // Notifications button
+        const notificationBtn = document.getElementById('notifications_btn');
+        notificationBtn?.addEventListener('click', () => {
+            // Hide notification count if Showing
+            const notification_count = document.getElementById('notification_count');
+            if(notification_count) notification_count.classList.add('hidden');
+        })
+    }, [])
+
+    function createNotificationElement(notification) {
+        const notificationElement = document.createElement('button');
+        notificationElement.onclick = (event) => {
+            if(event.target !== notificationElement) return;
+            window.location.href = `/user/profile/${notification.sender_id}`
+        };
+        notificationElement.id = `notification_${notification.notification_id}`;
+        notificationElement.className = "notification dropdown-item flex gap-2 items-center";
+        notificationElement.style.minWidth = "250px";
+        notificationElement.innerHTML = 
+        `
+            <div class="relative w-[25%]">
+                <img src="${notification.sender_avatar}" alt="" class="w-[50px] h-[50px] rounded-full">
+                ${notificationIcons[notification.type]}
+            </div>
+            <div class="flex flex-col gap-1 relative w-[75%]">
+                <p class="text-sm text-start">${notification.content}</p>
+                <div class="flex justify-between w-full items-end">
+                    <p class="font-semibold text-indigo-600 text-xs">${timeAgo(notification.create_at)}</p>
+                    ${notification.type === "like" ?
+                    `
+                        <button type="button" class="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M4 7l16 0" />
+                                <path d="M10 11l0 6" />
+                                <path d="M14 11l0 6" />
+                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                            </svg>
+                        </button>
+                        <button type="button" class="mark-as-read-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-checks">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M7 12l5 5l10 -10" />
+                                <path d="M2 12l5 5m5 -5l5 -5" />
+                            </svg>
+                        </button>
+                    `
+                    : ''}
+                    ${notification.type === "friend_request" ?
+                    `
+                        <button type="button" class="reject-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M18 6l-12 12" />
+                                <path d="M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <button type="button" class="accept-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-check">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M5 12l5 5l10 -10" />
+                            </svg>
+                        </button>
+                    `
+                    : ''}
+                </div>
+            </div>
+        `
+        switch(notification.type) {
+            case "friend_request":
+                notificationElement.querySelector('.reject-friend-btn').addEventListener('click', async () => {
+                    try {
+                        await rejectFriendRequest(notification.sender_id);
+                        deleteNotifitcationElement(notification.notification_id);
+
+                        if(routeName === "user.profile" && profileUser.user_id === notification.sender_id) {
+                            const replyFriendRequestElement = document.getElementById('reply_friend_request');
+                            replyFriendRequestElement && replyFriendRequestElement.classList.add('hidden');
+                            const addFriendButton = document.getElementById('add_friend_button');
+                            addFriendButton && addFriendButton.classList.remove('hidden');
+                        }
+
+                        showToast('success', 'Success', 'Friend request rejected.');
+                    } catch (error) {
+                        showToast('error', 'Error', 'Something went wrong.');
+                        console.log(error);
+                    }
+                })
+
+                notificationElement.querySelector('.accept-friend-btn').addEventListener('click', async () => {
+                    try {
+                        await acceptFriendRequest(notification.sender_id);
+                        deleteNotifitcationElement(notification.notification_id);
+
+                        if(routeName === "user.profile" && profileUser.user_id === notification.sender_id) {
+                            const replyFriendRequestElement = document.getElementById('reply_friend_request');
+                            replyFriendRequestElement && replyFriendRequestElement.classList.add('hidden');
+                            const unfriendButton = document.getElementById('unfriend_button');
+                            unfriendButton && unfriendButton.classList.remove('hidden');
+                        }
+
+                        showToast('success', 'Success', 'Friend request accepted.');
+                    } catch (error) {
+                        showToast('error', 'Error', 'Something went wrong.');
+                        console.log(error);
+                    }
+                })
+                break;
+
+            case "like":
+                notificationElement.querySelector('.delete-notification-btn').addEventListener('click',  () => {
+                    fetch(`/api/notifications/delete/${notification.notification_id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if(!response.ok) throw new Error('Failed to delete notification');
+                        return response.json();
+                    })
+                    .then(data => {
+                        deleteNotifitcationElement(notification.notification_id);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                })
+                break;
+
+            default:
+                break;
+        }
+        
+        return notificationElement;
+    }
+
+    function deleteNotifitcationElement(notification_id) {
+        const notification_list = document.getElementById('notification_list');
+        const remainingNotificationElements = notification_list.querySelectorAll('.notification');
+        if(remainingNotificationElements.length === 0) throw new Error('No notifications found');
+
+        // Display no notifications message if last notification
+        const isLastNotification = remainingNotificationElements.length === 1;
+        if(isLastNotification) notification_list.appendChild(no_notifications);
+
+        // Remove notification element
+        document.getElementById(`notification_${notification_id}`).remove();
+
+        // Update notification count
+        const notification_count = document.getElementById('notification_count');
+        const isNotificationCountHidden = notification_count.classList.contains('hidden');
+        if(isNotificationCountHidden == false) {
+            if(isLastNotification) {
+                notification_count.classList.add('hidden');
+            } else {
+                notification_count.textContent = remainingNotificationElements.length - 1;
+            }
+        }
+    }
+
+    function logoutConf() {
+        confDialog(
+            'Logout', 
+            'Are you sure you want to logout?', 
+            'Logout', 
+            () => {
+                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                })
+                .then(response => {
+                    if(!response.ok) throw new Error('Failed to logout');
+                    window.location.href = '/login';
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            }
+        )
+    }
+
+  return (
+    <div className="bar">
+        <div className="max-w-[1400px] w-full mx-auto flex items-center justify-between">
+            <a href="/" className="ms-7 text-[35px] me-[20px] text-indigo-600 cursor-pointer hover:text-indigo-500" style={{fontFamily: "fugaz one"}}>Blogify</a>
+            <div className="w-[300px] relative">
+                <div id="searchbox" className="w-[100%]"></div>
+                <div id="hits" className="w-full absolute bg-white rounded-lg shadow-md hidden"></div>
+            </div>
+            <div className="flex gap-3 items-center me-2">
+                <button id="logout_btn" type="button" className="flex gap-1 items-center rounded-full px-3 py-2 border-2 border-slate-300 bg-slate-100 text-sm text-slate-600 hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-logout">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                        <path d="M9 12h12l-3 -3" />
+                        <path d="M18 15l3 -3" />
+                    </svg>
+                    Logout
+                </button>
+                <div className="dropdown">
+                    <button data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center dropdown-toggle hover:opacity-50">
+                        <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bell fill-slate-200 stroke-slate-400 hover:stroke-slate-300">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+                            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                        </svg>
+                        <div id="notification_count" className="<%= currentUser.notifications.length > 0 ? '' : 'hidden' %> absolute pointer-events-none top-[-3px] right-[-3px] w-[19px] h-[19px] flex items-center justify-center bg-white rounded-full">
+                            <div className="bg-red-500 w-[15px] h-[15px] flex items-center justify-center rounded-full text-xs text-white">{(currentUser && currentUser.unseenNotificationCount) ? currentUser.unseenNotificationCount : 0}</div>
+                        </div>
+                    </button>
+                    <div className="dropdown-menu">
+                        <ul id="notification_list" className="dropdown-content relative max-h-[400px] overflow-y-auto">
+                            <h5 className="font-semibold">Notifications</h5>
+                            <li id="no_notification" className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bell-x">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M13 17h-9a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6a2 2 0 1 1 4 0a7 7 0 0 1 4 6v2" />
+                                    <path d="M9 17v1a3 3 0 0 0 4.194 2.753" />
+                                    <path d="M22 22l-5 -5" />
+                                    <path d="M17 22l5 -5" />
+                                </svg>
+                                <p className="text-sm">No notifications</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="dropdown hover">
+                    <UserIcon userId={currentUser && currentUser.id} userAvatar={currentUser && currentUser.avatar} />
+                    <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px]"></div>
+                    <div className="dropdown-menu">
+                        <ul className="dropdown-content">
+                            <li onClick={() => window.location.href = `/user/${currentUser && currentUser.user_id}`} className="dropdown-item flex items-center gap-2 <%= routeName === 'currentUser.profile' && currentUser.user_id === profile_user.user_id ? 'active' : '' %>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-scan">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M10 9a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                    <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                                    <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                                    <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                                    <path d="M8 16a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2" />
+                                </svg>
+                                Profile
+                            </li>
+                            <li onClick={() => window.location.href = '/settings'} className="dropdown-item flex items-center gap-2 <%= routeName === 'settings' ? 'active' : '' %>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                </svg>
+                                Settings
+                            </li>
+                            <li onClick={() => logoutConf()} className="dropdown-item flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-logout">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                                    <path d="M9 12h12l-3 -3" />
+                                    <path d="M18 15l3 -3" />
+                                </svg>
+                                Logout
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  )
+}

@@ -1,0 +1,41 @@
+/*create-post*/
+.create-post {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border-radius: 7px;
+    padding: 30px;
+    border: 1px solid #d2d2d2;
+}
+
+.create-post h1 {
+    margin: 0 0 10px 0;
+}
+
+.create-post input {
+    background-color: #e8e8e8;
+    border: 0;
+    border-radius: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 8px 15px 8px 15px;
+    outline: none;
+}
+
+.create-post textarea {
+    width: 100%;
+    resize: none;
+    background-color: #e8e8e8;
+    border: 0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    padding: 5px 15px 5px 15px;
+    outline: none;
+}
+
+.create-post button {
+    width: fit-content;
+    border: none;
+    color: black;
+    font-size: 1.1rem;
+}
