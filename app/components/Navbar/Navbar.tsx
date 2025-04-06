@@ -4,8 +4,12 @@ import './style.css';
 import { useSelector } from 'react-redux';
 import UserIcon from '../UserIcon/UserIcon';
 import { RootState } from '@/redux/store';
+import NotificationDropdown from './NotificationDropdown';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export const Navbar = () => {
+    const router = useRouter();
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const notificationIcons = {
         "like": 
@@ -53,15 +57,7 @@ export const Navbar = () => {
                 no_notifications.remove();
             }
         })
-
-        // Notifications button
-        const notificationBtn = document.getElementById('notifications_btn');
-        notificationBtn?.addEventListener('click', () => {
-            // Hide notification count if Showing
-            const notification_count = document.getElementById('notification_count');
-            if(notification_count) notification_count.classList.add('hidden');
-        })
-    }, [])
+    }, []);
 
     function createNotificationElement(notification) {
         const notificationElement = document.createElement('button');
@@ -237,7 +233,7 @@ export const Navbar = () => {
   return (
     <div className="bar">
         <div className="max-w-[1400px] w-full mx-auto flex items-center justify-between">
-            <a href="/" className="ms-7 text-[35px] me-[20px] text-indigo-600 cursor-pointer hover:text-indigo-500" style={{fontFamily: "fugaz one"}}>Blogify</a>
+            <Link href={"/"} className="ms-7 text-[35px] me-[20px] text-indigo-600 cursor-pointer hover:text-indigo-500" style={{fontFamily: "fugaz one"}}>Blogify</Link>
             <div className="w-[300px] relative">
                 <div id="searchbox" className="w-[100%]"></div>
                 <div id="hits" className="w-full absolute bg-white rounded-lg shadow-md hidden"></div>
@@ -252,33 +248,7 @@ export const Navbar = () => {
                     </svg>
                     Logout
                 </button>
-                <div className="dropdown">
-                    <button data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center dropdown-toggle hover:opacity-50">
-                        <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bell fill-slate-200 stroke-slate-400 hover:stroke-slate-300">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
-                            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-                        </svg>
-                        <div id="notification_count" className="<%= currentUser.notifications.length > 0 ? '' : 'hidden' %> absolute pointer-events-none top-[-3px] right-[-3px] w-[19px] h-[19px] flex items-center justify-center bg-white rounded-full">
-                            <div className="bg-red-500 w-[15px] h-[15px] flex items-center justify-center rounded-full text-xs text-white">{(currentUser && currentUser.unseenNotificationCount) ? currentUser.unseenNotificationCount : 0}</div>
-                        </div>
-                    </button>
-                    <div className="dropdown-menu">
-                        <ul id="notification_list" className="dropdown-content relative max-h-[400px] overflow-y-auto">
-                            <h5 className="font-semibold">Notifications</h5>
-                            <li id="no_notification" className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bell-x">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M13 17h-9a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6a2 2 0 1 1 4 0a7 7 0 0 1 4 6v2" />
-                                    <path d="M9 17v1a3 3 0 0 0 4.194 2.753" />
-                                    <path d="M22 22l-5 -5" />
-                                    <path d="M17 22l5 -5" />
-                                </svg>
-                                <p className="text-sm">No notifications</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <NotificationDropdown />
                 <div className="dropdown hover">
                     <UserIcon userId={currentUser && currentUser.id} userAvatar={currentUser && currentUser.avatar} />
                     <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px]"></div>

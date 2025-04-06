@@ -64,6 +64,11 @@ dropdownToggles.forEach(toggle => {
     });
 });
 
+function handleDropdownToggle(event) {
+    const dropdown = event.target.closest('.dropdown');
+    dropdown.querySelector('.dropdown-menu').classList.toggle('show');
+}
+
 // Click outside dropdown menu to close
 document.addEventListener('click', (e) => {
     const target = e.target;

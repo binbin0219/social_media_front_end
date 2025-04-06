@@ -1,6 +1,8 @@
 export type Friendship = {
-    userId: number,
-    friendId: number,
-    status: string,
-    createAt: string
+    userId: number | null,
+    friendId: number | null,
+    status: FriendshipStatus,
+    createAt: string | null
 }
+
+export type FriendshipStatus = null | "PENDING" | "REJECTED" | "ACCEPTED"

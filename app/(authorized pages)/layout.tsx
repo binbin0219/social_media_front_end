@@ -7,6 +7,9 @@ import ConfirmationDialog from "@/components/ConfirmationDialog/ConfirmationDial
 import StoreProvider from "@/context/ReduxContext";
 import ToastContainer from "@/components/ToastContainer/ToastContainer";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { User } from "@/lib/models/user";
+import { initialState as notificationsInitialState } from "@/redux/slices/notificationSlice";
 
 export default async function RootLayout({
   children,
@@ -31,6 +34,7 @@ export default async function RootLayout({
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
     // cache: "force-cache",
+    cache: "no-cache",
     method: "GET",
     headers: {
       Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
@@ -38,11 +42,11 @@ export default async function RootLayout({
     credentials: "include",
   });
 
-  // if (!response.ok) {
-  //     redirect('/login');
-  // };
+  if (!response.ok) {
+      redirect('/login');
+  };
 
-  const authUserData = await response.json();
+  const authUserData: User = await response.json();
 
   return (
     <html lang="en">
@@ -57,7 +61,15 @@ export default async function RootLayout({
           className={`antialiased`}
           style={{ backgroundColor: "#dbdbdb7a" }}
         >
-          <StoreProvider currentUser={authUserData}>
+          <StoreProvider 
+            currentUser={authUserData} 
+            notifications={{
+              ...notificationsInitialState,
+              unseenNotificationCount: authUserData?.unseenNotificationCount ?? 0,
+              seenNotificationCount: authUserData?.seenNotificationCount ?? 0,
+            }}
+            initialPosts={[]}
+          >
                 <Navbar />
                 <ConfirmationDialog />
                 <ToastContainer />

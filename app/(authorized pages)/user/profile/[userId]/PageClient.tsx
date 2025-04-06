@@ -1,7 +1,7 @@
 "use client"
 import { User } from '@/lib/models/user';
 import { RootState } from '@/redux/store';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import FriendshipStatus from './FriendshipStatus';
 import EditCoverInput from './EditCoverInput';
@@ -33,7 +33,9 @@ const PageClient = ({profileUser} : Props) => {
     const [coverUrl, setCoverUrl] = useState(profileUser?.coverUrl ?? defaultCoverUrl);
     const [currentSection, setCurrentSection] = useState('posts');
 
-    dispatch(addUser(profileUser));
+    useEffect(() => {
+        dispatch(addUser(profileUser));
+    }, [profileUser])
 
     return (
         <div 
@@ -48,6 +50,7 @@ const PageClient = ({profileUser} : Props) => {
                     <DynamicCoverImage 
                         id='cover_preview'
                         fill
+                        priority
                         src={`${coverUrl}?t=${generateCurrentTime()}`}
                         alt='Profile'
                         className='background-image'
@@ -60,6 +63,8 @@ const PageClient = ({profileUser} : Props) => {
                             <div className="profile-image w-[100px] h-[100px] rounded-full translate-y-[40px] overflow-hidden relative">
                                 <DynamicCoverImage 
                                     fill
+                                    sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                                    priority
                                     src={profileUser?.avatar ?? defaultProfileUrl}
                                     alt='Profile'
                                     style={{objectFit: "cover"}}

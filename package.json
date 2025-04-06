@@ -11,6 +11,7 @@
   "dependencies": {
     "@prisma/client": "^6.3.1",
     "@reduxjs/toolkit": "^2.5.1",
+    "@tabler/icons-react": "^3.31.0",
     "bcrypt": "^5.1.1",
     "cookie": "^1.0.2",
     "croppie": "^2.6.5",
