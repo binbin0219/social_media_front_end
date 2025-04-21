@@ -1,0 +1,11 @@
+/* gender */
+.gender-radio-male,
+.gender-radio-female {
+    opacity: 0.5;
+}
+.gender-radio-container[data-gender="male"] .gender-radio-male{
+    opacity: 1;
+}
+.gender-radio-container[data-gender="female"] .gender-radio-female{
+    opacity: 1;
+}

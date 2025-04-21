@@ -24,7 +24,6 @@ const DynamicCoverImage = dynamic(() => import("next/image"), {
 });
 
 const PageClient = ({profileUser} : Props) => {
-    console.log(profileUser);
     const dispatch = useDispatch();
     const defaultCoverUrl = 'https://img.freepik.com/premium-photo/seamless-geometric-pattern-fabric-wallpaper-background-design_955379-17743.jpg?semt=ais_hybrid';
     const defaultProfileUrl = '/assets/default_avatar.png';

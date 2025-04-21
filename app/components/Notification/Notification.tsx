@@ -3,13 +3,15 @@ import { useAcceptFriendRequest } from '@/hooks/useAcceptFriendRequest'
 import { useRejectFriendRequest } from '@/hooks/useRejectFriendRequest'
 import type { Notification as NotificationType, NotificationType as NotificationTypes } from '@/lib/models/notification'
 import { User } from '@/lib/models/user'
-import { acceptFriendRequestOnServer, rejectFriendRequestOnServer } from '@/main'
+import { acceptFriendRequestOnServer, deleteNotificationOnServer, rejectFriendRequestOnServer } from '@/main'
 import { deleteNotifWithCountById } from '@/redux/slices/notificationSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
-import { IconCheck, IconX } from '@tabler/icons-react'
+import { IconCheck, IconTrash, IconX } from '@tabler/icons-react'
 import React, { JSX } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import UserIcon from '../UserIcon/UserIcon'
+import { useDeleteNotification } from '@/hooks/useDeleteNotification'
 
 type Props = {
     notification: NotificationType,
@@ -19,16 +21,17 @@ const Notification = ({notification} : Props) => {
     const friendship = useSelector((state: RootState) => state.user.find((user: User) => user?.id == notification.senderId)?.friendship);
     const acceptFriendRequestOnClient = useAcceptFriendRequest();
     const rejectFriendRequestOnClient = useRejectFriendRequest();
+    const deleteNotificationOnClient = useDeleteNotification();
     const dispatch = useDispatch();
     
     const notificationIcons: Record<NotificationTypes, () => JSX.Element> = {
-        "like": function () {
+        "LIKE": function () {
             return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-heart absolute bottom-0 right-0 stroke-red-600 fill-red-600">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
             </svg>
         },
-        "comment": function () {
+        "COMMENT": function () {
             return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-message absolute bottom-0 right-0 fill-sky-300 stroke-sky-300">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M8 9h8" />
@@ -68,11 +71,24 @@ const Notification = ({notification} : Props) => {
     const LikeButtons = () => {
         return (
             <>
-                <button type="button" className="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                {/* <button type="button" className="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
                     <IconX width={16} height={16}/>
                 </button>
                 <button type="button" className="mark-as-read-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600">
                     <IconCheck width={16} height={16}/>
+                </button> */}
+                <button onClick={() => handleDeleteNotification()} type="button" className="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                    <IconTrash width={16} height={16}/>
+                </button>
+            </>
+        )
+    }
+
+    const CommentButtons = () => {
+        return (
+            <>
+                <button onClick={() => handleDeleteNotification()} type="button" className="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                    <IconTrash width={16} height={16}/>
                 </button>
             </>
         )
@@ -82,12 +98,29 @@ const Notification = ({notification} : Props) => {
         "FRIEND_REQUEST": function () {
             return <><b>{notification.senderFirstName} {notification.senderLastName}</b> sent you a friend request</>
         },
-        "comment": function () {
-            return <><b>{notification.senderFirstName} {notification.senderLastName}</b> commented on your post</>
+        "COMMENT": function () {
+            return <><b>{notification.senderFirstName} {notification.senderLastName}</b> commented on your post <b>{notification.content ?? ""}</b></>
         },
-        "like": function () {
-            return <><b>{notification.senderFirstName} {notification.senderLastName}</b> liked your post</>
+        "LIKE": function () {
+            return <><b>{notification.senderFirstName} {notification.senderLastName}</b> liked your post <b>{notification.content ?? ""}</b></>
         },
+    }
+
+    const handleDeleteNotification = async () => {
+        try {
+            await deleteNotificationOnServer(notification.id);
+            deleteNotificationOnClient(notification.id);
+            dispatch(addToast({
+                message: "Notification deleted",
+                type: "success"
+            }))
+        } catch (error) {
+            console.log(error);
+            dispatch(addToast({
+                message: "Failed to delete notification",
+                type: "error"
+            }))
+        }
     }
 
     const handleAcceptFriendRequest = async () => {
@@ -129,15 +162,21 @@ const Notification = ({notification} : Props) => {
     return (
         <div className={`notification dropdown-item flex gap-2 items-center w-100 ${notification.seen ? '' : 'bg-indigo-100'}`}>
             <div className="relative w-[25%]">
-                <img src={notification.senderAvatar} alt="" className="w-[50px] h-[50px] rounded-full"/>
+                <UserIcon 
+                    userId={notification.senderId} 
+                    userAvatar={notification.senderAvatar} 
+                    width={50}
+                    height={50}
+                />
                 {renderIcon(notification.type)}
             </div>
             <div className="flex flex-col gap-1 relative w-[75%]">
                 <p className="text-sm text-start">{content[notification.type]()}</p>
                 <div className="flex justify-between w-full items-end">
                     <p className="font-semibold text-indigo-600 text-xs">{timeAgo(notification.createAt)}</p>
-                    {notification.type === "like" ? <LikeButtons/> : ''}
+                    {notification.type === "LIKE" ? <LikeButtons/> : ''}
                     {notification.type === "FRIEND_REQUEST" ? <FriendRequestButtons />: ''}
+                    {notification.type === "COMMENT" ? <CommentButtons />: ''}
                 </div>
             </div>
         </div>

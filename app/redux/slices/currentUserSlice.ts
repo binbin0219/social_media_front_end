@@ -12,9 +12,14 @@ const currentUserSlice = createSlice({
         updateCoverUrl: (state, action: PayloadAction<string | undefined | null>) => {
             if(!state) throw new Error("Current user not found when upading cover url");
             state.coverUrl = action.payload ?? defaultCoverUrl;
+        },
+        updateProfile: (state, action: PayloadAction<Partial<User>>) => {
+            if (state) {
+                Object.assign(state, action.payload);
+            }
         }
     }
 });
 
-export const {setCurrentUser, updateCoverUrl} = currentUserSlice.actions;
+export const {setCurrentUser, updateCoverUrl, updateProfile} = currentUserSlice.actions;
 export default currentUserSlice.reducer;

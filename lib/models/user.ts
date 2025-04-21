@@ -15,7 +15,7 @@ export type User = {
     occupation: string | null;
     country: string | null;
     region: string | null;
-    phoneNumber: JsonValue | null;
+    phoneNumber: PhoneNumber;
     relationshipStatus: string | null;
     create_at: String;
     avatar?: string | null;
@@ -24,6 +24,14 @@ export type User = {
     unseenNotificationCount? : number;
     seenNotificationCount? : number;
 } | null
+
+export type PhoneNumber = {
+    countryISO2: string;
+    countryName: string;
+    dialCode: string;
+    fullNumber: string;
+    phoneNumberBody: string;
+}
 
 export const safeUserColumnSelections = {
     id: true,

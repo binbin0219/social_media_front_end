@@ -9,7 +9,12 @@ export type Notification = {
     content: string;
     link: string;
     seen: boolean;
+    targetId: number;
     createAt: string;
 }
 
-export type NotificationType = "like" | "comment" | "FRIEND_REQUEST";
+export enum NotificationType {
+    LIKE = "LIKE",
+    COMMENT = "COMMENT",
+    FRIEND_REQUEST = "FRIEND_REQUEST",
+}
