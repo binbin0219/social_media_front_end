@@ -10,6 +10,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { User } from "@/lib/models/user";
 import { initialState as notificationsInitialState } from "@/redux/slices/notificationSlice";
+import FileViewer from "@/components/FileViewer/FileViewer";
+import { WebSocketProvider } from "@/context/WebSocketContext";
 
 export default async function RootLayout({
   children,
@@ -61,20 +63,24 @@ export default async function RootLayout({
           className={`antialiased`}
           style={{ backgroundColor: "#dbdbdb7a" }}
         >
-          <StoreProvider 
-            currentUser={authUserData} 
-            notifications={{
-              ...notificationsInitialState,
-              unseenNotificationCount: authUserData?.unseenNotificationCount ?? 0,
-              seenNotificationCount: authUserData?.seenNotificationCount ?? 0,
-            }}
-            initialPosts={[]}
-          >
-                <Navbar />
-                <ConfirmationDialog />
-                <ToastContainer />
-                {children}
-          </StoreProvider>
+          <WebSocketProvider>
+            <StoreProvider 
+              currentUser={authUserData} 
+              notifications={{
+                ...notificationsInitialState,
+                unseenNotificationCount: authUserData?.unseenNotificationCount ?? 0,
+                seenNotificationCount: authUserData?.seenNotificationCount ?? 0,
+              }}
+              initialPosts={[]}
+              allUnreadMessagesCount={authUserData!.unreadChatMessageCount}
+            >
+                  <Navbar />
+                  <ConfirmationDialog />
+                  <ToastContainer />
+                  <FileViewer/>
+                  {children}
+            </StoreProvider>
+          </WebSocketProvider>
         </body>
       </Suspense>
     </html>

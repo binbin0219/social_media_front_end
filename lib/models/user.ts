@@ -3,7 +3,6 @@ import fs from "fs";
 import { userAvatarDirPath } from "../constants";
 import { generateRandomAvatarSVG } from "../avataaars";
 import { convertSvgToPngBuffer } from "../main";
-import { JsonValue } from "@prisma/client/runtime/library";
 import { Friendship } from "./friendship";
 
 export type User = {
@@ -23,6 +22,7 @@ export type User = {
     friendship?: Friendship;
     unseenNotificationCount? : number;
     seenNotificationCount? : number;
+    unreadChatMessageCount: number;
 } | null
 
 export type PhoneNumber = {
@@ -32,6 +32,8 @@ export type PhoneNumber = {
     fullNumber: string;
     phoneNumberBody: string;
 }
+
+export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'avatar'>;
 
 export const safeUserColumnSelections = {
     id: true,

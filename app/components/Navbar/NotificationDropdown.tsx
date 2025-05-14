@@ -7,6 +7,7 @@ import NotificationCounter from './NotificationCounter';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { addNotifications } from '@/redux/slices/notificationSlice';
+import { IconBell, IconBellOff } from '@tabler/icons-react';
 
 const NotificationDropdown = memo(() => {
     const dispatch = useDispatch();
@@ -63,11 +64,7 @@ const NotificationDropdown = memo(() => {
     return (
         <div className="dropdown">
             <button data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center dropdown-toggle hover:opacity-50">
-                <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bell fill-slate-200 stroke-slate-400 hover:stroke-slate-300">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
-                    <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-                </svg>
+                <IconBell className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
                 <NotificationCounter/>
             </button>
             <div className="dropdown-menu">
@@ -78,13 +75,7 @@ const NotificationDropdown = memo(() => {
                     ))}
                     {isAllNotificationFetched && Object.keys(notifications).length === 0 ?
                         <li ref={noNotificationRef} id="no_notification" className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bell-x">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M13 17h-9a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6a2 2 0 1 1 4 0a7 7 0 0 1 4 6v2" />
-                                <path d="M9 17v1a3 3 0 0 0 4.194 2.753" />
-                                <path d="M22 22l-5 -5" />
-                                <path d="M17 22l5 -5" />
-                            </svg>
+                            <IconBellOff/>
                             <p className="text-sm">No notifications</p>
                         </li>
                     : null}

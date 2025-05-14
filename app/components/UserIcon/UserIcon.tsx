@@ -4,15 +4,11 @@ import React, { useEffect } from 'react'
 type Props = {
     userId? : number,
     userAvatar?: string | null,
-    width?: number;
-    height?: number;
+    width?: number | string;
+    height?: number | string;
 }
 
-const UserIcon = ({userId, userAvatar, width, height} : Props) => {
-    const defaultWidth = 45;
-    const defaultHeight = 45;
-    const finalWidth = width || defaultWidth;
-    const finalHeight = height || defaultHeight;
+const UserIcon = ({userId, userAvatar, width = 45, height = 45} : Props) => {
     const userAvatarSrc = userAvatar ? userAvatar : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
     const handleOnclick = () => {
         if (userId) {
@@ -24,7 +20,11 @@ const UserIcon = ({userId, userAvatar, width, height} : Props) => {
     return (
         <img 
         onClick={handleOnclick} 
-        className={`w-[${finalWidth}px] h-[${finalHeight}px] rounded-full`} 
+        style={{
+            width: typeof width === 'string' ? width : `${width}px`,
+            height: typeof height === 'string' ? height : `${height}px`
+        }}
+        className={` rounded-full`} 
         src={userAvatarSrc ?? "/assets/default_avatar.png"} 
         alt="User Icon" 
         onError={({ currentTarget }) => { 

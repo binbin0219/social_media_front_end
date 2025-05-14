@@ -1,4 +1,7 @@
+import { ChatMessage } from "@/lib/models/ChatMessage";
+import { ChatRoom, ChatRoomType } from "@/lib/models/ChatRoom";
 import { NotificationType } from "@/lib/models/notification";
+import { Friend } from "@/lib/models/user";
 
 export const acceptFriendRequestOnServer = async (friendId: number) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/request/accept?friendId=${friendId}`, {credentials: 'include'});
@@ -84,4 +87,101 @@ export function checkIsBase64Image(str: string): boolean {
     } catch {
         return false;
     }
+}
+
+export const fetchFriends = async (offset: number): Promise<Friend[]> => {
+    const recordPerPage = 6;
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/get/friends?offset=${offset}&recordPerPage=${recordPerPage}`, {
+        credentials: 'include'
+    });
+    if(!response.ok) {
+        throw new Error("Failed to fetch friends");
+    }
+    const data : {
+        friends: Friend[]
+    } = await response.json();
+    return data.friends;
+}
+
+export function getPeerFromPrivateChatRoom(chatRoom: ChatRoom, meId: number) {
+    if(chatRoom.type !== ChatRoomType.PRIVATE) {
+        throw new Error("Failed to get peer from private chat room: Chat room is not type of private");
+    }
+
+    return chatRoom.members.filter(member => member.userId !== meId)[0];
+}
+
+export const initPrivateChatOnServer = async (requestBody: {
+    peerId: number,
+    text: string
+}) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatroom/private/init`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    });
+    if(!response.ok) {
+        throw new Error("Failed to init private chat on server");
+    }
+    const data = await response.json();
+    return data.chatRoom as ChatRoom;
+}
+
+export const sendPrivateMessageOnServer = async (requestBody: {
+    peerId: number,
+    text: string
+}) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatroom/private/send`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    });
+    if(!response.ok) {
+        throw new Error("Failed to send private message on server");
+    }
+    const data = await response.json();
+    return {
+        message: data.message as ChatMessage,
+        messagePreview: data.messagePreview as string,
+        lastMessageAt: data.lastMessageAt as string
+    }
+}
+
+export const fetchChatRooms = async (offset: number, recordPerPage: number): Promise<ChatRoom[]> => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatroom/get?offset=${offset}&recordPerPage=${recordPerPage}`, {
+        credentials: 'include'
+    });
+    if(!response.ok) {
+        throw new Error("Failed to fetch chat rooms");
+    }
+    const data : {
+        chatRooms: ChatRoom[]
+    } = await response.json();
+    return data.chatRooms;
+}
+
+export const fetchChatMessages = async (chatRoomId: string, offset: number, recordPerPage: number): Promise<ChatMessage[]> => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatmessage/get?offset=${offset}&recordPerPage=${recordPerPage}&chatRoomId=${chatRoomId}`, {
+        credentials: 'include'
+    });
+    if(!response.ok) {
+        throw new Error("Failed to fetch chat messages");
+    }
+    const data : {
+        chatMessages: ChatMessage[]
+    } = await response.json();
+    return data.chatMessages;
+}
+
+export const autoExpandInputHeight = (element: HTMLInputElement | HTMLTextAreaElement, maxHeight: number) => {
+    element.style.height = 'auto';
+    const newHeight = element.scrollHeight;
+    element.style.height = `${Math.min(newHeight, maxHeight)}px`;
+    element.style.overflowY = newHeight > maxHeight ? "auto" : "hidden";
 }

@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import UserIcon from '../UserIcon/UserIcon'
 import './style.css'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,6 +12,7 @@ const CreatePostForm = () => {
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const dispatch = useDispatch();
     const createPostBtnContainer = useRef<HTMLDivElement>(null);
+    const [isFormOpen, setIsFormOpen] = useState(false);
     const [form, setForm] = React.useState<{title: string, content: string}>({
         title: '',
         content: ''
@@ -43,18 +44,27 @@ const CreatePostForm = () => {
             message: 'Post created successfully'
         }));
         setForm({title: '', content: ''});
-        closeForm();
+        setIsFormOpen(false);
     };
 
-    const closeForm = () => {
-        createPostBtnContainer?.current?.classList.add('hidden');
-        document.getElementById('show_create_post_btn')?.classList.remove('hidden');
-        document.getElementById('create_post_form')?.classList.remove('h-[430px]');
-        document.getElementById('create_post_form')?.classList.add('h-[105px]');
-    }
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newTitle = e.target.value;
+        setForm(prevForm => ({
+            ...prevForm,
+            title: newTitle.slice(0, 50),
+        }));
+    };
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newContent = e.target.value;
+        setForm(prevForm => ({
+            ...prevForm,
+            content: newContent.slice(0, 200),
+        }));
+    };
     
     return (
-        <form id="create_post_form" onSubmit={handleSubmit} className="create-post h-[105px] overflow-y-hidden relative" action="/api/post/create" method="post" style={{transition: "all .3s linear"}}>
+        <form id="create_post_form" onSubmit={handleSubmit} className={`create-post ${isFormOpen ? 'h-[475px]' : 'h-[105px]'} overflow-y-hidden relative`} action="/api/post/create" method="post" style={{transition: "all .3s linear"}}>
             <div className="flex gap-4 items-center mb-6 w-full cursor-pointer">
                 <UserIcon userId={currentUser && currentUser.id} userAvatar={ currentUser && currentUser.avatar} />
                 <div className="flex flex-col">
@@ -71,7 +81,8 @@ const CreatePostForm = () => {
                         </svg>
                         <h6 className="font-bold">Title</h6>
                     </div>
-                    <input value={form.title} onChange={(e) => setForm({...form, title: e.target.value})} className="w-full" name="title" placeholder="Got something to say?" type="text" required/>
+                    <input value={form.title} onChange={(e) => handleTitleChange(e)} className="w-full" name="title" placeholder="Got something to say?" type="text" required/>
+                    <span className='text-xs text-slate-500 self-end mt-1'>{form.title.length} / 50</span>
                 </div>
                 {/* <input type="hidden" name="userId" value={currentUser && currentUser.id} /> */}
                 <div className="flex flex-col w-full gap-2 mt-2">
@@ -85,17 +96,13 @@ const CreatePostForm = () => {
                         </svg>
                         <h6 className="font-bold">Content</h6>
                     </div>
-                    <textarea value={form.content} onChange={(e) => setForm({...form, content: e.target.value})} name="content" rows={5} required placeholder="Write something..."></textarea>
+                    <textarea value={form.content} onChange={(e) => handleContentChange(e)} name="content" rows={5} required placeholder="Write something..."></textarea>
+                    <span className='text-xs text-slate-500 self-end mt-1'>{form.content.length} / 200</span>
                 </div>
             </div>
             <div className="flex ms-auto gap-5 mt-4 rounded-full p-3 items-center w-fit border-2 bg-green-200 border-green-400 absolute bottom-[20px] end-[20px]">
-                <button id="show_create_post_btn" type="button" className="flex gap-2 items-center" 
-                    onClick={(event) => {
-                        event?.currentTarget?.classList.add('hidden');
-                        document.getElementById('create-post-btn-container')?.classList.remove('hidden');
-                        document.getElementById('create_post_form')?.classList.remove('h-[105px]');
-                        document.getElementById('create_post_form')?.classList.add('h-[430px]');
-                    }}
+                <button id="show_create_post_btn" type="button" className={`flex gap-2 items-center ${isFormOpen && 'hidden'}`}
+                    onClick={() => setIsFormOpen(true)}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#269950" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -103,7 +110,7 @@ const CreatePostForm = () => {
                         <path d="M5 12l14 0" />
                     </svg>
                 </button>
-                <div id="create-post-btn-container" ref={createPostBtnContainer} className="flex gap-5 hidden">
+                <div id="create-post-btn-container" ref={createPostBtnContainer} className={`flex gap-5 ${isFormOpen ? '' : 'hidden'}`}>
                     <button type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-square-rounded-check">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -123,12 +130,7 @@ const CreatePostForm = () => {
                         </svg>
                     </button>
                     <button type="button" 
-                    onClick={(event) => {
-                        event?.currentTarget?.parentElement?.classList.add('hidden');
-                        document.getElementById('show_create_post_btn')?.classList.remove('hidden');
-                        document.getElementById('create_post_form')?.classList.remove('h-[430px]');
-                        document.getElementById('create_post_form')?.classList.add('h-[105px]');
-                    }}>
+                    onClick={() => setIsFormOpen(false)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M18 6l-12 12" />

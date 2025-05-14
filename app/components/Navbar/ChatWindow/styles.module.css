@@ -1,0 +1,9 @@
+.img-auto-grid[data-img-count="2"] {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.img-auto-grid[data-img-count="3"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}

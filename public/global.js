@@ -60,13 +60,13 @@ const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 dropdownToggles.forEach(toggle => {
     toggle.addEventListener('click', () => {
         const dropdown = toggle.closest('.dropdown');
-        dropdown.querySelector('.dropdown-menu').classList.toggle('show');
+        dropdown.querySelector('.dropdown-menu')?.classList.toggle('show');
     });
 });
 
 function handleDropdownToggle(event) {
     const dropdown = event.target.closest('.dropdown');
-    dropdown.querySelector('.dropdown-menu').classList.toggle('show');
+    dropdown.querySelector('.dropdown-menu')?.classList.toggle('show');
 }
 
 // Click outside dropdown menu to close

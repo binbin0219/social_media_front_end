@@ -13,6 +13,7 @@ import MobileSectionToggles from './MobileSectionToggles';
 import PostList from '@/components/PostList/PostList';
 import { addUser } from '@/redux/slices/userSlice';
 import { generateCurrentTime } from '@/utils/helpers';
+import ChatButton from './ChatButton';
 
 type Props = {
     profileUser: User
@@ -74,7 +75,10 @@ const PageClient = ({profileUser} : Props) => {
                         {profileUser?.id === currentUser?.id ? 
                             <EditCoverInput setCoverUrl={setCoverUrl} />
                         :
+                        <div className='flex gap-2'>
+                            <ChatButton targetUserId={profileUser?.id!}/>
                             <FriendshipStatus friendship={profileUser?.friendship} profileUserId={profileUser?.id}/>
+                        </div>
                         }
                     </div>
                 </div>

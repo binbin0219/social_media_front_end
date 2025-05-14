@@ -7,6 +7,7 @@ import { PostWithUser } from '@/lib/models/post';
 import { RootState } from '@/redux/store';
 import { addComments, createComment } from '@/redux/slices/postSlice';
 import PostCommentSkeleton from '../PostCommentSkeleton/PostCommentSkeleton';
+import { autoExpandInputHeight } from '@/main';
 
 type Props = {
     postId: number,
@@ -145,11 +146,7 @@ const PostCommentSection = memo(({postId}: Props) => {
             ...prevState,
             commentingContent: event.target.value
         }))
-        const MAX_HEIGHT = 200;
-        event.target.style.height = 'auto';
-        const newHeight = event.target.scrollHeight;
-        event.target.style.height = `${Math.min(newHeight, MAX_HEIGHT)}px`;
-        event.target.style.overflowY = newHeight > MAX_HEIGHT ? "auto" : "hidden";
+        autoExpandInputHeight(event.target, 200);
     }
 
     const sendCommentToServer = async (comment: String) => {

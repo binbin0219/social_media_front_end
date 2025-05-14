@@ -8,6 +8,8 @@ import NotificationDropdown from './NotificationDropdown';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { IconSettings } from '@tabler/icons-react';
+import FriendListDropdown from './FriendListDropdown';
+import ChatWindow from './ChatWindow/ChatWindow';
 
 export const Navbar = () => {
     const router = useRouter();
@@ -250,6 +252,8 @@ export const Navbar = () => {
                     </svg>
                     Logout
                 </button>
+                <FriendListDropdown/>
+                <ChatWindow/>
                 <NotificationDropdown />
                 <div className="dropdown hover">
                     <UserIcon userId={currentUser && currentUser.id} userAvatar={currentUser && currentUser.avatar} />
