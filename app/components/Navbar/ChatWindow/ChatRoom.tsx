@@ -23,6 +23,7 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const currentUserId = useSelector((state: RootState) => state.currentUser!.id);
     const chatRoom =  useSelector((state: RootState) => state.chat.chatRooms.find(chatRoom => chatRoom.id === actvieChatRoomId))!;
+    console.log("Active chat room: " + JSON.stringify(chatRoom))
     const isPrivateRoom = chatRoom.type === ChatRoomTypes.PRIVATE;
     const peerId = isPrivateRoom ? (chatRoom.members.filter(member => member.userId !== currentUserId)[0].userId) : null;
 
@@ -39,14 +40,13 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
 
         try {
             if(chatRoom.isTemp) {
-                const newChatRoom = await initPrivateChatOnServer({
-                    peerId: peerId!,
-                    text: typingMessage
+                client?.publish({
+                    destination: '/app/chat.initPrivateChat',
+                    body: JSON.stringify({
+                        peerId: peerId!,
+                        text: typingMessage
+                    })
                 });
-                dispatch(initPrivateChat({
-                    tempPrivateChatId: chatRoom.id,
-                    newPrivateChat: newChatRoom
-                }))
             } else {
                 client?.publish({
                     destination: '/app/chat.sendPrivateMessage',

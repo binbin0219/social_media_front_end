@@ -33,6 +33,10 @@ const chatSlice = createSlice({
             const chatRoom = state.chatRooms.find(chatRoom => chatRoom.id === action.payload);
             if(chatRoom) {
                 state.allUnreadCount -= chatRoom.unreadCount;
+                if(state.allUnreadCount < 0) {
+                    state.allUnreadCount = 0;
+                }
+
                 chatRoom.unreadCount = 0;
                 state.actvieChatRoomId = action.payload;
             }
@@ -92,13 +96,24 @@ const chatSlice = createSlice({
             }
         },
         initPrivateChat: (state, action: PayloadAction<{
-            tempPrivateChatId: string,
             newPrivateChat: ChatRoom
         }>) => {
-            const index = state.chatRooms.findIndex(chatroom => chatroom.id === action.payload.tempPrivateChatId);
-            if (index !== -1) {
-                state.chatRooms[index] = action.payload.newPrivateChat;
-                state.actvieChatRoomId = action.payload.newPrivateChat.id;
+            const { newPrivateChat } = action.payload;
+            const firstMemberId = newPrivateChat.members[0].userId;
+            const secondMemberId = newPrivateChat.members[1].userId;
+            const tempPrivateChatIndex = findPrivateChatIndexByMemberIds(state.chatRooms, firstMemberId, secondMemberId);
+
+            console.log(tempPrivateChatIndex);
+            if (tempPrivateChatIndex !== -1) {
+                const isTempChatActive = state.actvieChatRoomId === state.chatRooms[tempPrivateChatIndex].id;
+                if(isTempChatActive) {
+                    state.actvieChatRoomId = newPrivateChat.id;
+                }
+
+                state.chatRooms[tempPrivateChatIndex] = newPrivateChat;
+            } else {
+                state.chatRooms.push(newPrivateChat);
+                state.allUnreadCount++;
             }
         }
     }
@@ -106,3 +121,18 @@ const chatSlice = createSlice({
 
 export const { setIsChatOpen, setActiveChatRoomId, setChatRooms, addChatRooms, addMessages, sendMessage, initPrivateChat } = chatSlice.actions;
 export default chatSlice.reducer
+
+function findPrivateChatIndexByMemberIds(chatRooms: ChatRoom[], firstTargetMemberId: number, secondTargetMemberId: number) {
+    return chatRooms.findIndex(chatRoom => {
+        const firstMemberId = chatRoom.members[0].userId;
+        const secondMemberId = chatRoom.members[1].userId;
+        if(
+            (firstMemberId === firstTargetMemberId || secondMemberId === firstTargetMemberId) &&
+            ((firstMemberId === secondTargetMemberId || secondMemberId === secondTargetMemberId))
+        ) {
+            return true
+        }
+
+        return false;
+    });
+}

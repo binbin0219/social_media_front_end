@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import ChatRoom from './ChatRoom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
-import { sendMessage, setIsChatOpen } from '@/redux/slices/chatSlice'
+import { initPrivateChat, sendMessage, setIsChatOpen } from '@/redux/slices/chatSlice'
 import ChatRoomList from './ChatRoomList'
 import UnreadMessageCounter from './unreadMessageCounter'
 import { useWebSocket } from '@/context/WebSocketContext'
@@ -20,7 +20,6 @@ const ChatWindow = () => {
         if(connected && client) {
             const sub = client.subscribe('/user/queue/privateMessages', (msg) => {
                 const body = JSON.parse(msg.body);
-                console.log(body)
                 dispatch(sendMessage({
                     currentUserId,
                     chatRoomId: body.chatRoomId,
@@ -28,6 +27,20 @@ const ChatWindow = () => {
                     messagePreview: body.messagePreview,
                     lastMessageAt: body.lastMessageAt
                 }));
+            })
+
+            return () => sub.unsubscribe();
+        }
+    }, [connected, client])
+
+    useEffect(() => {
+        if(connected && client) {
+            const sub = client.subscribe('/user/queue/privateChatInit', (msg) => {
+                const newChatRoom = JSON.parse(msg.body);
+                console.log(newChatRoom)
+                dispatch(initPrivateChat({
+                    newPrivateChat: newChatRoom
+                }))
             })
 
             return () => sub.unsubscribe();
