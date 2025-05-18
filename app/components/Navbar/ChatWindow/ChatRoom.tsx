@@ -1,7 +1,6 @@
 "use client"
 import { ChatRoom as ChatRoomType, ChatRoomType as ChatRoomTypes } from '@/lib/models/ChatRoom';
-import { autoExpandInputHeight, initPrivateChatOnServer, sendPrivateMessageOnServer } from '@/main';
-import { initPrivateChat, sendMessage } from '@/redux/slices/chatSlice';
+import { autoExpandInputHeight } from '@/main';
 import { addToast } from '@/redux/slices/toastSlice';
 import { RootState } from '@/redux/store';
 import { IconMoodSmile, IconSend } from '@tabler/icons-react';
@@ -23,7 +22,6 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const currentUserId = useSelector((state: RootState) => state.currentUser!.id);
     const chatRoom =  useSelector((state: RootState) => state.chat.chatRooms.find(chatRoom => chatRoom.id === actvieChatRoomId))!;
-    console.log("Active chat room: " + JSON.stringify(chatRoom))
     const isPrivateRoom = chatRoom.type === ChatRoomTypes.PRIVATE;
     const peerId = isPrivateRoom ? (chatRoom.members.filter(member => member.userId !== currentUserId)[0].userId) : null;
 

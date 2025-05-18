@@ -50,10 +50,12 @@ const ChatMessageList = () => {
     
 
     const handleDataLoaderVisible = async () => {
-        const oldScrollHeight = messageListRef.current!.scrollHeight;
-        await fetchMoreMessages();
-        const newScrollHeight = messageListRef.current!.scrollHeight;
-        messageListRef.current!.scrollTop += (newScrollHeight - oldScrollHeight);
+        setTimeout(async () => {
+            const oldScrollHeight = messageListRef.current!.scrollHeight;
+            await fetchMoreMessages();
+            const newScrollHeight = messageListRef.current!.scrollHeight;
+            messageListRef.current!.scrollTop += (newScrollHeight - oldScrollHeight);
+        }, 500);
     }
 
     const fetchMoreMessages = async () => {
@@ -140,7 +142,6 @@ const ChatMessageList = () => {
 
     return (
         <div ref={messageListRef} className='flex flex-1 flex-col overflow-y-auto gap-4 pb-6 pe-1'>
-            {/* <p className='text-slate-400 text-xs w-full text-center'>12:30PM</p> */}
             {!isAllMessageFetched && (
                 <DataLoader className='flex flex-col gap-4' onVisible={() => handleDataLoaderVisible()}>
                     <div className={`skeleton opacity-80`} style={{width: '250px', height: '55px', borderRadius: "10px", borderTopLeftRadius: "0"}}></div>
@@ -163,6 +164,9 @@ const ChatMessageList = () => {
                     </div>
                 )
             })}
+            {isAllMessageFetched && (!chatRoom.messages || chatRoom.messages.length === 0) && (
+                <p className='font-bold text-slate-500 text-m text-center my-auto'> Send message to start the chat journey !</p>
+            )}
         </div>
     )
 }

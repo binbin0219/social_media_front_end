@@ -7,9 +7,10 @@ import { RootState } from '@/redux/store';
 import NotificationDropdown from './NotificationDropdown';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { IconSettings } from '@tabler/icons-react';
+import { IconLogout, IconSettings } from '@tabler/icons-react';
 import FriendListDropdown from './FriendListDropdown';
 import ChatWindow from './ChatWindow/ChatWindow';
+import SearchBar from './SearchBar';
 
 export const Navbar = () => {
     const router = useRouter();
@@ -239,19 +240,9 @@ export const Navbar = () => {
         <div className="max-w-[1400px] w-full mx-auto flex items-center justify-between">
             <Link href={"/"} className="ms-7 text-[35px] me-[20px] text-indigo-600 cursor-pointer hover:text-indigo-500" style={{fontFamily: "fugaz one"}}>Blogify</Link>
             <div className="w-[300px] relative">
-                <div id="searchbox" className="w-[100%]"></div>
-                <div id="hits" className="w-full absolute bg-white rounded-lg shadow-md hidden"></div>
             </div>
             <div className="flex gap-3 items-center me-2">
-                <button id="logout_btn" type="button" className="flex gap-1 items-center rounded-full px-3 py-2 border-2 border-slate-300 bg-slate-100 text-sm text-slate-600 hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-logout">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                        <path d="M9 12h12l-3 -3" />
-                        <path d="M18 15l3 -3" />
-                    </svg>
-                    Logout
-                </button>
+                <SearchBar/>
                 <FriendListDropdown/>
                 <ChatWindow/>
                 <NotificationDropdown />
@@ -272,14 +263,6 @@ export const Navbar = () => {
                                 </svg>
                                 Profile
                             </li>
-                            {/* <li onClick={() => window.location.href = '/settings'} className="dropdown-item flex items-center gap-2 <%= routeName === 'settings' ? 'active' : '' %>">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-settings">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                                </svg>
-                                Settings
-                            </li> */}
                             <li
                             onClick={() => router.push('/settings')}
                             className={`dropdown-item flex items-center gap-2 ${isSettingRoute ? 'active' : ''}`}
@@ -287,13 +270,8 @@ export const Navbar = () => {
                                 <IconSettings/>
                                 Settings
                             </li>
-                            <li onClick={() => logoutConf()} className="dropdown-item flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-logout">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                                    <path d="M9 12h12l-3 -3" />
-                                    <path d="M18 15l3 -3" />
-                                </svg>
+                            <li onClick={() => logoutConf()} className="dropdown-item flex items-center gap-2 text-red-500">
+                                <IconLogout/>
                                 Logout
                             </li>
                         </ul>

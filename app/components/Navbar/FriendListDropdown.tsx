@@ -15,9 +15,11 @@ const FriendListDropdown = () => {
     const [isOpen , setIsOpen] = useState(false);
 
     const handleDataLoaderVisible = async () => {
-        const fetchedFriends = await fetchFriends(friends.length);
-        setFriends((prev) => [...prev, ...fetchedFriends]);
-        setIsAllDataFetched(fetchedFriends.length < 6);
+        setTimeout(async () => {
+            const fetchedFriends = await fetchFriends(friends.length);
+            setFriends((prev) => [...prev, ...fetchedFriends]);
+            setIsAllDataFetched(fetchedFriends.length < 6);
+        }, 500);
     }
 
     return (

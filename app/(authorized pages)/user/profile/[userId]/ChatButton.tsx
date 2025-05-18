@@ -1,4 +1,5 @@
 import { ChatRoom } from '@/lib/models/ChatRoom';
+import { fetchPrivateChatRoom } from '@/main';
 import { addChatRooms, setActiveChatRoomId, setIsChatOpen } from '@/redux/slices/chatSlice';
 import { RootState } from '@/redux/store';
 import { IconMessageCircle } from '@tabler/icons-react'
@@ -17,17 +18,6 @@ const ChatButton = ({targetUserId} : Props) => {
         dispatch(setIsChatOpen(true));
         dispatch(addChatRooms([chatRoom]));
         dispatch(setActiveChatRoomId(chatRoom.id));
-    }
-
-    const fetchPrivateChatRoom = async (userId: number) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatroom/private/get?userId=${userId}`, {
-            credentials: 'include'
-        });
-        if(!response.ok) {
-            throw new Error("Failed to fetch private chat room");
-        }
-        const data: {chatRoom: ChatRoom} = await response.json();
-        return data.chatRoom as ChatRoom;
     }
 
     return (

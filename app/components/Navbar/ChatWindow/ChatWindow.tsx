@@ -6,9 +6,9 @@ import ChatRoom from './ChatRoom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { initPrivateChat, sendMessage, setIsChatOpen } from '@/redux/slices/chatSlice'
-import ChatRoomList from './ChatRoomList'
 import UnreadMessageCounter from './unreadMessageCounter'
 import { useWebSocket } from '@/context/WebSocketContext'
+import ChatMenu from './ChatMenu'
 
 const ChatWindow = () => {
     const dispatch = useDispatch();
@@ -37,7 +37,6 @@ const ChatWindow = () => {
         if(connected && client) {
             const sub = client.subscribe('/user/queue/privateChatInit', (msg) => {
                 const newChatRoom = JSON.parse(msg.body);
-                console.log(newChatRoom)
                 dispatch(initPrivateChat({
                     newPrivateChat: newChatRoom
                 }))
@@ -80,7 +79,7 @@ const ChatWindow = () => {
         return (
             <div className='w-full h-full flex flex-col gap-3 items-center justify-center'>
                 <IconMessageChatbot width={45} height={45}/>
-                Click any user to start chatting
+                Search for users or select any chats to start chatting
             </div>
         )
     }
@@ -98,13 +97,7 @@ const ChatWindow = () => {
                 )}
             >
                 <div className='flex h-[600px]'>
-                    <div className='flex flex-col gap-2 border-e-2 pe-2' style={{width: '240px'}}>
-                        <div className='flex items-center'>
-                            <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300 me-2' strokeWidth={2} width={35} height={35}/>
-                            <h1 className='font-bold text-2xl text-center'>Chats ({chatState.allUnreadCount})</h1>
-                        </div>
-                        <ChatRoomList/>
-                    </div>
+                    <ChatMenu/>
                     <div className='w-[500px]'>
                         {chatState.actvieChatRoomId && <ChatRoom actvieChatRoomId={chatState.actvieChatRoomId} />}
                         {!chatState.actvieChatRoomId && <InitialChatUi/>}

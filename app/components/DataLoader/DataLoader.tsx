@@ -29,9 +29,7 @@ const DataLoader = ({className, children, onVisible} : Props) => {
 
     useEffect(() => {
         if(isLoaderVisible) {
-            setTimeout(async () => {
-                await onVisible();
-            }, 500);
+            onVisible();
         }
     }, [isLoaderVisible]);
 

@@ -16,13 +16,15 @@ const ChatRoomList = () => {
     const [isAllDataFetched, setIsAllDataFetched] = useState(false);
 
     const handleDataLoaderVisible = async () => {
-        try {
-            const fecthedChatRooms = await fetchChatRooms(chatRooms.length, 6);
-            dispatch(addChatRooms(fecthedChatRooms));
-            setIsAllDataFetched(fecthedChatRooms.length < 6);
-        } catch (error) {
-            console.log(error);
-        }
+        setTimeout(async () => {
+            try {
+                const fecthedChatRooms = await fetchChatRooms(chatRooms.length, 6);
+                dispatch(addChatRooms(fecthedChatRooms));
+                setIsAllDataFetched(fecthedChatRooms.length < 6);
+            } catch (error) {
+                console.log(error);
+            }
+        }, 500);
     }
 
     const handleChatRoomClick = (chatRoomId: string) => {
@@ -103,6 +105,9 @@ const ChatRoomList = () => {
                 </div>
             ))}
             {!isAllDataFetched && <ChatRoomSkeletons/>}
+            {isAllDataFetched && chatRooms.length === 0 && (
+                <p className='text-center p-3'>No chats yet</p>
+            )}
         </>
         
     )

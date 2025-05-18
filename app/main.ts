@@ -1,7 +1,7 @@
 import { ChatMessage } from "@/lib/models/ChatMessage";
 import { ChatRoom, ChatRoomType } from "@/lib/models/ChatRoom";
 import { NotificationType } from "@/lib/models/notification";
-import { Friend } from "@/lib/models/user";
+import { Friend, User } from "@/lib/models/user";
 
 export const acceptFriendRequestOnServer = async (friendId: number) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/request/accept?friendId=${friendId}`, {credentials: 'include'});
@@ -177,6 +177,30 @@ export const fetchChatMessages = async (chatRoomId: string, offset: number, reco
         chatMessages: ChatMessage[]
     } = await response.json();
     return data.chatMessages;
+}
+
+export const fetchUsersByUsername = async (username: string, offset: number, recordPerPage: number): Promise<User[]> => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/search?offset=${offset}&recordPerPage=${recordPerPage}&username=${username}`, {
+        credentials: 'include'
+    });
+    if(!response.ok) {
+        throw new Error("Failed to fetch users by username");
+    }
+    const data : {
+        searchResults: User[]
+    } = await response.json();
+    return data.searchResults;
+}
+
+export const fetchPrivateChatRoom = async (userId: number) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatroom/private/get?userId=${userId}`, {
+        credentials: 'include'
+    });
+    if(!response.ok) {
+        throw new Error("Failed to fetch private chat room");
+    }
+    const data: {chatRoom: ChatRoom} = await response.json();
+    return data.chatRoom as ChatRoom;
 }
 
 export const autoExpandInputHeight = (element: HTMLInputElement | HTMLTextAreaElement, maxHeight: number) => {
