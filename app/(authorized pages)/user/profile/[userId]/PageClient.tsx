@@ -10,10 +10,13 @@ import ImageSkeleton from '@/components/ImageSkeleton/ImageSkeleton';
 import SectionToggles from './SectionToggles';
 import './style.css'
 import MobileSectionToggles from './MobileSectionToggles';
-import PostList from '@/components/PostList/PostList';
+import PostList from '@/(authorized pages)/PostList';
 import { addUser } from '@/redux/slices/userSlice';
 import { generateCurrentTime } from '@/utils/helpers';
 import ChatButton from './ChatButton';
+import PostSection from './sections/PostSection';
+import { setPosts } from '@/redux/slices/postSlice';
+import FriendsSection from './sections/FriendsSection';
 
 type Props = {
     profileUser: User
@@ -32,6 +35,10 @@ const PageClient = ({profileUser} : Props) => {
     const isCurrentUserProfile = profileUser?.id === currentUser?.id;
     const [coverUrl, setCoverUrl] = useState(profileUser?.coverUrl ?? defaultCoverUrl);
     const [currentSection, setCurrentSection] = useState('posts');
+
+    useEffect(() => {
+        dispatch(setPosts([]));
+    }, [])
 
     useEffect(() => {
         dispatch(addUser(profileUser));
@@ -86,9 +93,7 @@ const PageClient = ({profileUser} : Props) => {
             <SectionToggles setCurrentSection={setCurrentSection}/>
             <MobileSectionToggles setCurrentSection={setCurrentSection}/>
             <div id="profile_sections" className="w-full px-2">
-                <div id="posts_section" className="w-full mt-4 gap-8 flex flex-col hidden">
-                    <PostList authorId={profileUser?.id} postLink={`${process.env.NEXT_PUBLIC_API_URL}/api/post/get/${profileUser?.id}`} />
-                </div>
+                <PostSection profileUser={profileUser!}/>
                 <div id="about_section" className="w-full mt-4 gap-8 flex flex-col hidden">
                     <div className="w-full flex flex-col rounded-lg border items-center bg-white">
                         <h1 className="p-4 font-bold text-2xl border-b w-full">About</h1>
@@ -189,9 +194,7 @@ const PageClient = ({profileUser} : Props) => {
                         </div>
                     </div>
                 </div>
-                <div id="friends_section" className="w-full mt-4 flex flex-col hidden relative border rounded-lg bg-white">
-                    <h5 className="font-bold text-2xl p-3 border-b">Friends</h5>
-                </div>
+                <FriendsSection profileUser={profileUser!}/>
                 <div id="photos_section" className="w-full mt-4 gap-8 flex flex-col hidden">
             
                 </div>

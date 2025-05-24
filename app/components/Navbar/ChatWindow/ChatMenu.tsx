@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import ChatRoomList from './ChatRoomList'
 import UserLazyLoadList from '@/components/UserLazyLoadList/UserLazyLoadList';
 import { useDispatch } from 'react-redux';
-import { addChatRooms, setActiveChatRoomId } from '@/redux/slices/chatSlice';
+import { addChatRooms, addPrivateChat, setActiveChatRoomId } from '@/redux/slices/chatSlice';
 import { fetchPrivateChatRoom } from '@/main';
 
 const ChatMenu = () => {
@@ -26,7 +26,7 @@ const ChatMenu = () => {
                 username={value} 
                 onItemClick={async (result) => {
                     const chatRoom = await fetchPrivateChatRoom(result.id);
-                    dispatch(addChatRooms([chatRoom]));
+                    dispatch(addPrivateChat(chatRoom));
                     dispatch(setActiveChatRoomId(chatRoom.id));
                     setIsNewChatSearchOpen(false);
                 }}

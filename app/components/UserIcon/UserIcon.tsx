@@ -24,7 +24,7 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45} : Props) => {
             width: typeof width === 'string' ? width : `${width}px`,
             height: typeof height === 'string' ? height : `${height}px`
         }}
-        className={` rounded-full`} 
+        className={` rounded-full hover:opacity-50 cursor-pointer`} 
         src={userAvatarSrc ?? "/assets/default_avatar.png"} 
         alt="User Icon" 
         onError={({ currentTarget }) => { 

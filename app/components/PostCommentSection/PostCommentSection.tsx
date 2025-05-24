@@ -3,26 +3,27 @@ import { addToast } from '@/redux/slices/toastSlice';
 import React, { memo, RefObject, useEffect, useRef, useState } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PostComment from '../PostComment/PostComment';
-import { PostWithUser } from '@/lib/models/post';
+import { Post } from '@/lib/models/post';
 import { RootState } from '@/redux/store';
-import { addComments, createComment } from '@/redux/slices/postSlice';
+import { addComments } from '@/redux/slices/postSlice';
 import PostCommentSkeleton from '../PostCommentSkeleton/PostCommentSkeleton';
 import { autoExpandInputHeight } from '@/main';
+import DataLoader from '../DataLoader/DataLoader';
+import { useSubcribeCommentWebSocket } from '@/hooks/useSubcribeCommentWebSocket';
 
 type Props = {
     postId: number,
 }
 
 const PostCommentSection = memo(({postId}: Props) => {
+    useSubcribeCommentWebSocket(postId);
     const commentInputRef = useRef<HTMLTextAreaElement>(null);
     const commentSentBtnRef = useRef<HTMLButtonElement>(null);
     const commentListRef = useRef<HTMLDivElement>(null);
-    const skeletonRef = useRef<HTMLDivElement | null>(null);
-    const [isSkeletonVisible, setIsSkeletonVisible] = useState(false);
     const [isAllCommentsFetched, setIsAllCommentsFetched] = useState(false);
     const dispatch = useDispatch();
     const commentIds : Number[] = useSelector(
-        (state: RootState) => state.post.find((post: PostWithUser) => post.id === postId)?.comments.map(comment => comment.id) || [],
+        (state: RootState) => state.post.find((post: Post) => post.id === postId)?.comments.map(comment => comment.id) || [],
         shallowEqual
     );
     const [commentState, setCommentState] = useState<{
@@ -31,32 +32,10 @@ const PostCommentSection = memo(({postId}: Props) => {
         commentingContent: "",
     });
 
-    useEffect(() => {
-        if (!skeletonRef.current) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const [entry] = entries;
-                setIsSkeletonVisible(entry.isIntersecting);
-            },
-            { root: commentListRef.current, threshold: 0.3 }
-        );
-
-        if (skeletonRef.current) {
-            observer.observe(skeletonRef.current);
-        }
-
-        return () => {
-            if (skeletonRef.current) {
-                observer.unobserve(skeletonRef.current);
-            }
-        };
-    }, []);
-
-    useEffect(() => {
+    const handleSkeletonVisible = async () => {
         try {
             setTimeout(() => {
-                if (isSkeletonVisible && !isAllCommentsFetched) {
+                if (!isAllCommentsFetched) {
                     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/get?postId=${postId}&offset=${commentIds.length}&recordPerPage=4`, {
                         method: 'GET',
                         credentials: 'include'
@@ -83,7 +62,7 @@ const PostCommentSection = memo(({postId}: Props) => {
                 message: 'Failed to get comments'
             });
         }
-    }, [isSkeletonVisible]);
+    }
 
     const NoCommentYet = () => {
         return (
@@ -111,7 +90,6 @@ const PostCommentSection = memo(({postId}: Props) => {
         try {
             if(!checkIsCommentSentable(commentState.commentingContent)) return;
             const comment = await sendCommentToServer(commentState.commentingContent);
-            dispatch(createComment({ postId, comment : comment }));
             setCommentState(prevState => ({
                 commentingContent: "",
             }));
@@ -175,9 +153,9 @@ const PostCommentSection = memo(({postId}: Props) => {
                 }) }
                 {isAllCommentsFetched && commentIds.length !== 0 ? <p className='text-center mt-2 font-bold text-gray-500'>No more comments</p> : null}
                 {!isAllCommentsFetched ? 
-                    <div ref={skeletonRef}>
+                    <DataLoader onVisible={handleSkeletonVisible}>
                         <PostCommentSkeleton/>
-                    </div>
+                    </DataLoader>
                 : null}
             </div>
             <div className="w-full flex gap-2 relative">

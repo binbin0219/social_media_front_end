@@ -6,16 +6,48 @@ import Notification from '../Notification/Notification';
 import NotificationCounter from './NotificationCounter';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { addNotifications } from '@/redux/slices/notificationSlice';
+import { addNotification, addNotifications, setIsNotificationOpen } from '@/redux/slices/notificationSlice';
 import { IconBell, IconBellOff } from '@tabler/icons-react';
+import { useWebSocket } from '@/context/WebSocketContext';
+import Dropdown from '../Dropdown/Dropdown';
 
 const NotificationDropdown = memo(() => {
     const dispatch = useDispatch();
+    const { client, connected } = useWebSocket();
+    const isOpen = useSelector((state: RootState) => state.notifications.isOpen);
     const notifications = useSelector((state: RootState) => state.notifications.data);
     const NotificationSkeletonRef = useRef<HTMLLIElement>(null);
     const noNotificationRef = useRef<HTMLLIElement>(null);
     const [isSkeletonVisible, setIsSkeletonVisible] = useState(false);
     const [isAllNotificationFetched, setIsAllNotificationFetched] = useState(false);
+    
+    useEffect(() => {
+        if(connected && client) {
+            const sub = client.subscribe('/user/queue/notifications', (msg) => {
+                const notification = JSON.parse(msg.body);
+                dispatch(addNotification(notification));
+            })
+
+            return () => sub.unsubscribe();
+        }
+    }, [connected, client])
+
+    useEffect(() => {
+        if (!client || !client.connected) {
+            console.warn("Failed to open notification on server: client is disconnected!");
+            return;
+        };
+
+        if (isOpen) {
+            client.publish({
+                destination: '/app/notification.open'
+            });
+        } else {
+            client.publish({
+                destination: '/app/notification.close'
+            });
+        }
+    }, [isOpen, client, connected]);
 
     useEffect(() => {
         if(!NotificationSkeletonRef.current) return;
@@ -45,11 +77,6 @@ const NotificationDropdown = memo(() => {
         }
     }, [isSkeletonVisible])
 
-    const handleNotificationBtn = async () => {
-        const notification_count = document.getElementById('notification_count');
-        if(notification_count) notification_count.classList.add('hidden');
-    }
-
     const fetchNotifications = async () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notification/get?offset=0&recordPerPage=6`, {credentials: 'include'});
         if(!response.ok) {
@@ -62,33 +89,42 @@ const NotificationDropdown = memo(() => {
     }
 
     return (
-        <div className="dropdown">
-            <button data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center dropdown-toggle hover:opacity-50">
-                <IconBell className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
-                <NotificationCounter/>
-            </button>
-            <div className="dropdown-menu">
-                <ul id="notification_list" className="dropdown-content relative max-h-[400px] overflow-y-auto" style={{minWidth: "250px"}}>
-                    <h5 className="font-semibold">Notifications</h5>
-                    {Object.values(notifications).map(notification => (
-                        <Notification key={notification.id} notification={notification} />
-                    ))}
-                    {isAllNotificationFetched && Object.keys(notifications).length === 0 ?
-                        <li ref={noNotificationRef} id="no_notification" className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>
-                            <IconBellOff/>
-                            <p className="text-sm">No notifications</p>
-                        </li>
-                    : null}
-                    {!isAllNotificationFetched ? 
-                        <li ref={NotificationSkeletonRef} className='flex flex-col gap-2'>
-                            <NotificationSkeleton/>
-                            <NotificationSkeleton/>
-                            <NotificationSkeleton/>
-                        </li>
-                    : null}
-                </ul>
-            </div>
-        </div>
+        <Dropdown
+            setIsOpen={(isOpen: boolean) => dispatch(setIsNotificationOpen(isOpen))}
+            isOpen={isOpen}
+            toggleButton={(
+                <button data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center hover:opacity-50">
+                    <IconBell className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
+                    <NotificationCounter/>
+                </button>
+            )}
+        >
+            <ul id="notification_list" className="dropdown-content relative max-h-[400px] overflow-y-auto" style={{minWidth: "250px"}}>
+                <h5 className="font-semibold">Notifications</h5>
+                {Object.values(notifications)
+                .sort((a, b) => {
+                    const dateA = new Date(a.createAt).getTime();
+                    const dateB = new Date(b.createAt).getTime();
+                    return dateB - dateA; // Descending order
+                })
+                .map(notification => (
+                    <Notification key={notification.id} notification={notification} />
+                ))}
+                {isAllNotificationFetched && Object.keys(notifications).length === 0 ?
+                    <li ref={noNotificationRef} id="no_notification" className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>
+                        <IconBellOff/>
+                        <p className="text-sm">No notifications</p>
+                    </li>
+                : null}
+                {!isAllNotificationFetched ? 
+                    <li ref={NotificationSkeletonRef} className='flex flex-col gap-2'>
+                        <NotificationSkeleton/>
+                        <NotificationSkeleton/>
+                        <NotificationSkeleton/>
+                    </li>
+                : null}
+            </ul>
+        </Dropdown>
     )
 });
 

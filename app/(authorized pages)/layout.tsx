@@ -68,8 +68,7 @@ export default async function RootLayout({
               currentUser={authUserData} 
               notifications={{
                 ...notificationsInitialState,
-                unseenNotificationCount: authUserData?.unseenNotificationCount ?? 0,
-                seenNotificationCount: authUserData?.seenNotificationCount ?? 0,
+                newNotificationCount: authUserData?.newNotificationCount ?? 0,
               }}
               initialPosts={[]}
               allUnreadMessagesCount={authUserData!.unreadChatMessageCount}

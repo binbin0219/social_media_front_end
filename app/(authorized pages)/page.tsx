@@ -1,7 +1,7 @@
 import CreatePostForm from '@/components/CreatePostForm/CreatePostForm';
 import React from 'react'
 import './style.css'
-import PostList from '@/components/PostList/PostList';
+import PostList from '@/(authorized pages)/PostList';
 
 const page = async () => {
     return (

@@ -1,6 +1,7 @@
 import { ChatMessage } from "@/lib/models/ChatMessage";
 import { ChatRoom, ChatRoomType } from "@/lib/models/ChatRoom";
 import { NotificationType } from "@/lib/models/notification";
+import { Post, PostWithUserId } from "@/lib/models/post";
 import { Friend, User } from "@/lib/models/user";
 
 export const acceptFriendRequestOnServer = async (friendId: number) => {
@@ -89,9 +90,9 @@ export function checkIsBase64Image(str: string): boolean {
     }
 }
 
-export const fetchFriends = async (offset: number): Promise<Friend[]> => {
+export const fetchFriends = async (userId: number, offset: number): Promise<Friend[]> => {
     const recordPerPage = 6;
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/get/friends?offset=${offset}&recordPerPage=${recordPerPage}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/get/friends?userId=${userId}&offset=${offset}&recordPerPage=${recordPerPage}`, {
         credentials: 'include'
     });
     if(!response.ok) {
@@ -208,4 +209,15 @@ export const autoExpandInputHeight = (element: HTMLInputElement | HTMLTextAreaEl
     const newHeight = element.scrollHeight;
     element.style.height = `${Math.min(newHeight, maxHeight)}px`;
     element.style.overflowY = newHeight > maxHeight ? "auto" : "hidden";
+}
+
+export const fetchPostsByUserId = async (userId: number, offset: number, recordPerPage: number): Promise<PostWithUserId[]> => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/get/${userId}?offset=${offset}&recordPerPage=${recordPerPage}`, {
+        credentials: 'include'
+    });
+    if(!response.ok) {
+        throw new Error("Failed to fetch posts by user id");
+    }
+    const data = await response.json();
+    return data;
 }

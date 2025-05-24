@@ -1,17 +1,14 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Post, PostWithUser } from '@/lib/models/post';
+import { Post } from '@/lib/models/post';
 import dynamic from 'next/dynamic';
-import PostSkeleton from '../PostSkeleton/PostSkeleton';
-import { addPosts } from '@/redux/slices/postSlice';
+import PostSkeleton from '../components/PostSkeleton/PostSkeleton';
+import { addPosts, setPosts } from '@/redux/slices/postSlice';
 import { addToast } from '@/redux/slices/toastSlice';
 import { createSelector } from '@reduxjs/toolkit';
-import { User } from '@/lib/models/user';
-import { addUsers } from '@/redux/slices/userSlice';
 
 type Props = {
-    authorId?: number,
     postLink: string
 }
 const DynamicPost = dynamic(() => import("@/components/Post/Post"), { 
@@ -19,14 +16,11 @@ const DynamicPost = dynamic(() => import("@/components/Post/Post"), {
     ssr: false
 });
 
-const PostList = ({authorId, postLink} : Props) => {
+const PostList = ({postLink} : Props) => {
     const dispatch = useDispatch();
     const selectPostIds = createSelector(
         (state: any) => state.post,
-        (posts: PostWithUser[]) => {
-            return posts.filter(post => (authorId ? post.userId === authorId : true))
-            .map(post => post.id);
-        }
+        (posts: Post[]) => posts.map(post => post.id)
     );
     const postIds : number[] = useSelector(selectPostIds);
     const skeletonRef = useRef<HTMLDivElement>(null);
@@ -34,6 +28,10 @@ const PostList = ({authorId, postLink} : Props) => {
     const [isSkeletonVisible, setIsSkeletonVisible] = useState(false);
     const [isAllPostFetched, setIsAllPostsFetched] = useState(false);
     const [isFetchPostFailed, setIsFetchPostFailed] = useState(false);
+
+    useEffect(() => {
+        dispatch(setPosts([]));
+    }, [])
 
     useEffect(() => {
         if(!skeletonRef.current) return;
@@ -56,37 +54,7 @@ const PostList = ({authorId, postLink} : Props) => {
             setTimeout(() => {
                 fetchPostsFromServer()
                 .then(posts => {
-                    const postUsers : User[] = [];
-                    const postUserIdsSet = new Set<number>();
-                    const postsWithoutUser : Post[] = posts.map((post: PostWithUser) => {
-                        const postWithoutUser : any = {
-                            id: post.id,
-                            title: post.title,
-                            content: post.content,
-                            likeCount: post.likeCount,
-                            commentCount: post.commentCount,
-                            comments: post.comments,
-                            liked: post.liked,
-                            isNew: post.isNew,
-                            create_at: post.create_at
-                        }
-
-                        if(authorId) {
-                            postWithoutUser.userId = authorId;
-                        } else {
-                            if(!post.user) throw new Error("Author id doesn't provided and server doesn't return post with user data");
-                            postWithoutUser.userId = post.user.id;
-                            if(post.user && !postUserIdsSet.has(post.user.id)) {
-                                postUsers.push(post.user);
-                                postUserIdsSet.add(post.user.id);
-                            }
-                        }
-
-                        return postWithoutUser as Post;
-                    })
-                    .filter((post : Post) => post !== null);
-                    dispatch(addPosts(postsWithoutUser));
-                    dispatch(addUsers(postUsers));
+                    dispatch(addPosts(posts));
                     if(posts.length < 6) setIsAllPostsFetched(true);
                 })
                 .catch(error => {

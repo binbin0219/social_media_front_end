@@ -20,7 +20,7 @@ export type User = {
     avatar?: string | null;
     coverUrl?: string;
     friendship?: Friendship;
-    unseenNotificationCount? : number;
+    newNotificationCount? : number;
     seenNotificationCount? : number;
     unreadChatMessageCount: number;
 } | null

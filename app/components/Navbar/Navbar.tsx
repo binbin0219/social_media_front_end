@@ -7,15 +7,17 @@ import { RootState } from '@/redux/store';
 import NotificationDropdown from './NotificationDropdown';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconLogout, IconSettings, IconUserScan } from '@tabler/icons-react';
 import FriendListDropdown from './FriendListDropdown';
 import ChatWindow from './ChatWindow/ChatWindow';
 import SearchBar from './SearchBar';
+import UserProfileLink from '../Link/UserProfileLink';
 
 export const Navbar = () => {
     const router = useRouter();
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const isSettingRoute = usePathname().startsWith('/settings');
+    const isUserProfileRoute = usePathname().startsWith(`/user/profile/${currentUser!.id}`);
     const notificationIcons = {
         "like": 
         `
@@ -251,18 +253,12 @@ export const Navbar = () => {
                     <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px]"></div>
                     <div className="dropdown-menu">
                         <ul className="dropdown-content">
-                            <li onClick={() => window.location.href = `/user/${currentUser && currentUser.user_id}`} className="dropdown-item flex items-center gap-2 <%= routeName === 'currentUser.profile' && currentUser.user_id === profile_user.user_id ? 'active' : '' %>">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-scan">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M10 9a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                                    <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
-                                    <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                                    <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
-                                    <path d="M8 16a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2" />
-                                </svg>
-                                Profile
-                            </li>
+                            <UserProfileLink userId={currentUser!.id}>
+                                <li className={`dropdown-item flex items-center gap-2 ${isUserProfileRoute ? 'active' : ''}`}>
+                                    <IconUserScan/>
+                                    Profile
+                                </li>
+                            </UserProfileLink>
                             <li
                             onClick={() => router.push('/settings')}
                             className={`dropdown-item flex items-center gap-2 ${isSettingRoute ? 'active' : ''}`}

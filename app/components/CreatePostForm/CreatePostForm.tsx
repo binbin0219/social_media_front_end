@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addPost } from '@/redux/slices/postSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
+import UserProfileLink from '../Link/UserProfileLink'
 
 
 const CreatePostForm = () => {
@@ -66,9 +67,11 @@ const CreatePostForm = () => {
     return (
         <form id="create_post_form" onSubmit={handleSubmit} className={`create-post ${isFormOpen ? 'h-[475px]' : 'h-[105px]'} overflow-y-hidden relative`} action="/api/post/create" method="post" style={{transition: "all .3s linear"}}>
             <div className="flex gap-4 items-center mb-6 w-full cursor-pointer">
-                <UserIcon userId={currentUser && currentUser.id} userAvatar={ currentUser && currentUser.avatar} />
+                <UserIcon userId={currentUser!.id} userAvatar={ currentUser!.avatar } />
                 <div className="flex flex-col">
-                    <h4 onClick={() => window.location.href='/user/profile/<%= user.user_id %>'} className="font-bold hover:underline">Welcome! {currentUser && currentUser.username}</h4>
+                    <UserProfileLink userId={currentUser!.id}>
+                        <h4 className="font-bold hover:underline">Welcome! {currentUser && currentUser.username}</h4>
+                    </UserProfileLink>
                     <h6 className="text-sm">Have something to share?</h6>
                 </div>
             </div>

@@ -49,6 +49,18 @@ const chatSlice = createSlice({
             const newChatRooms = action.payload.filter(chatRoom => !existingChatRoomIds.has(chatRoom.id));
             state.chatRooms.push(...newChatRooms);
         },
+        addPrivateChat: (state, action: PayloadAction<ChatRoom>) => {
+            const chatRoom = action.payload;
+            const memberId1 = chatRoom.members[0].userId;
+            const memberId2 = chatRoom.members[1].userId;
+            const duplicatedIndex = findPrivateChatIndexByMemberIds(state.chatRooms, memberId1, memberId2);
+
+            if (duplicatedIndex !== -1) {
+                state.chatRooms[duplicatedIndex] = chatRoom;
+            } else {
+                state.chatRooms.push(chatRoom);
+            }
+        },
         addMessages: (state, action: PayloadAction<{
             chatRoomId: string,
             chatMessages: ChatMessage[]
@@ -103,7 +115,6 @@ const chatSlice = createSlice({
             const secondMemberId = newPrivateChat.members[1].userId;
             const tempPrivateChatIndex = findPrivateChatIndexByMemberIds(state.chatRooms, firstMemberId, secondMemberId);
 
-            console.log(tempPrivateChatIndex);
             if (tempPrivateChatIndex !== -1) {
                 const isTempChatActive = state.actvieChatRoomId === state.chatRooms[tempPrivateChatIndex].id;
                 if(isTempChatActive) {
@@ -119,7 +130,16 @@ const chatSlice = createSlice({
     }
 });
 
-export const { setIsChatOpen, setActiveChatRoomId, setChatRooms, addChatRooms, addMessages, sendMessage, initPrivateChat } = chatSlice.actions;
+export const { 
+    setIsChatOpen, 
+    setActiveChatRoomId, 
+    setChatRooms, 
+    addChatRooms, 
+    addMessages, 
+    sendMessage, 
+    initPrivateChat,
+    addPrivateChat
+} = chatSlice.actions;
 export default chatSlice.reducer
 
 function findPrivateChatIndexByMemberIds(chatRooms: ChatRoom[], firstTargetMemberId: number, secondTargetMemberId: number) {

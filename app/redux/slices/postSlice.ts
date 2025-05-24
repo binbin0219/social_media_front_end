@@ -58,9 +58,25 @@ const postSlice = createSlice({
                 post.comments.push(...newComments);
             }
         },
+        incrementLikeCount: (state, action: PayloadAction<{
+            postId: number
+        }>) => {
+            const post = state.find(post => post.id === action.payload.postId);
+            if (post) {
+                post.likeCount++;
+            }
+        },
+        decrementLikeCount: (state, action: PayloadAction<{
+            postId: number
+        }>) => {
+            const post = state.find(post => post.id === action.payload.postId && post.likeCount > 0);
+            if (post) {
+                post.likeCount--;
+            }
+        },
         setPosts: (state, action: PayloadAction<PostWithUser[]>) => action.payload
     },
 });
 
-export const { addPost, addPosts, deletePost, setPosts, addComments, createComment, updatePost } = postSlice.actions;
+export const { addPost, addPosts, deletePost, setPosts, addComments, createComment, updatePost, incrementLikeCount, decrementLikeCount } = postSlice.actions;
 export default postSlice.reducer;

@@ -11,9 +11,18 @@ export type Post = {
     comments: Array<PostComment>;
     isNew?: boolean;
     liked: boolean;
-    userId: number;
+    user: User;
 }
 
-export type PostWithUser = Post & {
-    user: User;
-};
+export type PostWithUserId = {
+    id: number;
+    title: string;
+    content: string;
+    create_at: string;
+    commentCount: number;
+    likeCount: number;
+    comments: Array<PostComment>;
+    isNew?: boolean;
+    liked: boolean;
+    userId: number;
+}

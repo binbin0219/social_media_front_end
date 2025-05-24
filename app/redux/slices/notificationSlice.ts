@@ -2,15 +2,15 @@ import { Notification } from '@/lib/models/notification';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface NotificationState {
-    seenNotificationCount: number,
-    unseenNotificationCount: number,
+    newNotificationCount: number,
     data: Record<number, Notification>;
+    isOpen: boolean;
 }
 
 export const initialState: NotificationState = {
-    seenNotificationCount: 0,
-    unseenNotificationCount: 0,
-    data: {}
+    newNotificationCount: 0,
+    data: {},
+    isOpen: false
 };
 
 const notificationSlice = createSlice({
@@ -19,6 +19,10 @@ const notificationSlice = createSlice({
     reducers: {
         addNotification: (state, action: PayloadAction<Notification>) => {
             state.data[action.payload.id] = action.payload;
+
+            if(!state.isOpen) {
+                state.newNotificationCount++;
+            }
         },
         addNotifications: (state, action: PayloadAction<Notification[]>) => {
             action.payload.forEach(notification => {
@@ -33,11 +37,6 @@ const notificationSlice = createSlice({
         deleteNotifWithCountById: (state, action: PayloadAction<number>) => {
             const notif = state.data[action.payload];
             if(notif) {
-                if(!notif.seen) {
-                    state.unseenNotificationCount--;
-                } else {
-                    state.seenNotificationCount--;
-                }
                 delete state.data[action.payload];
             }
         },
@@ -50,15 +49,24 @@ const notificationSlice = createSlice({
                 (notif) => notif.senderId === senderId && notif.recipientId === recipientId
             );
             if(notif) {
-                notif.seen ? state.seenNotificationCount-- : state.unseenNotificationCount--;
+                !state.isOpen && state.newNotificationCount--;
                 delete state.data[notif.id];
             }
         },
         decrementUnseenNotifCount: (state) => {
-            state.unseenNotificationCount--;
+            if(state.newNotificationCount > 0) {
+                state.newNotificationCount--;
+            }
+        },
+        setIsNotificationOpen: (state, action: PayloadAction<boolean>) => {
+            state.isOpen = action.payload;
+
+            if(state.isOpen) {
+                state.newNotificationCount = 0;
+            }
         }
     },
 });
 
-export const { addNotification, addNotifications, deleteNotification, deleteNotifWithCountById, deleteFriendRequestNotifWithCount, decrementUnseenNotifCount } = notificationSlice.actions;
+export const { addNotification, addNotifications, deleteNotification, deleteNotifWithCountById, deleteFriendRequestNotifWithCount, decrementUnseenNotifCount, setIsNotificationOpen } = notificationSlice.actions;
 export default notificationSlice.reducer;

@@ -1,8 +1,8 @@
 "use client"
-import React, { memo, RefObject, useEffect, useMemo, useRef, useState } from 'react'
+import React, { memo, RefObject, useRef, useState } from 'react'
 import UserIcon from '../UserIcon/UserIcon'
 import type { Post } from '@/lib/models/post'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import './style.css';
 import { addToast } from '@/redux/slices/toastSlice'
 import PostCommentSection from '../PostCommentSection/PostCommentSection'
@@ -10,25 +10,24 @@ import { User } from '@/lib/models/user'
 import { RootState } from '@/redux/store'
 import { deletePost, updatePost } from '@/redux/slices/postSlice'
 import { useRouter } from 'next/navigation'
+import { useSubcribeLikeWebSocket } from '@/hooks/useSubcribeLikeWebSocket'
 
 type Props = {
     postId: number,
 }
 
-const Post = memo(({ postId }: Props) => {
-    console.log('post rendered')
+const Post = memo(({ postId: postId }: Props) => {
+    useSubcribeLikeWebSocket(postId);
     const router = useRouter();
     const dispatch = useDispatch();
     const likeBtnRef = useRef<HTMLButtonElement>(null);
     const currentUser : User = useSelector((state: RootState) => state.currentUser);
     const post : Post = useSelector((state: any) => state.post.find((post: Post) => post.id === postId));
-    const isCurrentUserAuthor = currentUser?.id === post.userId;
-    const author = isCurrentUserAuthor ? currentUser 
-        : useSelector((state: RootState) => state.user.find((user: User) => user?.id == post.userId), shallowEqual);
+    const isCurrentUserAuthor = currentUser?.id === post.user?.id;
+    const author = post.user;
     const [commentExpanded, setCommentExpanded] = useState(false);
     const [likeState, setLikeState] = useState({
         liked: post.liked,
-        count: post.likeCount
     })
 
     const sendLikeToServer = async () => {
@@ -85,7 +84,6 @@ const Post = memo(({ postId }: Props) => {
             disableBtnFor1s(likeBtnRef);
             await sendLikeToServer();
             setLikeState(prevState => ({
-                count: prevState.liked ? prevState.count - 1 : prevState.count + 1,
                 liked: !prevState.liked
             }));
         } catch (error) {
@@ -171,8 +169,6 @@ const Post = memo(({ postId }: Props) => {
         )
     }
 
-    const memorizedPostId = useMemo(() => postId, [postId])
-
     return (
         <div className={`post w-full rounded-lg p-3 flex flex-col gap-2 border rounded-lg bg-white ${post.isNew ? 'post-new' : ''}`}
         data-liked={likeState.liked}
@@ -212,7 +208,7 @@ const Post = memo(({ postId }: Props) => {
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
                         </svg>
-                        <p className="like-count">{likeState.count}</p>
+                        <p className="like-count">{post.likeCount}</p>
                     </button>
                     <button 
                         onClick={() => commentExpandOnclickHandler()}
@@ -257,7 +253,7 @@ const Post = memo(({ postId }: Props) => {
                     </>
                     : null}
                 </div>
-                <PostCommentSection postId={memorizedPostId}/>
+                <PostCommentSection postId={post.id}/>
             </div>
         </div>
     )

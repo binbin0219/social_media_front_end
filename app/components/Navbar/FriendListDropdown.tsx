@@ -6,17 +6,21 @@ import DataLoader from '../DataLoader/DataLoader'
 import { Friend } from '@/lib/models/user'
 import UserIcon from '../UserIcon/UserIcon'
 import { fetchFriends } from '@/main'
+import UserProfileLink from '../Link/UserProfileLink'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 
 const FriendListDropdown = () => {
     const noDataRef = useRef<HTMLLIElement>(null);
+    const currentUserId = useSelector((state: RootState) => state.currentUser!.id);
     const [isAllDataFetched, setIsAllDataFetched] = useState(false);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [isOpen , setIsOpen] = useState(false);
 
     const handleDataLoaderVisible = async () => {
         setTimeout(async () => {
-            const fetchedFriends = await fetchFriends(friends.length);
+            const fetchedFriends = await fetchFriends(currentUserId, friends.length);
             setFriends((prev) => [...prev, ...fetchedFriends]);
             setIsAllDataFetched(fetchedFriends.length < 6);
         }, 500);
@@ -35,10 +39,12 @@ const FriendListDropdown = () => {
             <ul className="dropdown-content relative max-h-[400px] overflow-y-auto" style={{minWidth: "250px"}}>
                 <h5 className="font-semibold">Friends</h5>
                 {friends.map(friend => (
-                    <div key={friend.id} className='dropdown-item flex gap-2 items-center'>
-                        <UserIcon userAvatar={friend.avatar} userId={friend.id}/>
-                        {friend.username}
-                    </div>
+                    <UserProfileLink key={friend.id} userId={friend.id}>
+                        <div className='dropdown-item flex gap-2 items-center'>
+                            <UserIcon userAvatar={friend.avatar} userId={friend.id}/>
+                            {friend.username}
+                        </div>
+                    </UserProfileLink>
                 ))}
                 {isAllDataFetched && friends.length === 0 && (
                     <li ref={noDataRef} className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>

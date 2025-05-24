@@ -28,7 +28,7 @@
     }
 
     #posts_section {
-        display: block;
+        display: flex;
     }
 }
 #userProfilePage[data-section="about"] {
