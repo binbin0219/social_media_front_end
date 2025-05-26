@@ -14,74 +14,69 @@ import FileViewer from "@/components/FileViewer/FileViewer";
 import { WebSocketProvider } from "@/context/WebSocketContext";
 
 export default async function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  
-  const cookieName = 'jwtToken';
-  const cookieStore = cookies();
-  const jwtCookie = (await cookieStore).get(cookieName);
-  // const initialPosts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/get?offset=0&recordPerPage=6`, {
-  //     method: 'GET',
-  //     headers: {
-  //         Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
-  //     },
-  //     credentials: 'include'
-  // })
-  // .then( res => {
-  //     if(!res.ok) return [];
-  //     return res.json();
-  // })
+	let authUserData: User | null = null;
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-    // cache: "force-cache",
-    cache: "no-cache",
-    method: "GET",
-    headers: {
-      Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
-    },
-    credentials: "include",
-  });
+	try {
+		const cookieName = 'jwtToken';
+		const cookieStore = cookies();
+		const jwtCookie = (await cookieStore).get(cookieName);
 
-  if (!response.ok) {
-      redirect('/login');
-  };
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+			// cache: "force-cache",
+			cache: "no-cache",
+			method: "GET",
+			headers: {
+				Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
+			},
+			credentials: "include",
+		});
 
-  const authUserData: User = await response.json();
+		if (!response.ok) {
+			throw new Error();
+		};
 
-  return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-        <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"></link>
-        <Script id="global-script" strategy="beforeInteractive" src="/global.js"></Script>
-      </head>
-      <Suspense fallback={<Loading />}> 
-        <body
-          className={`antialiased`}
-          style={{ backgroundColor: "#dbdbdb7a" }}
-        >
-          <WebSocketProvider>
-            <StoreProvider 
-              currentUser={authUserData} 
-              notifications={{
-                ...notificationsInitialState,
-                newNotificationCount: authUserData?.newNotificationCount ?? 0,
-              }}
-              initialPosts={[]}
-              allUnreadMessagesCount={authUserData!.unreadChatMessageCount}
-            >
-                  <Navbar />
-                  <ConfirmationDialog />
-                  <ToastContainer />
-                  <FileViewer/>
-                  {children}
-            </StoreProvider>
-          </WebSocketProvider>
-        </body>
-      </Suspense>
-    </html>
-  );
+		authUserData = await response.json();
+	} catch (e) {
+		console.log("Failed to authenticate user");
+		redirect('/login');
+	}
+
+	return (
+		<html lang="en">
+			<head>
+				<link rel="preconnect" href="https://fonts.googleapis.com"></link>
+				<link rel="preconnect" href="https://fonts.gstatic.com"></link>
+				<link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"></link>
+				<Script id="global-script" strategy="beforeInteractive" src="/global.js"></Script>
+			</head>
+			<Suspense fallback={<Loading />}> 
+				<body
+					className={`antialiased`}
+					style={{ backgroundColor: "#dbdbdb7a" }}
+				>
+					<WebSocketProvider>
+						<StoreProvider 
+							currentUser={authUserData} 
+							notifications={{
+								...notificationsInitialState,
+								newNotificationCount: authUserData?.newNotificationCount ?? 0,
+							}}
+							initialPosts={[]}
+							allUnreadMessagesCount={authUserData!.unreadChatMessageCount}
+						>
+							<Navbar />
+							<ConfirmationDialog />
+							<ToastContainer />
+							<FileViewer/>
+							{children}
+						</StoreProvider>
+					</WebSocketProvider>
+				</body>
+			</Suspense>
+		</html>
+	);
 }

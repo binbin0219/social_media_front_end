@@ -12,6 +12,7 @@ import FriendListDropdown from './FriendListDropdown';
 import ChatWindow from './ChatWindow/ChatWindow';
 import SearchBar from './SearchBar';
 import UserProfileLink from '../Link/UserProfileLink';
+import ChatWindowTrigger from './ChatWindowTrigger';
 
 export const Navbar = () => {
     const router = useRouter();
@@ -241,15 +242,13 @@ export const Navbar = () => {
     <div className="bar">
         <div className="max-w-[1400px] w-full mx-auto flex items-center justify-between">
             <Link href={"/"} className="ms-7 text-[35px] me-[20px] text-indigo-600 cursor-pointer hover:text-indigo-500" style={{fontFamily: "fugaz one"}}>Blogify</Link>
-            <div className="w-[300px] relative">
-            </div>
             <div className="flex gap-3 items-center me-2">
                 <SearchBar/>
                 <FriendListDropdown/>
                 <ChatWindow/>
                 <NotificationDropdown />
                 <div className="dropdown hover">
-                    <UserIcon userId={currentUser && currentUser.id} userAvatar={currentUser && currentUser.avatar} />
+                    <UserIcon userId={currentUser!.id} userAvatar={currentUser!.avatar} navigateToUserProfile={false} />
                     <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px]"></div>
                     <div className="dropdown-menu">
                         <ul className="dropdown-content">

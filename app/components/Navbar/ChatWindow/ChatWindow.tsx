@@ -1,5 +1,4 @@
 "use client"
-import Dropdown from '@/components/Dropdown/Dropdown'
 import { IconMessageChatbot, IconMessageCircleFilled } from '@tabler/icons-react'
 import React, { useEffect } from 'react'
 import ChatRoom from './ChatRoom'
@@ -9,12 +8,14 @@ import { initPrivateChat, sendMessage, setIsChatOpen } from '@/redux/slices/chat
 import UnreadMessageCounter from './unreadMessageCounter'
 import { useWebSocket } from '@/context/WebSocketContext'
 import ChatMenu from './ChatMenu'
+import styles from './styles.module.css'
 
 const ChatWindow = () => {
     const dispatch = useDispatch();
     const { client, connected } = useWebSocket();
     const currentUserId = useSelector((state: RootState) => state.currentUser?.id)!;
     const chatState = useSelector((state: RootState) => state.chat);
+    const mobileSection = chatState.actvieChatRoomId === null ? "menu" : "chat";
 
     useEffect(() => {
         if(connected && client) {
@@ -86,24 +87,17 @@ const ChatWindow = () => {
 
     return (
         <div className='relative'>
-            <Dropdown
-                isOpen={chatState.isOpen}
-                setIsOpen={(isOpen: boolean) => dispatch(setIsChatOpen(isOpen))}
-                toggleButton={(
-                    <button className=''>
-                        <UnreadMessageCounter/>
-                        <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
-                    </button>
-                )}
-            >
-                <div className='flex h-[600px]'>
-                    <ChatMenu/>
-                    <div className='w-[500px]'>
-                        {chatState.actvieChatRoomId && <ChatRoom actvieChatRoomId={chatState.actvieChatRoomId} />}
-                        {!chatState.actvieChatRoomId && <InitialChatUi/>}
-                    </div>
+            <button onClick={() => dispatch(setIsChatOpen(!chatState.isOpen))} className=''>
+                <UnreadMessageCounter/>
+                <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
+            </button>
+            <div data-mobile-section={mobileSection} className={`${styles['chat-window']} ${chatState.isOpen && styles['show']}`}>
+                <ChatMenu/>
+                <div className={`${styles['chat-window__chat']}`}>
+                    {chatState.actvieChatRoomId && <ChatRoom actvieChatRoomId={chatState.actvieChatRoomId} />}
+                    {!chatState.actvieChatRoomId && <InitialChatUi/>}
                 </div>
-            </Dropdown>
+            </div>
         </div>
     )
 }

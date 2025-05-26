@@ -30,7 +30,13 @@ const chatSlice = createSlice({
             }
         },
         setActiveChatRoomId: (state, action: PayloadAction<string | null>) => {
-            const chatRoom = state.chatRooms.find(chatRoom => chatRoom.id === action.payload);
+            const actionChatRoomId = action.payload;
+            if(actionChatRoomId === null) {
+                state.actvieChatRoomId = null;
+                return;
+            }
+
+            const chatRoom = state.chatRooms.find(chatRoom => chatRoom.id === actionChatRoomId);
             if(chatRoom) {
                 state.allUnreadCount -= chatRoom.unreadCount;
                 if(state.allUnreadCount < 0) {
@@ -38,7 +44,7 @@ const chatSlice = createSlice({
                 }
 
                 chatRoom.unreadCount = 0;
-                state.actvieChatRoomId = action.payload;
+                state.actvieChatRoomId = actionChatRoomId;
             }
         },
         setChatRooms: (state, action: PayloadAction<ChatRoom[]>) => {

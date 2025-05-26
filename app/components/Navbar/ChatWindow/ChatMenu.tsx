@@ -3,8 +3,9 @@ import React, { useRef, useState } from 'react'
 import ChatRoomList from './ChatRoomList'
 import UserLazyLoadList from '@/components/UserLazyLoadList/UserLazyLoadList';
 import { useDispatch } from 'react-redux';
-import { addChatRooms, addPrivateChat, setActiveChatRoomId } from '@/redux/slices/chatSlice';
+import { addPrivateChat, setActiveChatRoomId, setIsChatOpen } from '@/redux/slices/chatSlice';
 import { fetchPrivateChatRoom } from '@/main';
+import styles from './styles.module.css'
 
 const ChatMenu = () => {
     const dispatch = useDispatch();
@@ -36,14 +37,19 @@ const ChatMenu = () => {
     }
 
     return (
-        <div className='flex flex-col border-e-2 gap-2' style={{width: '240px'}}>
+        <div className={`${styles['chat-window__menu']}`}>
             <div className={`flex flex-col gap-2 ${isNewChatSearchOpen && 'hidden'}`}>
                 <div className='flex items-center justify-between pe-3'>
                     {/* <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300 me-2' strokeWidth={2} width={35} height={35}/> */}
                     <h1 className='font-bold text-2xl text-center'>Chats</h1>
-                    <button onClick={() => setIsNewChatSearchOpen(true)} className='hover:opacity-50 cursor-pointer transition-opacity duration-300'>
-                        <IconMessagePlus color='black'/>
-                    </button>
+                    <div className='flex gap-4'>
+                        <button onClick={() => setIsNewChatSearchOpen(true)} className='hover:opacity-50 cursor-pointer transition-opacity duration-300'>
+                            <IconMessagePlus color='black'/>
+                        </button>
+                        <button className={`${styles['close']}`} onClick={() => dispatch(setIsChatOpen(false))}>
+                            <IconX/>
+                        </button>
+                    </div>
                 </div>
                 <div className='flex flex-col flex-1 gap-2 pe-2'>
                     <ChatRoomList/>

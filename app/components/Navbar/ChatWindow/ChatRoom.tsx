@@ -3,12 +3,13 @@ import { ChatRoom as ChatRoomType, ChatRoomType as ChatRoomTypes } from '@/lib/m
 import { autoExpandInputHeight } from '@/main';
 import { addToast } from '@/redux/slices/toastSlice';
 import { RootState } from '@/redux/store';
-import { IconMoodSmile, IconSend } from '@tabler/icons-react';
+import { IconMoodSmile, IconSend, IconX } from '@tabler/icons-react';
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import ChatMessageList from './ChatMessageList';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { useWebSocket } from '@/context/WebSocketContext';
+import { setActiveChatRoomId } from '@/redux/slices/chatSlice';
 
 type Props = {
     actvieChatRoomId: string;
@@ -81,7 +82,7 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
 
     return (
         <div className='ps-3 py-1 pe-1 h-full flex flex-col'>
-            <div className='pb-4' style={{height: "10%"}}>
+            <div className='pb-4 flex justify-between items-start' style={{height: "10%"}}>
                 <h1 className='text-2xl font-bold'>
                 {chatRoom.members
                     .filter(member => member.userId !== currentUserId)
@@ -89,6 +90,9 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
                     .join(', ')
                 }
                 </h1>
+                <button type='button' onClick={() => dispatch(setActiveChatRoomId(null))}>
+                    <IconX/>
+                </button>
             </div>
             <ChatMessageList/>
             <div className='pt-3 relative'>

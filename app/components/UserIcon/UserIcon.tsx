@@ -1,14 +1,15 @@
 "use client"
-import React, { useEffect } from 'react'
+import React from 'react'
 
 type Props = {
     userId? : number,
     userAvatar?: string | null,
     width?: number | string;
     height?: number | string;
+    navigateToUserProfile?: boolean;
 }
 
-const UserIcon = ({userId, userAvatar, width = 45, height = 45} : Props) => {
+const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserProfile = true} : Props) => {
     const userAvatarSrc = userAvatar ? userAvatar : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
     const handleOnclick = () => {
         if (userId) {
@@ -19,7 +20,7 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45} : Props) => {
     }
     return (
         <img 
-        onClick={handleOnclick} 
+        onClick={navigateToUserProfile ? handleOnclick : () => {}} 
         style={{
             width: typeof width === 'string' ? width : `${width}px`,
             height: typeof height === 'string' ? height : `${height}px`

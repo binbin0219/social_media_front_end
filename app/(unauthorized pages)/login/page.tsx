@@ -7,33 +7,30 @@ const page = () => {
     const router = useRouter();
 
     const handleLogin = async (event : FormEvent) => {
-        event.preventDefault();
-        const target = event.target as HTMLFormElement;
-        // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/csrf`, { method: 'GET', credentials: 'include' });
-        // const cookies = document.cookie.split('; ');
-        // const csrfToken = cookies.find(cookie => cookie.startsWith('XSRF-TOKEN'))?.split('=')[1];
-        // if(!csrfToken) {
-        //     displayMessage("show");
-        //     return;
-        // };
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, { 
-            method: 'POST', 
-            headers: { 
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({ 
-                accountName: target.accountName.value, 
-                password: target.password.value
-            }) 
-        });
+        try {
+            event.preventDefault();
+            const target = event.target as HTMLFormElement;
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ 
+                    accountName: target.accountName.value, 
+                    password: target.password.value
+                }) 
+            });
 
-        if(!response.ok) {
-            displayMessage("show");
-            return;
+            if(!response.ok) {
+                displayMessage("show");
+                return;
+            }
+
+            router.push('/');
+        } catch (e) {
+            alert("Lost connection from server! please try again later.");
         }
-
-        router.push('/');
     }
     
     function displayMessage(action: string) {

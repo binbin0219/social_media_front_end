@@ -1,3 +1,83 @@
+.chat-window {
+    position: absolute;
+    inset-inline-end: 0;
+    background-color: white;
+    display: none;
+    border-radius: 0.25rem;
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem;
+    height: 600px;
+    width: 760px;
+    z-index: 1095;
+}
+
+.chat-window .chat-window__menu {
+    display: flex;
+    flex-direction: column;
+    border-inline-end-width: 2px;
+    gap: 0.5rem;
+    width: 35%;
+}
+
+.chat-window .chat-window__chat {
+    width: 65%;
+}
+
+.chat-window .close {
+    display: none;
+}
+
+@media (max-width: 875px) {
+    /* Show as full screen in mobile mode */
+    .chat-window {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        z-index: 1095;
+    }
+
+    .chat-window .chat-window__menu {
+        display: flex;
+        flex-direction: column;
+        border-inline-end-width: 0px;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .chat-window .chat-window__chat {
+        width: 100%;
+        padding-right: 10px;
+    }
+
+    .chat-window .close {
+        display: block;
+    }
+
+    /* Show only one section on mobile mode */
+    .chat-window .chat-window__menu {
+        display: none;
+    }
+    .chat-window .chat-window__chat {
+        display: none;
+    }
+    .chat-window[data-mobile-section="menu"] .chat-window__menu {
+        display: block;
+    }
+    .chat-window[data-mobile-section="chat"] .chat-window__chat {
+        display: block;
+    }
+}
+
+.chat-window.show {
+    display: flex;
+}
+
 .img-auto-grid[data-img-count="2"] {
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(2, 1fr);

@@ -30,7 +30,7 @@ const SearchBar = () => {
     }
 
     return (
-        <div className='relative w-[250px]'>
+        <div className='relative w-[250px] hidden sm:block'>
             <input 
             ref={searchInputRef} 
             onChange={(e) => handleSearchInput(e)} 
