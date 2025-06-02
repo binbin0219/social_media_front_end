@@ -9,6 +9,7 @@
     height: 600px;
     width: 760px;
     z-index: 1095;
+    top: 120%;
 }
 
 .chat-window .chat-window__menu {

@@ -3,8 +3,7 @@ export type Notification = {
     recipientId: number;
     senderId: number;
     senderAvatar: string;
-    senderFirstName: string;
-    senderLastName: string;
+    senderUsername: string;
     type: NotificationType;
     content: string;
     link: string;

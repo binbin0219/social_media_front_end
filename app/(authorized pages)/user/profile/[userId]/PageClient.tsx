@@ -107,7 +107,12 @@ const PageClient = ({profileUser} : Props) => {
                                 </div> 
                                 <div className="flex flex-col">
                                     <h4 className="font-bold">Name</h4>
-                                    <h6 className="text-sm">{profileUser?.firstName} {profileUser?.lastName}</h6>
+                                    {!profileUser?.firstName && !profileUser?.lastName ? (
+                                        <h6 className="text-sm">Unknown</h6>
+                                    )
+                                    : (
+                                        <h6 className="text-sm">{profileUser?.firstName} {profileUser?.lastName}</h6>
+                                    )}
                                 </div>
                             </div>
                             <div className="flex gap-3 w-[50%]">

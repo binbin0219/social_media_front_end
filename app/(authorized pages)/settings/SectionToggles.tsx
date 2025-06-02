@@ -24,7 +24,7 @@ const SectionToggles = () => {
                 <li>
                     <button type="button" 
                     className="
-                        text-left rounded-lg hover:bg-slate-100 font-medium p-3 cursor-not-allowed
+                        text-left rounded-lg hover:bg-slate-100 font-medium p-3 cursor-not-allowed line-through
                         md:w-[200px] 
                         w-full
                     ">
@@ -34,7 +34,7 @@ const SectionToggles = () => {
                 <li>
                     <button type="button" 
                     className="
-                        text-left rounded-lg hover:bg-slate-100 font-medium p-3 cursor-not-allowed
+                        text-left rounded-lg hover:bg-slate-100 font-medium p-3 cursor-not-allowed line-through
                         md:w-[200px] 
                         w-full
                     ">

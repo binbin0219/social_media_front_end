@@ -7,7 +7,7 @@ import { Friendship } from "./friendship";
 
 export type User = {
     id: number;
-    gender: string | null;
+    gender: Gender;
     username: string;
     firstName: string;
     lastName: string;
@@ -24,6 +24,8 @@ export type User = {
     seenNotificationCount? : number;
     unreadChatMessageCount: number;
 } | null
+
+export type Gender = "male" | "female"
 
 export type PhoneNumber = {
     countryISO2: string;

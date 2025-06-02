@@ -86,7 +86,7 @@ const ChatWindow = () => {
     }
 
     return (
-        <div className='relative'>
+        <div className='relative flex'>
             <button onClick={() => dispatch(setIsChatOpen(!chatState.isOpen))} className=''>
                 <UnreadMessageCounter/>
                 <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>

@@ -96,13 +96,13 @@ const Notification = ({notification} : Props) => {
 
     const content: Record<NotificationTypes, () => JSX.Element> = {
         "FRIEND_REQUEST": function () {
-            return <><b>{notification.senderFirstName} {notification.senderLastName}</b> sent you a friend request</>
+            return <><b>{notification.senderUsername}</b> sent you a friend request</>
         },
         "COMMENT": function () {
-            return <><b>{notification.senderFirstName} {notification.senderLastName}</b> commented on your post <b>{notification.content ?? ""}</b></>
+            return <><b>{notification.senderUsername}</b> commented on your post <b>{notification.content ?? ""}</b></>
         },
         "LIKE": function () {
-            return <><b>{notification.senderFirstName} {notification.senderLastName}</b> liked your post <b>{notification.content ?? ""}</b></>
+            return <><b>{notification.senderUsername}</b> liked your post <b>{notification.content ?? ""}</b></>
         },
     }
 

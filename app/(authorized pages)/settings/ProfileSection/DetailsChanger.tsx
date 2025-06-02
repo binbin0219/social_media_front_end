@@ -12,7 +12,6 @@ type Props = {
 }
 
 const DetailsChanger = ({user, updateUserData}: Props) => {
-    console.log(user)
     return (
         <div className="flex flex-col mt-8 gap-5">
             <div>
@@ -38,7 +37,7 @@ const DetailsChanger = ({user, updateUserData}: Props) => {
                     placeholder="First name"
                     type="text"
                     name="firstName"
-                    min={3}
+                    min={0}
                     max={20}
                     allowedTypes={['character', 'space']}
                     />
@@ -51,7 +50,7 @@ const DetailsChanger = ({user, updateUserData}: Props) => {
                     placeholder="Last name"
                     type="text"
                     name="lastName"
-                    min={3}
+                    min={0}
                     max={20}
                     allowedTypes={['character', 'space']}
                     />
