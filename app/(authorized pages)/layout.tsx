@@ -6,7 +6,7 @@ import Loading from "./loading";
 import ConfirmationDialog from "@/components/ConfirmationDialog/ConfirmationDialog";
 import StoreProvider from "@/context/ReduxContext";
 import ToastContainer from "@/components/ToastContainer/ToastContainer";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 // import { redirect } from "next/navigation";
 import { User } from "@/lib/models/user";
 import { initialState as notificationsInitialState } from "@/redux/slices/notificationSlice";
@@ -36,17 +36,17 @@ export default async function RootLayout({
 	let authUserData: User | null = null;
 
 	try {
-		const cookieName = 'jwtToken';
-		const cookieStore = cookies();
-		const jwtCookie = (await cookieStore).get(cookieName);
+		// const cookieName = 'jwtToken';
+		// const cookieStore = cookies();
+		// const jwtCookie = (await cookieStore).get(cookieName);
 
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
 			// cache: "force-cache",
-			cache: "no-cache",
+			// cache: "no-cache",
 			method: "GET",
-			headers: {
-				Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
-			},
+			// headers: {
+			// 	Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
+			// },
 			credentials: "include",
 		});
 
@@ -78,7 +78,7 @@ export default async function RootLayout({
 								newNotificationCount: authUserData?.newNotificationCount ?? 0,
 							}}
 							initialPosts={[]}
-							allUnreadMessagesCount={authUserData!.unreadChatMessageCount}
+							allUnreadMessagesCount={authUserData?.unreadChatMessageCount ?? 0}
 						>
 							<Navbar />
 							<ConfirmationDialog />
