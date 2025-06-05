@@ -1,6 +1,6 @@
 "use client"
 import { addToast } from '@/redux/slices/toastSlice';
-import React, { memo, RefObject, useEffect, useRef, useState } from 'react'
+import React, { memo, RefObject, useRef, useState } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PostComment from '../PostComment/PostComment';
 import { Post } from '@/lib/models/post';
@@ -10,6 +10,7 @@ import PostCommentSkeleton from '../PostCommentSkeleton/PostCommentSkeleton';
 import { autoExpandInputHeight } from '@/main';
 import DataLoader from '../DataLoader/DataLoader';
 import { useSubcribeCommentWebSocket } from '@/hooks/useSubcribeCommentWebSocket';
+import { PostComment as PostCommentType } from '@/lib/models/comment';
 
 type Props = {
     postId: number,
@@ -22,8 +23,8 @@ const PostCommentSection = memo(({postId}: Props) => {
     const commentListRef = useRef<HTMLDivElement>(null);
     const [isAllCommentsFetched, setIsAllCommentsFetched] = useState(false);
     const dispatch = useDispatch();
-    const commentIds : Number[] = useSelector(
-        (state: RootState) => state.post.find((post: Post) => post.id === postId)?.comments.map(comment => comment.id) || [],
+    const commentIds : number[] = useSelector(
+        (state: RootState) => state.post.find((post: Post) => post.id === postId)?.comments.map((comment: PostCommentType) => comment.id) || [],
         shallowEqual
     );
     const [commentState, setCommentState] = useState<{
@@ -46,7 +47,10 @@ const PostCommentSection = memo(({postId}: Props) => {
                         }
                         return res.json();
                     })
-                    .then((data: any) => {
+                    .then((data: {
+                        isAllFetched: boolean;
+                        comments: PostCommentType[]
+                    }) => {
                         setIsAllCommentsFetched(data.isAllFetched);
                         dispatch(addComments({
                             postId,
@@ -89,8 +93,7 @@ const PostCommentSection = memo(({postId}: Props) => {
     const handleCommentSent = async () => {
         try {
             if(!checkIsCommentSentable(commentState.commentingContent)) return;
-            const comment = await sendCommentToServer(commentState.commentingContent);
-            setCommentState(prevState => ({
+            setCommentState(() => ({
                 commentingContent: "",
             }));
             dispatch(addToast({
@@ -107,7 +110,7 @@ const PostCommentSection = memo(({postId}: Props) => {
         }
     }
 
-    const checkIsCommentSentable = (content : String) : Boolean => {
+    const checkIsCommentSentable = (content : string) : boolean => {
         let isSentable = true;
         const isEmpty = content.trim() === "";
         if(isEmpty) {
@@ -127,28 +130,11 @@ const PostCommentSection = memo(({postId}: Props) => {
         autoExpandInputHeight(event.target, 200);
     }
 
-    const sendCommentToServer = async (comment: String) => {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                post_id: postId,
-                content: comment
-            })
-        });
-        if(!res.ok) throw new Error('Failed to send comment to server');
-        const data = await res.json();
-        const uploadedComment = data.comment;
-        return uploadedComment;
-    }
     return (
         <div className="post-comment-section mt-1">
             <h5 className="font-bold mb-2">Comments</h5>
             <div ref={commentListRef} className="comment-list w-full mb-3 flex flex-col gap-5 overflow-y-auto max-h-[400px]">
-                {isAllCommentsFetched && commentIds.length === 0 ? <NoCommentYet /> : commentIds.map((commentId: Number) => {
+                {isAllCommentsFetched && commentIds.length === 0 ? <NoCommentYet /> : commentIds.map((commentId: number) => {
                     return <PostComment key={commentId.valueOf()} commentId={commentId} postId={postId}/>
                 }) }
                 {isAllCommentsFetched && commentIds.length !== 0 ? <p className='text-center mt-2 font-bold text-gray-500'>No more comments</p> : null}
@@ -172,4 +158,5 @@ const PostCommentSection = memo(({postId}: Props) => {
     )
 });
 
+PostCommentSection.displayName = 'PostCommentSection';
 export default PostCommentSection

@@ -9,6 +9,7 @@ import { fetchChatMessages } from '@/main'
 import { addMessages, setActiveChatRoomId } from '@/redux/slices/chatSlice'
 import styles from './styles.module.css';
 import { addToast } from '@/redux/slices/toastSlice'
+import Image from 'next/image'
 
 const ChatMessageList = () => {
     const dispatch = useDispatch();
@@ -22,16 +23,8 @@ const ChatMessageList = () => {
     const isAllMessageFetched = allMessageFetchedRoom.includes(chatRoom.id);
     const isPrivateRoom = chatRoom?.type === ChatRoomType.PRIVATE ? true : false;
 
-    if(!chatRoom) {
-        dispatch(setActiveChatRoomId(null));
-        dispatch(addToast({
-            message: "Failed to open chat",
-            type: 'error'
-        }));
-        return;
-    };
-
     useEffect(() => {
+        if(!chatRoom) return;
         const container = messageListRef.current;
         if (!container || !chatRoom.messages) return;
     
@@ -46,8 +39,16 @@ const ChatMessageList = () => {
             lastestMessageRef.current = currentLastestMessage;
         }
 
-    }, [chatRoom.messages]);
-    
+    }, [chatRoom, chatRoom.messages]);
+
+    if(!chatRoom) {
+        dispatch(setActiveChatRoomId(null));
+        dispatch(addToast({
+            message: "Failed to open chat",
+            type: 'error'
+        }));
+        return;
+    };
 
     const handleDataLoaderVisible = async () => {
         setTimeout(async () => {
@@ -101,7 +102,8 @@ const ChatMessageList = () => {
                         <div data-img-count={message.attachments.length} className={`max-w-full grid gap-1 ${styles['img-auto-grid']}`}>
                             {message.attachments.map((attachment, index) => (
                                 <div key={index} className='flex items-center row-span-2 mb-2'>
-                                    <img 
+                                    <Image
+                                    alt='Chat attachment' 
                                     className='rounded hover:opacity-60 cursor-pointer'
                                     src={attachment.link}
                                     />
@@ -151,7 +153,7 @@ const ChatMessageList = () => {
             )}
             {chatRoom.messages && chatRoom.messages.map((message, index) => {
                 const amISender = message.senderId === currentUserId;
-                const lastCreateAt = index !== 0 ? new Date(chatRoom.messages[index - 1].createAt.split('T')[0]) : null;
+                const lastCreateAt = index !== 0 ? new Date(chatRoom.messages![index - 1].createAt.split('T')[0]) : null;
                 const createAt = new Date(message.createAt.split('T')[0]);
 
                 return (

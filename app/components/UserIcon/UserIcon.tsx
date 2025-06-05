@@ -1,4 +1,5 @@
 "use client"
+import Image from 'next/image';
 import React from 'react'
 
 type Props = {
@@ -19,7 +20,7 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserPr
         }
     }
     return (
-        <img 
+        <Image 
         onClick={navigateToUserProfile ? handleOnclick : () => {}} 
         style={{
             width: typeof width === 'string' ? width : `${width}px`,

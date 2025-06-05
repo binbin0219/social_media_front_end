@@ -1,17 +1,15 @@
 import UserIcon from '@/components/UserIcon/UserIcon'
-import { User } from '@/lib/models/user';
 import { addToast } from '@/redux/slices/toastSlice';
 import { RootState } from '@/redux/store';
-import { generateCurrentTime } from '@/utils/helpers';
 import { IconArrowsShuffle, IconUpload } from '@tabler/icons-react'
 import Croppie from 'croppie';
 import "croppie/croppie.css";
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 type Props = {
     avatar: string;
-    updateUserData: <K extends keyof User>(field: K, value: User[K]) => void;
+    updateUserData: (field: string, value: unknown) => void;
 }
 
 const AvatarChanger = ({avatar, updateUserData} : Props) => {
@@ -52,7 +50,7 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
         )
 
         const avatarCroppieContainer = document.querySelector('#avatar_croppie') as HTMLDivElement;
-        let avatarCroppie = initializeAvatarCroppie(avatarCroppieContainer);
+        const avatarCroppie = initializeAvatarCroppie(avatarCroppieContainer);
     };
 
     const initializeAvatarCroppie = (element: HTMLElement): Croppie => {

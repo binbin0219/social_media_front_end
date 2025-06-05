@@ -7,7 +7,7 @@ import { decrementUnseenNotifCount, deleteNotifWithCountById } from '@/redux/sli
 import { addToast } from '@/redux/slices/toastSlice'
 import { updateFriendship } from '@/redux/slices/userSlice'
 import { RootState } from '@/redux/store'
-import { IconUserCheck, IconUserExclamation, IconUserPause } from '@tabler/icons-react'
+import { IconUserCheck, IconUserExclamation } from '@tabler/icons-react'
 import React, { memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -310,4 +310,5 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
     )
 });
 
+FriendshipStatus.displayName = 'FriendshipStatus';
 export default FriendshipStatus

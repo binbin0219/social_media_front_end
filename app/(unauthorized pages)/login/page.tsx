@@ -1,9 +1,9 @@
 "use client"
-import React, { FormEvent, use, useEffect } from 'react'
+import React, { FormEvent, useEffect } from 'react'
 import './login.css'
 import { useRouter } from 'next/navigation'
 
-const page = () => {
+const Page = () => {
     const router = useRouter();
 
     const handleLogin = async (event : FormEvent) => {
@@ -29,28 +29,35 @@ const page = () => {
 
             router.push('/');
         } catch (e) {
+            console.log(e);
             alert("Lost connection from server! please try again later.");
         }
     }
     
-    function displayMessage(action: string) {
-        var messageDisplayer = document.querySelectorAll(".incorrectEmailOrPassword");
-        for (var i = 0; i < messageDisplayer.length; i++) {
-            
-            action === "show" ? messageDisplayer[i].classList.remove("hidden") : messageDisplayer[i].classList.add("hidden");
-        }
-    }
+    const displayMessage = (action: string) => {
+        const messageDisplayer = document.querySelectorAll(".incorrectEmailOrPassword");
 
-    function inputIconAnimation() {
+        for (let i = 0; i < messageDisplayer.length; i++) {
+            if (action === "show") {
+            messageDisplayer[i].classList.remove("hidden");
+            } else {
+            messageDisplayer[i].classList.add("hidden");
+            }
+        }
+    };
+
+    const inputIconAnimation = () => {
         document.querySelectorAll(".InputFields input").forEach(InputField => {
             InputField.addEventListener('focus', (event) => {
-                var UserIcon = event.target.parentNode.querySelector(".icon.icon-tabler");
-                UserIcon.classList.add("IconFocus");
+                const target = event.target as HTMLElement;
+                const UserIcon = target.parentNode!.querySelector(".icon.icon-tabler");
+                UserIcon!.classList.add("IconFocus");
             })
 
             InputField.addEventListener('blur', (event) => {
-                var UserIcon = event.target.parentNode.querySelector(".icon.icon-tabler");
-                UserIcon.classList.remove("IconFocus");
+                const target = event.target as HTMLElement;
+                const UserIcon = target.parentNode!.querySelector(".icon.icon-tabler");
+                UserIcon!.classList.remove("IconFocus");
             })
         })
     }
@@ -61,9 +68,6 @@ const page = () => {
     
     return (
         <>
-            <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-            <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-            <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"></link>
             <div className="login shadow-xl">
                 <div className='w-[80%]'>
                     <h1 className="font-normal text-4xl my-7 text-indigo-800 text-center" style={{fontFamily: "Fugaz One"}}>Blogify</h1>
@@ -103,7 +107,7 @@ const page = () => {
                         <button type="submit" className="LoginButton poppins-regular mt-5">Login</button>
                     </form>
                     <div className="alreadyHaveAnAccount">
-                        <p>Don't have an account?</p>
+                        <p>Don&apos;t have an account?</p>
                         <a href="/signup" className='text-indigo-600 hover:opacity-50'>Go to Sign Up &gt;&gt;</a>
                     </div>
                 </div>
@@ -112,4 +116,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

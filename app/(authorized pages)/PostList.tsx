@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '@/lib/models/post';
 import dynamic from 'next/dynamic';
@@ -7,6 +7,7 @@ import PostSkeleton from '../components/PostSkeleton/PostSkeleton';
 import { addPosts, setPosts } from '@/redux/slices/postSlice';
 import { addToast } from '@/redux/slices/toastSlice';
 import { createSelector } from '@reduxjs/toolkit';
+import { RootState } from '@/redux/store';
 
 type Props = {
     postLink: string
@@ -19,7 +20,7 @@ const DynamicPost = dynamic(() => import("@/components/Post/Post"), {
 const PostList = ({postLink} : Props) => {
     const dispatch = useDispatch();
     const selectPostIds = createSelector(
-        (state: any) => state.post,
+        (state: RootState) => state.post,
         (posts: Post[]) => posts.map(post => post.id)
     );
     const postIds : number[] = useSelector(selectPostIds);
@@ -31,7 +32,7 @@ const PostList = ({postLink} : Props) => {
 
     useEffect(() => {
         dispatch(setPosts([]));
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         if(!skeletonRef.current) return;
@@ -48,6 +49,15 @@ const PostList = ({postLink} : Props) => {
 
         return () => observer.disconnect();
     }, []);
+
+    const fetchPostsFromServer = useCallback(async () => {
+        const response = await fetch(`${postLink}?offset=${postIds.length}&recordPerPage=6`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+        if(!response.ok) throw new Error("Failed to fetch posts");
+        return response.json();
+    }, [postLink, postIds.length]);
 
     useEffect(() => {
         if(isSkeletonVisible) {
@@ -67,16 +77,7 @@ const PostList = ({postLink} : Props) => {
                 })
             }, 500);
         }
-    }, [isSkeletonVisible]);
-
-    const fetchPostsFromServer = async () => {
-        const response = await fetch(`${postLink}?offset=${postIds.length}&recordPerPage=6`, {
-            method: 'GET',
-            credentials: 'include'
-        });
-        if(!response.ok) throw new Error("Failed to fetch posts");
-        return response.json();
-    }
+    }, [isSkeletonVisible, dispatch, fetchPostsFromServer]);
 
     return (
         <div ref={postListRef} id="post_list" className="w-full mt-4 gap-8 flex flex-col">

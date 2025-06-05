@@ -31,7 +31,7 @@ const DataLoader = ({className, children, onVisible} : Props) => {
         if(isLoaderVisible) {
             onVisible();
         }
-    }, [isLoaderVisible]);
+    }, [isLoaderVisible, onVisible]);
 
     return (
         <div className={className} ref={loaderRef}>

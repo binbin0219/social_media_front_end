@@ -72,4 +72,5 @@ const SectionToggles = memo(({ setCurrentSection } : Props) => {
     )
 });
 
+SectionToggles.displayName = 'SectionToggles';
 export default SectionToggles

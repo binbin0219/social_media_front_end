@@ -22,13 +22,18 @@ const Post = memo(({ postId: postId }: Props) => {
     const dispatch = useDispatch();
     const likeBtnRef = useRef<HTMLButtonElement>(null);
     const currentUser : User = useSelector((state: RootState) => state.currentUser);
-    const post : Post = useSelector((state: any) => state.post.find((post: Post) => post.id === postId));
-    const isCurrentUserAuthor = currentUser?.id === post.user?.id;
-    const author = post.user;
+    const post = useSelector((state: RootState) => state.post.find((post: Post) => post.id === postId));
+    const isCurrentUserAuthor = currentUser?.id === post?.user?.id;
+    const author = post?.user;
     const [commentExpanded, setCommentExpanded] = useState(false);
     const [likeState, setLikeState] = useState({
-        liked: post.liked,
+        liked: post?.liked,
     })
+
+    if(!post) {
+        console.error(`Failed to render post with id ${postId}: not found`);
+        return null;
+    }
 
     const sendLikeToServer = async () => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/like/post`, {
@@ -79,7 +84,7 @@ const Post = memo(({ postId: postId }: Props) => {
         }, 1000);
     }
 
-    const likeOnclickHandler = async (event : React.MouseEvent) => {
+    const likeOnclickHandler = async () => {
         try {
             disableBtnFor1s(likeBtnRef);
             await sendLikeToServer();
@@ -197,7 +202,7 @@ const Post = memo(({ postId: postId }: Props) => {
                 <div className="buttons flex gap-5 mt-2 rounded-lg p-3 items-center w-fit border-2 bg-slate-100 border-slate-300">
                     <button
                         ref={likeBtnRef}
-                        onClick={(event) => likeOnclickHandler(event)}
+                        onClick={() => likeOnclickHandler()}
                         style={{color: "black"}}
                         className="post-like-toggle flex gap-2 editing-disabled">
                         <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#F9452C" stroke="#F9452C" className="icon icon-tabler icons-tabler-filled icon-tabler-heart icon-liked">
@@ -259,4 +264,5 @@ const Post = memo(({ postId: postId }: Props) => {
     )
 });
 
+Post.displayName = 'Post';
 export default Post

@@ -10,7 +10,6 @@ import ImageSkeleton from '@/components/ImageSkeleton/ImageSkeleton';
 import SectionToggles from './SectionToggles';
 import './style.css'
 import MobileSectionToggles from './MobileSectionToggles';
-import PostList from '@/(authorized pages)/PostList';
 import { addUser } from '@/redux/slices/userSlice';
 import { generateCurrentTime } from '@/utils/helpers';
 import ChatButton from './ChatButton';
@@ -38,11 +37,11 @@ const PageClient = ({profileUser} : Props) => {
 
     useEffect(() => {
         dispatch(setPosts([]));
-    }, [])
+    })
 
     useEffect(() => {
         dispatch(addUser(profileUser));
-    }, [profileUser])
+    }, [profileUser, dispatch])
 
     return (
         <div 
@@ -83,8 +82,8 @@ const PageClient = ({profileUser} : Props) => {
                             <EditCoverInput setCoverUrl={setCoverUrl} />
                         :
                         <div className='flex gap-2'>
-                            <ChatButton targetUserId={profileUser?.id!}/>
-                            <FriendshipStatus friendship={profileUser?.friendship} profileUserId={profileUser?.id}/>
+                            <ChatButton targetUserId={profileUser!.id!}/>
+                            <FriendshipStatus friendship={profileUser?.friendship} profileUserId={profileUser!.id}/>
                         </div>
                         }
                     </div>

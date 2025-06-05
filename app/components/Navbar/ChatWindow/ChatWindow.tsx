@@ -33,7 +33,7 @@ const ChatWindow = () => {
 
             return () => sub.unsubscribe();
         }
-    }, [connected, client])
+    }, [connected, client, currentUserId, dispatch])
 
     useEffect(() => {
         if(connected && client) {
@@ -46,7 +46,7 @@ const ChatWindow = () => {
 
             return () => sub.unsubscribe();
         }
-    }, [connected, client])
+    }, [connected, client, dispatch])
 
     useEffect(() => {
         if (!client || !client.connected) {

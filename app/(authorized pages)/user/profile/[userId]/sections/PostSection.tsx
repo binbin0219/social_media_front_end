@@ -20,7 +20,7 @@ const PostSection = ({profileUser}: Props) => {
     
     const handleDataLoaderVisible = async () => {
         try {
-            const fetchedPostsWithUserId = await fetchPostsByUserId(profileUser?.id!, posts.length, 6);
+            const fetchedPostsWithUserId = await fetchPostsByUserId(profileUser!.id!, posts.length, 6);
             const fetchedPosts: PostType[] = fetchedPostsWithUserId.map(post => ({
                 ...post,
                 user: profileUser,
@@ -36,14 +36,14 @@ const PostSection = ({profileUser}: Props) => {
         }
     };
 
-    const mergePostsWithoutDuplicates = (
-        existingPosts: PostType[],
-        newPosts: PostType[]
-    ): PostType[] => {
-        const existingIds = new Set(existingPosts.map(post => post.id));
-        const filteredNewPosts = newPosts.filter(post => !existingIds.has(post.id));
-        return [...existingPosts, ...filteredNewPosts];
-    }
+    // const mergePostsWithoutDuplicates = (
+    //     existingPosts: PostType[],
+    //     newPosts: PostType[]
+    // ): PostType[] => {
+    //     const existingIds = new Set(existingPosts.map(post => post.id));
+    //     const filteredNewPosts = newPosts.filter(post => !existingIds.has(post.id));
+    //     return [...existingPosts, ...filteredNewPosts];
+    // }
 
     return (
         <div id="posts_section" className="w-full mt-4 gap-8 flex flex-col pb-5 hidden">

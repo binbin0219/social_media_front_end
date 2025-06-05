@@ -9,21 +9,21 @@ export function useSubcribeLikeWebSocket(postId: number) {
 
     useEffect(() => {
         if (connected && client) {
-            const sub = client.subscribe(`/topic/${postId}/postLikes`, (msg) => {
+            const sub = client.subscribe(`/topic/${postId}/postLikes`, () => {
                 dispatch(incrementLikeCount({postId}));
             });
 
             return () => sub.unsubscribe();
         }
-    }, [connected, client, dispatch]);
+    }, [connected, client, dispatch, postId]);
 
     useEffect(() => {
         if (connected && client) {
-            const sub = client.subscribe(`/topic/${postId}/postDislikes`, (msg) => {
+            const sub = client.subscribe(`/topic/${postId}/postDislikes`, () => {
                 dispatch(decrementLikeCount({postId}));
             });
 
             return () => sub.unsubscribe();
         }
-    }, [connected, client, dispatch]);
+    }, [connected, client, dispatch, postId]);
 }

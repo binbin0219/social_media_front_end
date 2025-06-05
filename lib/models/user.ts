@@ -16,7 +16,7 @@ export type User = {
     region: string | null;
     phoneNumber: PhoneNumber;
     relationshipStatus: string | null;
-    create_at: String;
+    create_at: string;
     avatar?: string | null;
     coverUrl?: string;
     friendship?: Friendship;
@@ -73,6 +73,7 @@ export function getUserAvatarBase64(userId: number) : string {
         const avatarBase64 = avatarBuffer.toString('base64');
         return `data:image/png;base64,${avatarBase64}`;
     } catch (error) {
+        console.error(`Failed to get user avatar base 64 :` + error);
         return "";
     }
 }

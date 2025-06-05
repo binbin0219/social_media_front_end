@@ -9,7 +9,7 @@ type Props = {
     setCoverUrl: React.Dispatch<React.SetStateAction<string>>
 }
 
-const EditCoverInput = memo(({setCoverUrl} : Props) => {
+const EditCoverInputComponent = ({ setCoverUrl }: Props) => {
     const dispatch = useDispatch();
     const coverInputRef = useRef<HTMLInputElement>(null);
 
@@ -98,6 +98,8 @@ const EditCoverInput = memo(({setCoverUrl} : Props) => {
             <input ref={coverInputRef} onInput={() => handleEditCover()} type="file" accept="image/png" name="edit_cover_input" id="edit_cover_input" className="hidden"></input>
         </>
     )
-});
+};
 
-export default EditCoverInput
+const EditCoverInput = memo(EditCoverInputComponent);
+
+export default EditCoverInput;

@@ -7,7 +7,7 @@ type Props = {
     currentUser: User;
 };
 
-const CurrentUserProvider = ({ children , currentUser}: Props) => {
+const CurrentUserProvider = ({ children }: Props) => {
 
     return (
         {children}

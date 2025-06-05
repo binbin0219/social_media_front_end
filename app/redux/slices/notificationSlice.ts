@@ -49,7 +49,9 @@ const notificationSlice = createSlice({
                 (notif) => notif.senderId === senderId && notif.recipientId === recipientId
             );
             if(notif) {
-                !state.isOpen && state.newNotificationCount--;
+                if(!state.isOpen) {
+                    state.newNotificationCount--;
+                }
                 delete state.data[notif.id];
             }
         },

@@ -1,4 +1,5 @@
 import { IconPhotoPlus, IconX } from '@tabler/icons-react'
+import Image from 'next/image'
 import React from 'react'
 
 const InputImagePreview = () => {
@@ -8,7 +9,8 @@ const InputImagePreview = () => {
                 <IconPhotoPlus/>
             </button>
             <div className='relative'>
-                <img 
+                <Image
+                    alt='Chat image attachment preview' 
                     className='rounded-lg'
                     src="https://www.mdxblog.io/images/posts/how-to-use-images/grass-tree-sky.jpg"
                     style={{

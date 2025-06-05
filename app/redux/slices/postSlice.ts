@@ -1,7 +1,6 @@
 import { PostComment } from '@/lib/models/comment';
-import { Post, PostWithUser } from '@/lib/models/post';
+import { Post } from '@/lib/models/post';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
 
 const initialState: Post[] = [];
 
@@ -29,8 +28,8 @@ const postSlice = createSlice({
         }>) => {
             const post = state.find(post => post.id === action.payload.postId);
             if (post) {
-                post.title = action.payload.title,
-                post.content = action.payload.content
+                post.title = action.payload.title;
+                post.content = action.payload.content;
             }
         },
         createComment: (state, action: PayloadAction<{
@@ -74,7 +73,7 @@ const postSlice = createSlice({
                 post.likeCount--;
             }
         },
-        setPosts: (state, action: PayloadAction<PostWithUser[]>) => action.payload
+        setPosts: (state, action: PayloadAction<Post[]>) => action.payload
     },
 });
 

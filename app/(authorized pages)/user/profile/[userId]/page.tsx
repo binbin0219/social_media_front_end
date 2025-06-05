@@ -1,13 +1,13 @@
-import { fetchUserDataFromServer } from '@/lib/main';
+import { fetchProfileUserFromServer } from '@/lib/main';
 import React from 'react'
 import PageClient from './PageClient';
 
 const page = async ({params} : {params: Promise<{userId: number}>}) => {
     const {userId} = await params;
-    const {user} = await fetchUserDataFromServer(userId);
+    const result = await fetchProfileUserFromServer(userId);
 
     return (
-        <PageClient profileUser={user}/>
+        <PageClient profileUser={result!.user}/>
     )
 }
 

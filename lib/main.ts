@@ -2,6 +2,7 @@
 import sharp from "sharp";
 import { getUserDataById, User } from "./models/user";
 import { cookies } from "next/headers";
+import { Post } from "./models/post";
 
 export async function getAuthUserDataFromHeader(headers: () => Promise<Headers>) {
     const userHeader = (await headers()).get("x-user");
@@ -30,7 +31,7 @@ async function getJwtCookie() {
     return jwtCookie ? `${cookieName}=${jwtCookie.value}` : null;
 }
 
-export async function fetchUserDataFromServer (userId: number) : Promise<any | null> {
+export async function fetchProfileUserFromServer (userId: number) : Promise<{user: User; posts: Post[]} | null> {
     const jwtCookie = await getJwtCookie();
     if(jwtCookie === null) {
         return null;

@@ -8,7 +8,7 @@ import InputField from '@/components/InputField/InputField';
 
 type Props = {
     user: Partial<User>;
-    updateUserData: <K extends keyof User>(field: K, value: User[K]) => void;
+    updateUserData: (field: string, value: unknown) => void;
 }
 
 const DetailsChanger = ({user, updateUserData}: Props) => {
@@ -96,7 +96,7 @@ const DetailsChanger = ({user, updateUserData}: Props) => {
                         <option data-index="4" value="Widowed">Widowed</option>
                         <option data-index="5" value="Separated">Separated</option>
                         <option data-index="6" value="Looking For Relationship">Other</option>
-                        <option data-index="7" value="It's Complicated">It's Complicated</option>
+                        <option data-index="7" value="It's Complicated">It&apos;s Complicated</option>
                         <option data-index="8" value="Forever Alone">Forever Alone</option>
                     </select>
                 </div>

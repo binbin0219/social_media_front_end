@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import UserIcon from '../UserIcon/UserIcon'
 import './style.css'
 import { useDispatch, useSelector } from 'react-redux'

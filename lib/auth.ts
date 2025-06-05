@@ -6,6 +6,7 @@ export async function verifyToken(token: string | undefined) {
         const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
         return payload
     } catch (error) {
+        console.log(error);
         return null
     }
 }

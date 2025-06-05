@@ -31,7 +31,7 @@ const NotificationDropdown = memo(() => {
 
             return () => sub.unsubscribe();
         }
-    }, [connected, client])
+    }, [connected, client, dispatch])
 
     useEffect(() => {
         if (!client || !client.connected) {
@@ -76,7 +76,7 @@ const NotificationDropdown = memo(() => {
                 );
             }, 500);
         }
-    }, [isSkeletonVisible])
+    }, [isSkeletonVisible, dispatch])
 
     const fetchNotifications = async () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notification/get?offset=0&recordPerPage=6`, {credentials: 'include'});
@@ -131,4 +131,5 @@ const NotificationDropdown = memo(() => {
     )
 });
 
+NotificationDropdown.displayName = 'NotificationDropdown';
 export default NotificationDropdown

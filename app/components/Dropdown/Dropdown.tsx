@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, cloneElement } from "react";
+import React, { useRef, useEffect, cloneElement } from "react";
 
 type Props = {
-    toggleButton: React.ReactElement<any>,
+    toggleButton: React.ReactElement<{ onClick?: () => void }>;
     isOpen: boolean,
     setIsOpen: (isOpen: boolean) => void,
     children: React.ReactNode
@@ -21,7 +21,7 @@ function Dropdown({ toggleButton, children, isOpen, setIsOpen }: Props) {
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    });
 
     const renderedToggleButton = toggleButton
         ? cloneElement(toggleButton, { onClick: toggleDropdown })

@@ -4,7 +4,7 @@ import './style.css'
 import { ToastType } from '@/redux/slices/toastSlice';
 
 const Toast = (props: ToastType) => {
-    const toastRef = React.useRef(null);
+    const toastRef = React.useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         setTimeout(() => {
             toastRef.current?.classList.add("slide-out");

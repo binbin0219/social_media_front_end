@@ -27,7 +27,7 @@ const PhoneNumberInput = ({phoneNumber, setterFunction} : Props) => {
                 });
             }
         });
-    }, []);
+    });
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPhoneNumberBody(e.target.value);

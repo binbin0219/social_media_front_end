@@ -2,16 +2,17 @@ import React from 'react'
 import UserIcon from '../UserIcon/UserIcon'
 import { shallowEqual, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
+import { PostComment as PostCommentType } from '@/lib/models/comment'
 
 type props = {
-    commentId: Number,
-    postId: Number
+    commentId: number,
+    postId: number
 }
 
 const PostComment = React.memo(({commentId, postId}: props) => {
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const comment = useSelector(
-        (state: RootState) => state.post.find(post => post.id === postId)?.comments.find(comment => comment.id === commentId),
+        (state: RootState) => state.post.find(post => post.id === postId)?.comments.find((comment: PostCommentType) => comment.id === commentId),
         shallowEqual
     );
     const user = comment?.user;
@@ -25,7 +26,7 @@ const PostComment = React.memo(({commentId, postId}: props) => {
                     <p className="comment-time text-xs">{timeAgo(comment?.createAt.split(' ')[0])}</p>
                 </div>
                 <p className="comment-content text-sm max-w-[]" style={{wordWrap: "break-word"}}>
-                    {comment?.content.split("\n").map((line, index) => (
+                    {comment?.content.split("\n").map((line: string, index: number) => (
                         <React.Fragment key={index}>
                             {line}
                             <br />
@@ -37,4 +38,5 @@ const PostComment = React.memo(({commentId, postId}: props) => {
     )
 })
 
+PostComment.displayName = 'PostComment';
 export default PostComment

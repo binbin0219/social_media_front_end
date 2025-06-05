@@ -5,12 +5,12 @@ import chatReducer, { initialState as initialChatState } from './slices/chatSlic
 import toastReducer, { ToastType } from './slices/toastSlice';
 import currentUserReducer from './slices/currentUserSlice';
 import notificationReducer, { initialState as notificationsInitialState, NotificationState } from './slices/notificationSlice';
-import { PostWithUser } from '@/lib/models/post';
 import { User } from '@/lib/models/user';
 import { ChatState } from './slices/chatSlice';
+import { Post } from '@/lib/models/post';
 
 export interface RootState {
-    post: PostWithUser[];
+    post: Post[];
     user: User[];
     toast: ToastType[];
     currentUser: User;

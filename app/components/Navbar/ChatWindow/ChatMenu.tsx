@@ -26,7 +26,7 @@ const ChatMenu = () => {
                 key={value} 
                 username={value} 
                 onItemClick={async (result) => {
-                    const chatRoom = await fetchPrivateChatRoom(result.id);
+                    const chatRoom = await fetchPrivateChatRoom(result!.id);
                     dispatch(addPrivateChat(chatRoom));
                     dispatch(setActiveChatRoomId(chatRoom.id));
                     setIsNewChatSearchOpen(false);

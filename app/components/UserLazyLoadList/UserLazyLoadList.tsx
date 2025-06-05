@@ -4,12 +4,12 @@ import React, { useState } from 'react'
 import UserIcon from '../UserIcon/UserIcon';
 import DropdownItemSkeleton from '../Skeletons/DropdownItemSkeleton';
 import DataLoader from '../DataLoader/DataLoader';
-import { User } from '@prisma/client';
+import { User } from '@/lib/models/user';
 
 type Props = {
     username: string;
     className?: string;
-    onItemClick: (result: any) => void;
+    onItemClick: (result: User) => void;
 }
 
 const UserLazyLoadList = ({username, className, onItemClick}: Props) => {

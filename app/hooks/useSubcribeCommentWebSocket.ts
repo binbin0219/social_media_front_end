@@ -16,5 +16,5 @@ export function useSubcribeCommentWebSocket(postId: number) {
 
             return () => sub.unsubscribe();
         }
-    }, [connected, client, dispatch]);
+    }, [connected, client, dispatch, postId]);
 }

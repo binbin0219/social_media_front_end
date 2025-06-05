@@ -1,5 +1,5 @@
 import { ChatMessage } from "@/lib/models/ChatMessage";
-import { ChatRoom, UnreadMessageCount } from "@/lib/models/ChatRoom";
+import { ChatRoom } from "@/lib/models/ChatRoom";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type ChatState = {

@@ -21,7 +21,7 @@ const userSlice = createSlice({
             const newUsers = action.payload.filter(user => !existingUserIds.has(user?.id));
             state.push(...newUsers);
         },
-        deleteUser: (state, action: PayloadAction<Number>) => {
+        deleteUser: (state, action: PayloadAction<number>) => {
             const index = state.findIndex(user => (user && user.id) == action.payload);
             if(index === -1) return;
             state.splice(index, 1);

@@ -70,4 +70,5 @@ const MobileSectionToggles = memo(({ setCurrentSection } : Props) => {
     )
 });
 
+MobileSectionToggles.displayName = 'MobileSectionToggles';
 export default MobileSectionToggles

@@ -1,8 +1,8 @@
 import { User } from "./user"
 
 export type PostComment = {
-    id: Number,
-    content: String,
+    id: number,
+    content: string,
     user: User,
-    createAt: String
+    createAt: string
 }

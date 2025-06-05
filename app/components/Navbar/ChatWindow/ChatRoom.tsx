@@ -1,5 +1,5 @@
 "use client"
-import { ChatRoom as ChatRoomType, ChatRoomType as ChatRoomTypes } from '@/lib/models/ChatRoom';
+import { ChatRoomType as ChatRoomTypes } from '@/lib/models/ChatRoom';
 import { autoExpandInputHeight } from '@/main';
 import { addToast } from '@/redux/slices/toastSlice';
 import { RootState } from '@/redux/store';
@@ -17,7 +17,7 @@ type Props = {
 
 const ChatRoom = ({actvieChatRoomId} : Props) => {
     const dispatch = useDispatch();
-    const { client, connected } = useWebSocket();
+    const { client } = useWebSocket();
     const messageInputRef = useRef<HTMLTextAreaElement>(null);
     const [typingMessage, setTypingMessage] = useState("");
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
@@ -65,7 +65,7 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
         }
     }
 
-    const handleEmojiClick = (emojiData: EmojiClickData, event: MouseEvent) => {
+    const handleEmojiClick = (emojiData: EmojiClickData) => {
         setTypingMessage(prev => prev + emojiData.emoji);
     }
 

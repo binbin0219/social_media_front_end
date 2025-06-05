@@ -42,17 +42,17 @@ const ProfileSection = () => {
         }
     
         setEditedUserData(changes);
-    }, [clonedUserData]);
+    }, [clonedUserData, currentUser]);
     
 
-    const updateUserField = <K extends keyof User>(field: K, value: User[K]) => {
+    const updateUserField = (field: string, value: unknown) => {
         setClonedUserData(prev => ({
             ...prev!,
             [field]: value,
         }));
     };
 
-    const updateUserDataOnServer = async (userData: Partial<User>) => {
+    const updateUserDataOnServer = async () => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile/update`, {
             method: 'POST',
             credentials: 'include',
@@ -70,7 +70,7 @@ const ProfileSection = () => {
 
     const handleSave = async () => {
         try {
-            await updateUserDataOnServer(clonedUserData);
+            await updateUserDataOnServer();
             dispatch(updateProfile(editedUserData));
             setEditedUserData({});
             dispatch(addToast({

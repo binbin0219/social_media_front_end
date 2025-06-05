@@ -1,7 +1,6 @@
 import { ChatMessage } from "@/lib/models/ChatMessage";
 import { ChatRoom, ChatRoomType } from "@/lib/models/ChatRoom";
-import { NotificationType } from "@/lib/models/notification";
-import { Post, PostWithUserId } from "@/lib/models/post";
+import { PostWithUserId } from "@/lib/models/post";
 import { Friend, User } from "@/lib/models/user";
 
 export const acceptFriendRequestOnServer = async (friendId: number) => {

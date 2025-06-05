@@ -23,7 +23,7 @@ const SearchBar = () => {
                 className='absolute top-100 p-2 bg-white shadow-lg w-full rounded max-h-300px overflow-y-auto'
                 key={value} 
                 username={value} 
-                onItemClick={(result) => router.push(`/user/profile/${result.id}`)}
+                onItemClick={(result) => router.push(`/user/profile/${result!.id}`)}
                 />
             ))
         }
