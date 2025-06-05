@@ -44,9 +44,9 @@ export default async function RootLayout({
 			// cache: "force-cache",
 			cache: "no-cache",
 			method: "GET",
-			// headers: {
-			// 	Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
-			// },
+			headers: {
+				Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
+			},
 			credentials: "include",
 		});
 
