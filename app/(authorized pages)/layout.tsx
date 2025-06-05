@@ -7,7 +7,7 @@ import ConfirmationDialog from "@/components/ConfirmationDialog/ConfirmationDial
 import StoreProvider from "@/context/ReduxContext";
 import ToastContainer from "@/components/ToastContainer/ToastContainer";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { User } from "@/lib/models/user";
 import { initialState as notificationsInitialState } from "@/redux/slices/notificationSlice";
 import FileViewer from "@/components/FileViewer/FileViewer";
