@@ -1,10 +1,10 @@
 "use client"
 import React, { FormEvent, useEffect } from 'react'
 import './login.css'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 
 const Page = () => {
-    const router = useRouter();
+    // const router = useRouter();
 
     const handleLogin = async (event : FormEvent) => {
         try {
