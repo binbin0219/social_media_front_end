@@ -9,6 +9,7 @@ import { fetchFriends } from '@/main'
 import UserProfileLink from '../Link/UserProfileLink'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
+import Tooltip from '../Tooltip/Tooltip'
 
 
 const FriendListDropdown = () => {
@@ -31,9 +32,11 @@ const FriendListDropdown = () => {
         isOpen={isOpen}
         setIsOpen={(isOpen: boolean) => setIsOpen(isOpen)}
         toggleButton={
-            <button className='dropdown-toggle'>
-                <IconUsers className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
-            </button>
+            <Tooltip text='Friends' className='flex'>
+                <button className='dropdown-toggle' onClick={() => setIsOpen(!isOpen)}>
+                    <IconUsers className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
+                </button>
+            </Tooltip>
         }
         >
             <ul className="dropdown-content relative max-h-[400px] overflow-y-auto" style={{minWidth: "250px"}}>

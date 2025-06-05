@@ -1,10 +1,9 @@
-import { ChatRoom } from '@/lib/models/ChatRoom';
+import Tooltip from '@/components/Tooltip/Tooltip';
 import { fetchPrivateChatRoom } from '@/main';
 import { addChatRooms, setActiveChatRoomId, setIsChatOpen } from '@/redux/slices/chatSlice';
-import { RootState } from '@/redux/store';
 import { IconMessageCircle } from '@tabler/icons-react'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 type Props = {
     targetUserId: number;
@@ -21,14 +20,15 @@ const ChatButton = ({targetUserId} : Props) => {
     }
 
     return (
-        <button 
-        onClick={() => handleCharButtonClick()}
-        type='button'
-        className='bg-green-200 border-green-400 text-green-600 hover:bg-green-300 border-2 px-3 py-2 rounded-lg mb-1'
-        >
-            <IconMessageCircle className='inline me-2'/>
-            Chat
-        </button>
+        <Tooltip text='Chat'>
+            <button 
+            onClick={() => handleCharButtonClick()}
+            type='button'
+            className='bg-green-200 border-green-400 text-green-600 hover:bg-green-300 border-2 px-3 py-2 rounded-lg mb-1'
+            >
+                <IconMessageCircle/>
+            </button>
+        </Tooltip>
     )
 }
 

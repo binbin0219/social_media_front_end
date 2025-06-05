@@ -3,12 +3,13 @@ import styles from './styles.module.css'
 type Props = {
     children: React.ReactNode,
     text: string,
-    position?: "top" | "bottom" | "right" | "left"
+    position?: "top" | "bottom" | "right" | "left",
+    className?: string;
 }
 
-export default function Tooltip({ children, text, position = "bottom" }: Props) {
+export default function Tooltip({ children, text, position = "bottom", className = ""}: Props) {
     return (
-        <div className="relative group inline-block">
+        <div className={"relative group inline-block " + className} onClick={() => console.log('asds')}>
             {children}
             <span
                 className={`

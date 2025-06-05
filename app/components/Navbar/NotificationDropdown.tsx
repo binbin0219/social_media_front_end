@@ -10,6 +10,7 @@ import { addNotification, addNotifications, setIsNotificationOpen } from '@/redu
 import { IconBell, IconBellOff } from '@tabler/icons-react';
 import { useWebSocket } from '@/context/WebSocketContext';
 import Dropdown from '../Dropdown/Dropdown';
+import Tooltip from '../Tooltip/Tooltip';
 
 const NotificationDropdown = memo(() => {
     const dispatch = useDispatch();
@@ -93,10 +94,12 @@ const NotificationDropdown = memo(() => {
             setIsOpen={(isOpen: boolean) => dispatch(setIsNotificationOpen(isOpen))}
             isOpen={isOpen}
             toggleButton={(
-                <button data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center hover:opacity-50">
-                    <IconBell className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
-                    <NotificationCounter/>
-                </button>
+                <Tooltip text='Notifications'>
+                    <button onClick={() => dispatch(setIsNotificationOpen(!isOpen))} data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center hover:opacity-50">
+                        <IconBell className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
+                        <NotificationCounter/>
+                    </button>
+                </Tooltip>
             )}
         >
             <ul id="notification_list" className="dropdown-content relative max-h-[400px] overflow-y-auto" style={{minWidth: "250px"}}>

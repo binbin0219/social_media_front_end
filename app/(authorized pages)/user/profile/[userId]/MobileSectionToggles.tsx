@@ -6,7 +6,7 @@ type Props = {
 
 const MobileSectionToggles = memo(({ setCurrentSection } : Props) => {
     return (
-        <div id="section_buttons_container" className="section-buttons-container mobile flex gap-2 h-full w-full justify-center hidden">
+        <div id="section_buttons_container" className="section-buttons-container mobile flex h-full w-full justify-center bg-white hidden">
             <button 
             onClick={() => setCurrentSection('posts')} 
             data-data-loaded="true" 

@@ -1,3 +1,4 @@
+import Tooltip from '@/components/Tooltip/Tooltip'
 import { useAcceptFriendRequest } from '@/hooks/useAcceptFriendRequest'
 import { useRejectFriendRequest } from '@/hooks/useRejectFriendRequest'
 import { Friendship } from '@/lib/models/friendship'
@@ -6,6 +7,7 @@ import { decrementUnseenNotifCount, deleteNotifWithCountById } from '@/redux/sli
 import { addToast } from '@/redux/slices/toastSlice'
 import { updateFriendship } from '@/redux/slices/userSlice'
 import { RootState } from '@/redux/store'
+import { IconUserCheck, IconUserExclamation, IconUserPause } from '@tabler/icons-react'
 import React, { memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -208,49 +210,45 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     return (
         <>
-            <button type="button" 
-            className={`
-                ${isRejectedByOtherUser ? '' : 'hidden'}
-                bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1`}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation inline">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4c.348 0 .686 .045 1.008 .128" />
-                    <path d="M19 16v3" />
-                    <path d="M19 22v.01" />
-                </svg>
-                Friend request rejected
-            </button> 
-            <button id="unsend_request_button" type="button" 
-            onClick={() => handleUnsendFriendRequest()}
-            className={`
-                ${friendship.status === 'PENDING' && isCurrentUserSender ? '' : 'hidden'}
-                bg-green-200 border-green-400 text-green-600 hover:bg-green-300 border-2 px-3 py-2 rounded-lg mb-1
-            `}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-check inline">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
-                    <path d="M15 19l2 2l4 -4" />
-                </svg>
-                Friend request sent
-            </button>
+            <Tooltip className={isRejectedByOtherUser ? '' : 'hidden'} text='Friend request rejected' position='bottom'>
+                <button type="button" 
+                className={`
+                    bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation inline">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4c.348 0 .686 .045 1.008 .128" />
+                        <path d="M19 16v3" />
+                        <path d="M19 22v.01" />
+                    </svg>
+                    {/* Friend request rejected */}
+                </button>
+            </Tooltip>
+            <Tooltip text='Friend request sent' position='bottom' className={friendship.status === 'PENDING' && isCurrentUserSender ? '' : 'hidden'}>
+                <button id="unsend_request_button" type="button" 
+                onClick={() => handleUnsendFriendRequest()}
+                className={`
+                    bg-green-200 border-green-400 text-green-600 hover:bg-green-300 border-2 px-3 py-2 rounded-lg mb-1
+                `}
+                >
+                    <IconUserCheck/>
+                    {/* Friend request sent */}
+                </button>
+            </Tooltip>
             <div id="reply_friend_request" 
             className={`
                 ${friendship.status === 'PENDING' && !isCurrentUserSender ? '' : 'hidden'}
                 dropdown
             `}>
-                <button onClick={(event) => handleDropdownToggle(event)} type="button" className="dropdown-toggle bg-cyan-200 border-cyan-400 text-cyan-600 hover:bg-cyan-300 border-2 px-3 py-2 rounded-lg mb-1">
-                    Reply friend request
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" 
-                    className="icon icon-tabler icons-tabler-outline icon-tabler-caret-down inline">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M6 10l6 6l6 -6h-12" />
-                    </svg>
-                </button>
+                <Tooltip text='Reply friend request' position='bottom'>
+                    <button onClick={(event) => handleDropdownToggle(event)} type="button" className="dropdown-toggle bg-cyan-200 border-cyan-400 text-cyan-600 hover:bg-cyan-300 border-2 px-3 py-2 rounded-lg mb-1">
+                        {/* Reply friend request */}
+                        <IconUserExclamation/>
+                    </button>
+                </Tooltip>
                 <div className="dropdown-menu">
                     <ul className="dropdown-content">
+                        <span className='font-bold'>Pending friend request</span>
                         <li className="dropdown-item">
                             <button onClick={() => handleAcceptFriendRequest()} id="accept_request_button" type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-check inline">
@@ -277,35 +275,37 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                     </ul>
                 </div>
             </div>
-            <button id="unfriend_button" type="button" 
-            onClick={() => unfriendBtnHandler()}
-            className={`
-                ${friendship.status === 'ACCEPTED' ? '' : 'hidden'}
-                bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1
-            `}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-x inline">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                    <path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" />
-                    <path d="M22 22l-5 -5" />
-                    <path d="M17 22l5 -5" />
-                </svg>
-                Unfriend
-            </button>
-            <button onClick={() => addFriendBtnHandler()} id="add_friend_button" type="button" 
-            className={`
-                ${friendship.status === null || isRejectedByCurrentUser ? '' : 'hidden'}
-                bg-sky-200 border-sky-400 text-sky-600 hover:bg-sky-300 border-2 px-3 py-2 rounded-lg mb-1
-            `}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-plus inline">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                    <path d="M16 19h6" />
-                    <path d="M19 16v6" />
-                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
-                </svg>
-                Add friend
-            </button>
+            <Tooltip text='Unfriend' position='bottom' className={friendship.status === 'ACCEPTED' ? '' : 'hidden'}>
+                <button id="unfriend_button" type="button" 
+                onClick={() => unfriendBtnHandler()}
+                className={`
+                    bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1
+                `}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-x inline">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" />
+                        <path d="M22 22l-5 -5" />
+                        <path d="M17 22l5 -5" />
+                    </svg>
+                    {/* Unfriend */}
+                </button>
+            </Tooltip>
+            <Tooltip text='Add friend' position='bottom' className={friendship.status === null || isRejectedByCurrentUser ? '' : 'hidden'}>
+                <button onClick={() => addFriendBtnHandler()} id="add_friend_button" type="button" 
+                className={`
+                    bg-sky-200 border-sky-400 text-sky-600 hover:bg-sky-300 border-2 px-3 py-2 rounded-lg mb-1
+                `}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-plus inline">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                        <path d="M16 19h6" />
+                        <path d="M19 16v6" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
+                    </svg>
+                    {/* Add friend */}
+                </button>
+            </Tooltip>
         </>
     )
 });
