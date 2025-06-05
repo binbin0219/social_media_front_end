@@ -27,7 +27,7 @@ const Page = () => {
                 return;
             }
 
-            router.push('/');
+            // router.push('/');
         } catch (e) {
             console.log(e);
             alert("Lost connection from server! please try again later.");
