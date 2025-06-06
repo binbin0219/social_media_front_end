@@ -11,4 +11,5 @@ const page = async ({params} : {params: Promise<{userId: number}>}) => {
     )
 }
 
+export const dynamic = 'force-dynamic';
 export default page

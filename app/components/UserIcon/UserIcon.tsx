@@ -11,7 +11,7 @@ type Props = {
 }
 
 const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserProfile = true} : Props) => {
-    const userAvatarSrc = userAvatar ? userAvatar : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+    const userAvatarSrc = userAvatar && userAvatar.trim() !== "" ? userAvatar : '/assets/default_avatar.png';
     const handleOnclick = () => {
         if (userId) {
             window.location.href = `/user/profile/${userId}`;
@@ -27,11 +27,11 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserPr
             height: typeof height === 'string' ? height : `${height}px`
         }}
         className={` rounded-full hover:opacity-50 cursor-pointer`} 
-        src={userAvatarSrc ?? "/assets/default_avatar.png"} 
+        src={userAvatarSrc} 
         alt="User Icon" 
         onError={({ currentTarget }) => { 
             currentTarget.onerror = null; 
-            currentTarget.src = "/assets/default_avatar.png" 
+            currentTarget.src = userAvatarSrc;
         }} />
     )
 }
