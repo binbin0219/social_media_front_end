@@ -31,10 +31,7 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserPr
         className={` rounded-full hover:opacity-50 cursor-pointer`} 
         src={userAvatarSrc} 
         alt="User Icon" 
-        onError={({ currentTarget }) => { 
-            currentTarget.onerror = null; 
-            currentTarget.src = userAvatarSrc;
-        }} />
+        />
     )
 }
 
