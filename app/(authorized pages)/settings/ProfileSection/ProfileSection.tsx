@@ -1,7 +1,7 @@
 "use client"
 import { RootState } from '@/redux/store'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import AvatarChanger from './AvatarChanger'
 import DetailsChanger from './DetailsChanger'
 import { User } from '@/lib/models/user'
@@ -11,8 +11,9 @@ import { updateProfile } from '@/redux/slices/currentUserSlice'
 
 const ProfileSection = () => {
     const dispatch = useDispatch();
-    const currentUser: Partial<User> = useSelector((state: RootState) => {
-        return {
+    // Only load partial of current user data that can be edited
+    const currentUser: Partial<User> = useSelector(
+        (state: RootState) => ({
             avatar: state.currentUser?.avatar,
             username: state.currentUser?.username,
             firstName: state.currentUser?.firstName,
@@ -22,28 +23,31 @@ const ProfileSection = () => {
             region: state.currentUser?.region,
             relationshipStatus: state.currentUser?.relationshipStatus,
             occupation: state.currentUser?.occupation,
-            phoneNumber: state.currentUser?.phoneNumber
-        };
-    });
+            phoneNumber: state.currentUser?.phoneNumber,
+        }),
+        shallowEqual
+    );
     const [clonedUserData, setClonedUserData] = useState<Partial<User>>(structuredClone(currentUser));
     const [editedUserData, setEditedUserData] = useState<Partial<User>>({});
     const isEdited = editedUserData && Object.keys(editedUserData).length > 0;
 
     useEffect(() => {
         const changes: Partial<User> = {};
-    
+
         for (const key in clonedUserData) {
             const oldVal = currentUser[key as keyof User];
             const newVal = clonedUserData[key as keyof User];
-    
+
             if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
                 changes[key as keyof User] = newVal;
             }
         }
-    
-        setEditedUserData(changes);
-    }, [clonedUserData, currentUser]);
-    
+
+        if (JSON.stringify(changes) !== JSON.stringify(editedUserData)) {
+            setEditedUserData(changes);
+        }
+    }, [clonedUserData, currentUser, editedUserData]);
+
 
     const updateUserField = (field: string, value: unknown) => {
         setClonedUserData(prev => ({
@@ -63,7 +67,7 @@ const ProfileSection = () => {
                 ...editedUserData
             })
         });
-        if(!response.ok) {
+        if (!response.ok) {
             throw new Error("Failed to update user data on server");
         }
     }
@@ -90,7 +94,7 @@ const ProfileSection = () => {
         <>
             <h1 className="font-extrabold text-4xl">Public Profile</h1>
             <AvatarChanger
-                avatar={clonedUserData?.avatar ?? "error"}
+                avatar={clonedUserData?.avatar}
                 updateUserData={updateUserField}
             />
             <DetailsChanger
@@ -99,10 +103,10 @@ const ProfileSection = () => {
             />
             <div className="w-full flex justify-end mt-7">
                 <button
-                onClick={() => handleSave()}
-                disabled={!isEdited} 
-                id="save_changes_btn" 
-                className={`
+                    onClick={() => handleSave()}
+                    disabled={!isEdited}
+                    id="save_changes_btn"
+                    className={`
                 ${!isEdited ? 'bg-slate-100 border-slate-300 text-slate-600' : ''}
                 ${isEdited ? 'bg-green-100 border-green-300 text-green-600 hover:bg-green-200' : ''}
                 border-2  px-3 py-2 rounded-lg flex gap-2 relative

@@ -39,7 +39,6 @@ export default async function RootLayout({
 		const cookieName = 'jwtToken';
 		const cookieStore = await cookies();
 		const jwtCookie = cookieStore.get(cookieName);
-		console.log("cookies : " + cookieStore.toString());
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
 			// cache: "force-cache",
 			cache: "no-cache",

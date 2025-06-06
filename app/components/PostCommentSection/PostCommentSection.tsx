@@ -89,10 +89,29 @@ const PostCommentSection = memo(({postId}: Props) => {
             (element.current as HTMLButtonElement).classList.remove('pointer-events-none');
         }, 1000);
     }
+
+    const sendCommentToServer = async (comment: string) => {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                post_id: postId,
+                content: comment
+            })
+        });
+        if(!res.ok) throw new Error('Failed to send comment to server');
+        const data = await res.json();
+        const uploadedComment = data.comment;
+        return uploadedComment;
+    }
     
     const handleCommentSent = async () => {
         try {
             if(!checkIsCommentSentable(commentState.commentingContent)) return;
+            await sendCommentToServer(commentState.commentingContent);
             setCommentState(() => ({
                 commentingContent: "",
             }));

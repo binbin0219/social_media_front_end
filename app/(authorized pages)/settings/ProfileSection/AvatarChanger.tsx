@@ -8,7 +8,7 @@ import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 type Props = {
-    avatar: string;
+    avatar?: string | null;
     updateUserData: (field: string, value: unknown) => void;
 }
 

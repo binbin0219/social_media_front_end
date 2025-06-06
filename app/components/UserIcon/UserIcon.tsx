@@ -22,6 +22,8 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserPr
     return (
         <Image 
         onClick={navigateToUserProfile ? handleOnclick : () => {}} 
+        width={typeof width === 'string' ? parseInt(width) : width}
+        height={typeof height === 'string' ? parseInt(height) : height}
         style={{
             width: typeof width === 'string' ? width : `${width}px`,
             height: typeof height === 'string' ? height : `${height}px`

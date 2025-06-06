@@ -37,7 +37,7 @@ const CreatePostForm = () => {
             return;
         }
         const createdPost = await response.json();
-        createdPost.userId = currentUser?.id;
+        createdPost.user = currentUser;
         createdPost.isNew = true;
         dispatch(addPost(createdPost));
         dispatch(addToast({

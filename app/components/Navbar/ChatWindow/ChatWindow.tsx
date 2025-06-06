@@ -94,7 +94,7 @@ const ChatWindow = () => {
                     <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
                 </button>
             </Tooltip>
-            <div data-mobile-section={mobileSection} className={`${styles['chat-window']} ${chatState.isOpen && styles['show']}`}>
+            <div data-mobile-section={mobileSection} className={`${styles['chat-window']} ${chatState.isOpen && styles['show']} shadow-lg`}>
                 <ChatMenu/>
                 <div className={`${styles['chat-window__chat']}`}>
                     {chatState.actvieChatRoomId && <ChatRoom actvieChatRoomId={chatState.actvieChatRoomId} />}

@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         hostname: "pub-b2cd6b49f6f042109b750b07ab45d1ff.r2.dev",
         pathname: "/**", // Allow all images from this domain
       },
+      {
+        protocol: "https",
+        hostname: "mdxblog.io",
+        pathname: "/**", // Allow all images from this domain
+      },
     ]
   }
 }
