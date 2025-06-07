@@ -1,20 +1,24 @@
 import { useWebSocket } from "@/context/WebSocketContext";
+import { PostComment } from "@/lib/models/comment";
 import { createComment } from "@/redux/slices/postSlice";
+import { RootState } from "@/redux/store";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export function useSubcribeCommentWebSocket(postId: number) {
     const dispatch = useDispatch(); // invoke the hook
+    const currentUserId = useSelector((state: RootState) => state.currentUser?.id)!;
     const { client, connected } = useWebSocket();
 
     useEffect(() => {
         if (connected && client) {
             const sub = client.subscribe(`/topic/${postId}/postComments`, (msg) => {
-                const comment = JSON.parse(msg.body);
+                const comment: PostComment = JSON.parse(msg.body);
+                if(comment.user?.id === currentUserId) return; // Skip add comment if is current user's comment
                 dispatch(createComment({ postId, comment : comment }));
             });
 
             return () => sub.unsubscribe();
         }
-    }, [connected, client, dispatch, postId]);
+    }, [connected, client, dispatch, postId, currentUserId]);
 }

@@ -5,7 +5,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PostComment from '../PostComment/PostComment';
 import { Post } from '@/lib/models/post';
 import { RootState } from '@/redux/store';
-import { addComments } from '@/redux/slices/postSlice';
+import { addComments, createComment } from '@/redux/slices/postSlice';
 import PostCommentSkeleton from '../PostCommentSkeleton/PostCommentSkeleton';
 import { autoExpandInputHeight } from '@/main';
 import DataLoader from '../DataLoader/DataLoader';
@@ -105,16 +105,17 @@ const PostCommentSection = memo(({postId}: Props) => {
         if(!res.ok) throw new Error('Failed to send comment to server');
         const data = await res.json();
         const uploadedComment = data.comment;
-        return uploadedComment;
+        return uploadedComment as PostCommentType;
     }
     
     const handleCommentSent = async () => {
         try {
             if(!checkIsCommentSentable(commentState.commentingContent)) return;
-            await sendCommentToServer(commentState.commentingContent);
+            const sendedComment = await sendCommentToServer(commentState.commentingContent);
             setCommentState(() => ({
                 commentingContent: "",
             }));
+            dispatch(createComment({postId, comment: sendedComment}));
             dispatch(addToast({
                 type: 'success',
                 message: 'Comment sent'
