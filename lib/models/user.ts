@@ -1,8 +1,3 @@
-import { prisma } from "@/lib/prisma";
-import fs from "fs";
-import { userAvatarDirPath } from "../constants";
-import { generateRandomAvatarSVG } from "../avataaars";
-import { convertSvgToPngBuffer } from "../main";
 import { Friendship } from "./friendship";
 
 export type User = {
@@ -48,64 +43,4 @@ export const safeUserColumnSelections = {
     phone_number: true,
     country: true,
     create_at: true,
-}
-
-export async function checkIfAccountNameExisted(accountName: string) {
-    const isAccountNameExisted = await prisma.user.findMany({
-        where: {
-            account_name: accountName
-        }
-    })
-    return isAccountNameExisted.length > 0 ? true : false;
-}
-
-export async function createUserAvatar(userId: number, gender: string) : Promise<string> {
-    makeSureUserAvatarDirExists();
-    const avatarSVG = await generateRandomAvatarSVG(gender);
-    const avatarPngBuffer = await convertSvgToPngBuffer(avatarSVG);
-    fs.writeFileSync(`${userAvatarDirPath}/user_avatar_${userId}.png`, avatarPngBuffer);
-    return `data:image/png;base64,${avatarPngBuffer.toString('base64')}`;
-}
-
-export function getUserAvatarBase64(userId: number) : string {
-    try {
-        const avatarBuffer = fs.readFileSync(`${userAvatarDirPath}/user_avatar_${userId}.png`);
-        const avatarBase64 = avatarBuffer.toString('base64');
-        return `data:image/png;base64,${avatarBase64}`;
-    } catch (error) {
-        console.error(`Failed to get user avatar base 64 :` + error);
-        return "";
-    }
-}
-
-export async function getSafeUserDataFromDb(id: number) : Promise<User> {
-    return await prisma.user.findUnique({ 
-        where: { id },
-        select: { 
-            id: true,
-            first_name: true, 
-            last_name: true,
-            username: true,
-            gender: true,
-            occupation: true,
-            region: true,
-            phone_number: true,
-            country: true,
-            create_at: true,
-        } 
-    }) as User;
-}
-
-export async function getUserDataById(id: number) : Promise<User> {
-    const userDataFromDb = await getSafeUserDataFromDb(id);
-    if(!userDataFromDb) return null;
-    userDataFromDb.avatar = getUserAvatarBase64(id);
-    if(!userDataFromDb.avatar) userDataFromDb.avatar = await createUserAvatar(id, userDataFromDb.gender);
-    return userDataFromDb;
-}
-
-function makeSureUserAvatarDirExists() {
-    if (!fs.existsSync(userAvatarDirPath)) {
-        fs.mkdirSync(userAvatarDirPath, { recursive: true });
-    }
 }

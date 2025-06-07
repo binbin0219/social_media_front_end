@@ -12,7 +12,7 @@ import FriendListDropdown from './FriendListDropdown';
 import ChatWindow from './ChatWindow/ChatWindow';
 import SearchBar from './SearchBar';
 import UserProfileLink from '../Link/UserProfileLink';
-import { logoutOnBackend, logoutOnFrontEnd } from '@/js/auth';
+import { logout } from '@/js/auth';
 import { addToast } from '@/redux/slices/toastSlice';
 
 export const Navbar = () => {
@@ -29,9 +29,7 @@ export const Navbar = () => {
             'Logout', 
             async () => {
                 try {
-                    await logoutOnBackend();
-                    await logoutOnFrontEnd();
-                    window.location.href = '/login';
+                    await logout();
                 } catch (error) {
                     console.log(error);
                     dispatch(addToast({
