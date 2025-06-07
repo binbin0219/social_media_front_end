@@ -17,7 +17,7 @@ type Props = {
 
 const ChatRoom = ({actvieChatRoomId} : Props) => {
     const dispatch = useDispatch();
-    const { client } = useWebSocket();
+    const { client, connected } = useWebSocket();
     const messageInputRef = useRef<HTMLTextAreaElement>(null);
     const [typingMessage, setTypingMessage] = useState("");
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
@@ -34,6 +34,14 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
 
     const handleSendMessage = async () => {
         if(typingMessage.trim() === "") {
+            return;
+        }
+
+        if(!connected) {
+            dispatch(addToast({
+                message: "Lost connection, please try again later",
+                type: 'error'
+            }));
             return;
         }
 
