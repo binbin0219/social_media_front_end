@@ -36,15 +36,14 @@ export default async function RootLayout({
 	let authUserData: User | null = null;
 
 	try {
-		const cookieName = 'jwtToken';
 		const cookieStore = await cookies();
-		const jwtCookie = cookieStore.get(cookieName);
+		const nextJwtCookie = cookieStore.get(process.env.NEXT_JWT_TOKEN_NAME!);
 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
 			// cache: "force-cache",
 			cache: "no-cache",
 			method: "GET",
 			headers: {
-				Cookie: jwtCookie ? `${cookieName}=${jwtCookie.value}` : ''
+				Cookie: nextJwtCookie ? `${process.env.JWT_TOKEN_NAME}=${nextJwtCookie.value}` : ''
 			},
 			credentials: "include",
 		});

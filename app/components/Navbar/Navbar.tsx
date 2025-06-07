@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import './style.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import UserIcon from '../UserIcon/UserIcon';
 import { RootState } from '@/redux/store';
 import NotificationDropdown from './NotificationDropdown';
@@ -12,8 +12,11 @@ import FriendListDropdown from './FriendListDropdown';
 import ChatWindow from './ChatWindow/ChatWindow';
 import SearchBar from './SearchBar';
 import UserProfileLink from '../Link/UserProfileLink';
+import { logoutOnBackend, logoutOnFrontEnd } from '@/js/auth';
+import { addToast } from '@/redux/slices/toastSlice';
 
 export const Navbar = () => {
+    const dispatch = useDispatch();
     const router = useRouter();
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const isSettingRoute = usePathname().startsWith('/settings');
@@ -24,18 +27,19 @@ export const Navbar = () => {
             'Logout', 
             'Are you sure you want to logout?', 
             'Logout', 
-            () => {
-                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
-                    method: 'POST',
-                    credentials: 'include'
-                })
-                .then(response => {
-                    if(!response.ok) throw new Error('Failed to logout');
+            async () => {
+                try {
+                    await logoutOnBackend();
+                    await logoutOnFrontEnd();
                     window.location.href = '/login';
-                })
-                .catch(error => {
+                } catch (error) {
                     console.log(error);
-                });
+                    dispatch(addToast({
+                        message: "Failed to logout",
+                        type: "error"
+                    }))
+                    confDialog();
+                }
             }
         )
     }

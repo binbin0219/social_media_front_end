@@ -27,6 +27,22 @@ const Page = () => {
                 return;
             }
 
+            const nextJsResponse = await fetch(`/api/auth/login`, { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ 
+                    email: target.email.value, 
+                    password: target.password.value
+                }) 
+            });
+
+            if(!nextJsResponse) {
+                throw new Error("Failed to login on front-end server!");
+            }
+
             router.push('/');
         } catch (e) {
             console.log(e);
