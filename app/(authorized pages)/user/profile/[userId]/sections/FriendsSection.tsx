@@ -3,7 +3,7 @@ import UserProfileLink from '@/components/Link/UserProfileLink';
 import DropdownItemSkeleton from '@/components/Skeletons/DropdownItemSkeleton';
 import UserIcon from '@/components/UserIcon/UserIcon';
 import { Friend, User } from '@/lib/models/user';
-import { fetchFriends } from '@/main';
+import { friendshipService } from '@/lib/services/friendship';
 import { IconUserOff } from '@tabler/icons-react';
 import React, { useState } from 'react'
 
@@ -17,7 +17,7 @@ const FriendsSection = ({profileUser}: Props) => {
 
     const handleDataLoaderVisible = async () => {
         setTimeout(async () => {
-            const fetchedFriends = await fetchFriends(profileUser!.id, friends.length);
+            const fetchedFriends = await friendshipService.fetchFriends(profileUser!.id, friends.length);
             setFriends((prev) => [...prev, ...fetchedFriends]);
             setIsAllDataFetched(fetchedFriends.length < 6);
         }, 500);

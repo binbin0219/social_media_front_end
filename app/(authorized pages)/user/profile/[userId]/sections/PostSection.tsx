@@ -3,7 +3,7 @@ import Post from '@/components/Post/Post';
 import PostSkeleton from '@/components/PostSkeleton/PostSkeleton'
 import { Post as PostType } from '@/lib/models/post';
 import { User } from '@/lib/models/user';
-import { fetchPostsByUserId } from '@/main';
+import { postService } from '@/lib/services/post';
 import { addPosts } from '@/redux/slices/postSlice';
 import { RootState } from '@/redux/store';
 import React, { useState } from 'react'
@@ -20,7 +20,7 @@ const PostSection = ({profileUser}: Props) => {
     
     const handleDataLoaderVisible = async () => {
         try {
-            const fetchedPostsWithUserId = await fetchPostsByUserId(profileUser!.id!, posts.length, 6);
+            const fetchedPostsWithUserId = await postService.fetchPostsByUserId(profileUser!.id!, posts.length, 6);
             const fetchedPosts: PostType[] = fetchedPostsWithUserId.map(post => ({
                 ...post,
                 user: profileUser,

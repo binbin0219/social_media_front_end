@@ -12,8 +12,8 @@ import FriendListDropdown from './FriendListDropdown';
 import ChatWindow from './ChatWindow/ChatWindow';
 import SearchBar from './SearchBar';
 import UserProfileLink from '../Link/UserProfileLink';
-import { logout } from '@/js/auth';
 import { addToast } from '@/redux/slices/toastSlice';
+import { logout } from '@/lib/auth';
 
 export const Navbar = () => {
     const dispatch = useDispatch();

@@ -5,11 +5,11 @@ import DropdownItemSkeleton from '../Skeletons/DropdownItemSkeleton'
 import DataLoader from '../DataLoader/DataLoader'
 import { Friend } from '@/lib/models/user'
 import UserIcon from '../UserIcon/UserIcon'
-import { fetchFriends } from '@/main'
 import UserProfileLink from '../Link/UserProfileLink'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import Tooltip from '../Tooltip/Tooltip'
+import { friendshipService } from '@/lib/services/friendship'
 
 
 const FriendListDropdown = () => {
@@ -21,7 +21,7 @@ const FriendListDropdown = () => {
 
     const handleDataLoaderVisible = async () => {
         setTimeout(async () => {
-            const fetchedFriends = await fetchFriends(currentUserId, friends.length);
+            const fetchedFriends = await friendshipService.fetchFriends(currentUserId, friends.length);
             setFriends((prev) => [...prev, ...fetchedFriends]);
             setIsAllDataFetched(fetchedFriends.length < 6);
         }, 500);

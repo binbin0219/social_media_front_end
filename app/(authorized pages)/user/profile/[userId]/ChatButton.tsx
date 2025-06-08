@@ -1,5 +1,5 @@
 import Tooltip from '@/components/Tooltip/Tooltip';
-import { fetchPrivateChatRoom } from '@/main';
+import { chatService } from '@/lib/services/chat';
 import { addChatRooms, setActiveChatRoomId, setIsChatOpen } from '@/redux/slices/chatSlice';
 import { IconMessageCircle } from '@tabler/icons-react'
 import React from 'react'
@@ -13,7 +13,7 @@ const ChatButton = ({targetUserId} : Props) => {
     const dispatch = useDispatch();
 
     const handleCharButtonClick = async () => {
-        const chatRoom = await fetchPrivateChatRoom(targetUserId);
+        const chatRoom = await chatService.fetchPrivateChatRoom(targetUserId);
         dispatch(setIsChatOpen(true));
         dispatch(addChatRooms([chatRoom]));
         dispatch(setActiveChatRoomId(chatRoom.id));

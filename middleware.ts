@@ -1,6 +1,6 @@
-import { getFrontEndJwtCookie, verifyToken } from "@/js/auth";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
+import { getFrontEndJwtCookie, verifyToken } from "./lib/auth";
 
 export async function middleware(request: NextRequest) {
     const jwtCookie = await getFrontEndJwtCookie();

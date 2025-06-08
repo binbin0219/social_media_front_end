@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ChatRoomType } from '@/lib/models/ChatRoom'
 import { ChatMessage } from '@/lib/models/ChatMessage'
 import DataLoader from '@/components/DataLoader/DataLoader'
-import { fetchChatMessages } from '@/main'
 import { addMessages, setActiveChatRoomId } from '@/redux/slices/chatSlice'
 import styles from './styles.module.css';
 import { addToast } from '@/redux/slices/toastSlice'
 import Image from 'next/image'
+import { chatService } from '@/lib/services/chat'
 
 const ChatMessageList = () => {
     const dispatch = useDispatch();
@@ -62,7 +62,7 @@ const ChatMessageList = () => {
     const fetchMoreMessages = async () => {
         const offset = chatRoom.messages?.length ?? 0;
         const recordPerPage = 10;
-        const messages = await fetchChatMessages(chatRoom.id, offset, recordPerPage);
+        const messages = await chatService.fetchChatMessages(chatRoom.id, offset, recordPerPage);
         dispatch(addMessages({
             chatRoomId: chatRoom.id,
             chatMessages: messages

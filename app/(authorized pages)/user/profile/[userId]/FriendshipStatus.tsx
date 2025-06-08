@@ -1,8 +1,8 @@
 import Tooltip from '@/components/Tooltip/Tooltip'
 import { useAcceptFriendRequest } from '@/hooks/useAcceptFriendRequest'
 import { useRejectFriendRequest } from '@/hooks/useRejectFriendRequest'
+import { friendshipService } from '@/lib/services/friendship'
 import { Friendship } from '@/lib/models/friendship'
-import { acceptFriendRequestOnServer, rejectFriendRequestOnServer } from '@/main'
 import { decrementUnseenNotifCount, deleteNotifWithCountById } from '@/redux/slices/notificationSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { updateFriendship } from '@/redux/slices/userSlice'
@@ -34,17 +34,6 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
     const isRejected = friendship.status === 'REJECTED';
     const isRejectedByCurrentUser = isRejected && friendship.friendId === currentUserId;
     const isRejectedByOtherUser = isRejected && friendship.friendId === profileUserId;
-
-    const sendFriendRequestOnServer = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/request/send?friendId=${profileUserId}`, {
-            method: 'GET',
-            credentials: 'include'
-        });
-        if(!response.ok) {
-            throw new Error("Failed to send friend request");
-        }
-        return await response.json();
-    }
 
     const sendFriendRequestOnClient = () => {
         const updatedFriendship: Friendship = { 
@@ -99,7 +88,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     const addFriendBtnHandler = async () => {
         try {
-            await sendFriendRequestOnServer();
+            await friendshipService.sendFriendRequestOnServer(profileUserId);
             sendFriendRequestOnClient();
             dispatch(addToast({
                 type: 'success',
@@ -166,7 +155,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     const handleAcceptFriendRequest = async () => {
         try {
-            await acceptFriendRequestOnServer(profileUserId);
+            await friendshipService.acceptFriendRequestOnServer(profileUserId);
             acceptFriendRequestOnClient(friendship);
             if(friendReqNotif) {
                 dispatch(deleteNotifWithCountById(friendReqNotif.id));
@@ -188,7 +177,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     const handleRejectFriendRequest = async () => {
             try {
-                await rejectFriendRequestOnServer(profileUserId);
+                await friendshipService.rejectFriendRequestOnServer(profileUserId);
                 rejectFriendRequestOnClient(friendship);
                 if(friendReqNotif) {
                     dispatch(deleteNotifWithCountById(friendReqNotif.id));

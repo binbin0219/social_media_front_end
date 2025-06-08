@@ -2,7 +2,7 @@
 import DataLoader from '@/components/DataLoader/DataLoader'
 import UserIcon from '@/components/UserIcon/UserIcon'
 import { ChatRoom, ChatRoomType } from '@/lib/models/ChatRoom'
-import { fetchChatRooms, getPeerFromPrivateChatRoom } from '@/main'
+import { chatService } from '@/lib/services/chat'
 import { addChatRooms, setActiveChatRoomId } from '@/redux/slices/chatSlice'
 import { RootState } from '@/redux/store'
 import React, { useState } from 'react'
@@ -18,7 +18,7 @@ const ChatRoomList = () => {
     const handleDataLoaderVisible = async () => {
         setTimeout(async () => {
             try {
-                const fecthedChatRooms = await fetchChatRooms(chatRooms.length, 6);
+                const fecthedChatRooms = await chatService.fetchChatRooms(chatRooms.length, 6);
                 dispatch(addChatRooms(fecthedChatRooms));
                 setIsAllDataFetched(fecthedChatRooms.length < 6);
             } catch (error) {
@@ -44,7 +44,7 @@ const ChatRoomList = () => {
     }
 
     const PrivateChat = ({chatRoom}: {chatRoom: ChatRoom}) => {
-        const peer = getPeerFromPrivateChatRoom(chatRoom, currentUserId);
+        const peer = chatService.getPeerFromPrivateChatRoom(chatRoom, currentUserId);
         const unreadCount = chatRoom.unreadCount;
 
         let lastMessageAt = null;

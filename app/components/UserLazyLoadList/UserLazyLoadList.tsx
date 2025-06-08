@@ -1,10 +1,10 @@
-import { fetchUsersByUsername } from '@/main';
 import { IconArticleOff } from '@tabler/icons-react';
 import React, { useState } from 'react'
 import UserIcon from '../UserIcon/UserIcon';
 import DropdownItemSkeleton from '../Skeletons/DropdownItemSkeleton';
 import DataLoader from '../DataLoader/DataLoader';
 import { User } from '@/lib/models/user';
+import { userService } from '@/lib/services/user';
 
 type Props = {
     username: string;
@@ -19,7 +19,7 @@ const UserLazyLoadList = ({username, className, onItemClick}: Props) => {
     const handleDataLoaderVisible = (username: string) => {
         setTimeout(async () => {
             const recordPerPage = 6;
-            const users = await fetchUsersByUsername(username, searchResults.length, recordPerPage);
+            const users = await userService.fetchUsersByUsername(username, searchResults.length, recordPerPage);
 
             setSearchResults(prev => [...prev, ...users]);
             if(users.length < 6) {

@@ -3,7 +3,6 @@ import { useAcceptFriendRequest } from '@/hooks/useAcceptFriendRequest'
 import { useRejectFriendRequest } from '@/hooks/useRejectFriendRequest'
 import type { Notification as NotificationType, NotificationType as NotificationTypes } from '@/lib/models/notification'
 import { User } from '@/lib/models/user'
-import { acceptFriendRequestOnServer, deleteNotificationOnServer, rejectFriendRequestOnServer } from '@/main'
 import { deleteNotifWithCountById } from '@/redux/slices/notificationSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
@@ -12,6 +11,8 @@ import React, { JSX } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import UserIcon from '../UserIcon/UserIcon'
 import { useDeleteNotification } from '@/hooks/useDeleteNotification'
+import { friendshipService } from '@/lib/services/friendship'
+import { notifService } from '@/lib/services/notification'
 
 type Props = {
     notification: NotificationType,
@@ -108,7 +109,7 @@ const Notification = ({notification} : Props) => {
 
     const handleDeleteNotification = async () => {
         try {
-            await deleteNotificationOnServer(notification.id);
+            await notifService.deleteNotificationOnServer(notification.id);
             deleteNotificationOnClient(notification.id);
             dispatch(addToast({
                 message: "Notification deleted",
@@ -125,7 +126,7 @@ const Notification = ({notification} : Props) => {
 
     const handleAcceptFriendRequest = async () => {
         try {
-            await acceptFriendRequestOnServer(notification.senderId);
+            await friendshipService.acceptFriendRequestOnServer(notification.senderId);
             acceptFriendRequestOnClient(friendship);
             dispatch(deleteNotifWithCountById(notification.id));
             dispatch(addToast({
@@ -143,7 +144,7 @@ const Notification = ({notification} : Props) => {
 
     const handleRejectFriendRequest = async () => {
         try {
-            await rejectFriendRequestOnServer(notification.senderId);
+            await friendshipService.rejectFriendRequestOnServer(notification.senderId);
             rejectFriendRequestOnClient(friendship);
             dispatch(deleteNotifWithCountById(notification.id));
             dispatch(addToast({
