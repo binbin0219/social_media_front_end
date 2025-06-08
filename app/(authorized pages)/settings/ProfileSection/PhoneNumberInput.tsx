@@ -14,10 +14,11 @@ const PhoneNumberInput = ({phoneNumber, setterFunction} : Props) => {
     const itiRef = useRef<Plugin>(null);
     const [isInputValid, setIsInputValid] = useState(true);
     const [phoneNumberBody, setPhoneNumberBody] = useState(phoneNumber?.phoneNumberBody);
+    const [isIntlTelInputInitiated, setIsIntlTelInputInitiated] = useState(false);
 
     useEffect(() => {
         import('intl-tel-input').then((intlTelInput) => {
-            if (inputRef.current) {
+            if (inputRef.current && isIntlTelInputInitiated === false) {
                 itiRef.current = intlTelInput.default(inputRef.current, {
                     initialCountry: phoneNumber?.countryISO2 ?? "us",
                     separateDialCode: true,
@@ -25,9 +26,10 @@ const PhoneNumberInput = ({phoneNumber, setterFunction} : Props) => {
                     customContainer: "w-full",
                     utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js'
                 });
+                setIsIntlTelInputInitiated(true);
             }
         });
-    });
+    }, [phoneNumber?.countryISO2, isIntlTelInputInitiated]);
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPhoneNumberBody(e.target.value);
