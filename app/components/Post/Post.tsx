@@ -11,6 +11,7 @@ import { RootState } from '@/redux/store'
 import { deletePost, updatePost } from '@/redux/slices/postSlice'
 import { useRouter } from 'next/navigation'
 import { useSubcribeLikeWebSocket } from '@/hooks/useSubcribeLikeWebSocket'
+import { disableBtn, enableBtn } from '@/lib/utils/client'
 
 type Props = {
     postId: number,
@@ -78,15 +79,15 @@ const Post = memo(({ postId: postId }: Props) => {
     }
 
     const disableBtnFor1s = (element: RefObject<HTMLButtonElement | null>) => {
-        (element.current as HTMLButtonElement).classList.add('pointer-events-none');
+        disableBtn(element);
         setTimeout(() => {
-            (element.current as HTMLButtonElement).classList.remove('pointer-events-none');
+            enableBtn(element);
         }, 1000);
     }
 
     const likeOnclickHandler = async () => {
         try {
-            disableBtnFor1s(likeBtnRef);
+            disableBtn(likeBtnRef);
             await sendLikeToServer();
             setLikeState(prevState => ({
                 liked: !prevState.liked
@@ -97,6 +98,8 @@ const Post = memo(({ postId: postId }: Props) => {
                 type: 'error',
                 message: "Failed to like post!"
             }));
+        } finally {
+            disableBtnFor1s(likeBtnRef);
         }
     }
 

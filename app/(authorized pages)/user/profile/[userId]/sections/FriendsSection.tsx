@@ -12,12 +12,18 @@ type Props = {
 }
 
 const FriendsSection = ({profileUser}: Props) => {
+    const [isFetching, setIsFetching] = useState(false);
     const [isAllDataFetched, setIsAllDataFetched] = useState(false);
     const [friends, setFriends] = useState<Friend[]>([]);
 
     const handleDataLoaderVisible = async () => {
+        if(isFetching) return;
+        setIsFetching(true);
+
         setTimeout(async () => {
+            if(isAllDataFetched) return;
             const fetchedFriends = await friendshipService.fetchFriends(profileUser!.id, friends.length);
+            setIsFetching(false);
             setFriends((prev) => [...prev, ...fetchedFriends]);
             setIsAllDataFetched(fetchedFriends.length < 6);
         }, 500);

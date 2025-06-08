@@ -9,7 +9,7 @@ type Props = {
 
 export default function Tooltip({ children, text, position = "bottom", className = ""}: Props) {
     return (
-        <div className={"relative group inline-block " + className} onClick={() => console.log('asds')}>
+        <div className={"relative group inline-block " + className}>
             {children}
             <span
                 className={`

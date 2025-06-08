@@ -8,8 +8,9 @@ import { addToast } from '@/redux/slices/toastSlice'
 import { updateFriendship } from '@/redux/slices/userSlice'
 import { RootState } from '@/redux/store'
 import { IconUserCheck, IconUserExclamation } from '@tabler/icons-react'
-import React, { memo } from 'react'
+import React, { memo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { disableBtn, enableBtn } from '@/lib/utils/client'
 
 type Props = {
     friendship?: Friendship,
@@ -17,16 +18,21 @@ type Props = {
 }
 
 const FriendshipStatus = memo(({profileUserId} : Props) => {
+    const dispatch = useDispatch();
     const acceptFriendRequestOnClient = useAcceptFriendRequest();
     const rejectFriendRequestOnClient = useRejectFriendRequest();
-    const dispatch = useDispatch();
+    const sendFriendReqBtnRef = useRef<HTMLButtonElement>(null);
+    const unsendFriendReqBtnRef = useRef<HTMLButtonElement>(null);
+    const rejectFriendReqBtnRef = useRef<HTMLButtonElement>(null);
+    const acceptFriendReqBtnRef = useRef<HTMLButtonElement>(null);
+    const unfriendReqBtnRef = useRef<HTMLButtonElement>(null);
     const currentUserId = useSelector((state: RootState) => state.currentUser!.id);
     const friendship = useSelector((state: RootState) => state.user.find(user => user?.id == profileUserId)?.friendship);
     const friendReqNotif = useSelector((state: RootState) => {
         return Object.values(state.notifications.data).find(
             (notif) => notif.senderId === profileUserId && notif.recipientId === currentUserId
         );
-    })
+    });
 
     if(!friendship) return null;
 
@@ -88,6 +94,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     const addFriendBtnHandler = async () => {
         try {
+            disableBtn(sendFriendReqBtnRef)
             await friendshipService.sendFriendRequestOnServer(profileUserId);
             sendFriendRequestOnClient();
             dispatch(addToast({
@@ -100,6 +107,8 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                 type: 'error',
                 message: 'Failed to send friend request'
             }));
+        } finally {
+            enableBtn(sendFriendReqBtnRef);
         }
     }
 
@@ -110,6 +119,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
             "Confirm",
             async () => {
                 try {
+                    disableBtn(unsendFriendReqBtnRef)
                     confDialog();
                     await unsendFriendRequestOnServer();
                     unsendFriendRequestOnClient();
@@ -123,6 +133,8 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                         type: 'error',
                         message: 'Failed to unsend friend request'
                     }));
+                } finally {
+                    enableBtn(unsendFriendReqBtnRef)
                 }
             }
         )
@@ -135,6 +147,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
             "Confirm",
             async () => {
                 try {
+                    disableBtn(unfriendReqBtnRef);
                     confDialog();
                     await unfriendOnServer();
                     unfriendOnClient();
@@ -148,6 +161,8 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                         type: 'error',
                         message: 'Failed to unfriend'
                     }));
+                } finally {
+                    enableBtn(unfriendReqBtnRef);
                 }
             }
         )
@@ -155,6 +170,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     const handleAcceptFriendRequest = async () => {
         try {
+            disableBtn(acceptFriendReqBtnRef);
             await friendshipService.acceptFriendRequestOnServer(profileUserId);
             acceptFriendRequestOnClient(friendship);
             if(friendReqNotif) {
@@ -172,30 +188,35 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                 type: 'error',
                 message: 'Failed to accept friend request'
             }));
+        } finally {
+            enableBtn(acceptFriendReqBtnRef);
         }
     }
 
     const handleRejectFriendRequest = async () => {
-            try {
-                await friendshipService.rejectFriendRequestOnServer(profileUserId);
-                rejectFriendRequestOnClient(friendship);
-                if(friendReqNotif) {
-                    dispatch(deleteNotifWithCountById(friendReqNotif.id));
-                } else {
-                    dispatch(decrementUnseenNotifCount());
-                }
-                dispatch(addToast({
-                    message: "Friend request rejected",
-                    type: "success"
-                }))
-            } catch (error) {
-                console.log(error);
-                dispatch(addToast({
-                    message: "Failed to reject friend request",
-                    type: "error"
-                }))
+        try {
+            disableBtn(rejectFriendReqBtnRef);
+            await friendshipService.rejectFriendRequestOnServer(profileUserId);
+            rejectFriendRequestOnClient(friendship);
+            if(friendReqNotif) {
+                dispatch(deleteNotifWithCountById(friendReqNotif.id));
+            } else {
+                dispatch(decrementUnseenNotifCount());
             }
+            dispatch(addToast({
+                message: "Friend request rejected",
+                type: "success"
+            }))
+        } catch (error) {
+            console.log(error);
+            dispatch(addToast({
+                message: "Failed to reject friend request",
+                type: "error"
+            }))
+        } finally {
+            enableBtn(rejectFriendReqBtnRef);
         }
+    }
 
     return (
         <>
@@ -214,7 +235,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                 </button>
             </Tooltip>
             <Tooltip text='Friend request sent' position='bottom' className={friendship.status === 'PENDING' && isCurrentUserSender ? '' : 'hidden'}>
-                <button id="unsend_request_button" type="button" 
+                <button ref={unsendFriendReqBtnRef} id="unsend_request_button" type="button" 
                 onClick={() => handleUnsendFriendRequest()}
                 className={`
                     bg-green-200 border-green-400 text-green-600 hover:bg-green-300 border-2 px-3 py-2 rounded-lg mb-1
@@ -239,7 +260,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                     <ul className="dropdown-content">
                         <span className='font-bold'>Pending friend request</span>
                         <li className="dropdown-item">
-                            <button onClick={() => handleAcceptFriendRequest()} id="accept_request_button" type="button">
+                            <button ref={acceptFriendReqBtnRef} onClick={() => handleAcceptFriendRequest()} id="accept_request_button" type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-check inline">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                     <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -250,7 +271,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                             </button>
                         </li>
                         <li className="dropdown-item">
-                            <button onClick={() => handleRejectFriendRequest()} id="reject_request_button" type="button">
+                            <button ref={rejectFriendReqBtnRef} onClick={() => handleRejectFriendRequest()} id="reject_request_button" type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-x inline">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                     <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -265,7 +286,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                 </div>
             </div>
             <Tooltip text='Unfriend' position='bottom' className={friendship.status === 'ACCEPTED' ? '' : 'hidden'}>
-                <button id="unfriend_button" type="button" 
+                <button ref={unfriendReqBtnRef} id="unfriend_button" type="button" 
                 onClick={() => unfriendBtnHandler()}
                 className={`
                     bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1
@@ -281,7 +302,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                 </button>
             </Tooltip>
             <Tooltip text='Add friend' position='bottom' className={friendship.status === null || isRejectedByCurrentUser ? '' : 'hidden'}>
-                <button onClick={() => addFriendBtnHandler()} id="add_friend_button" type="button" 
+                <button ref={sendFriendReqBtnRef} onClick={() => addFriendBtnHandler()} id="add_friend_button" type="button" 
                 className={`
                     bg-sky-200 border-sky-400 text-sky-600 hover:bg-sky-300 border-2 px-3 py-2 rounded-lg mb-1
                 `}>

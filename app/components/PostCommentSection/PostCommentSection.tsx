@@ -1,16 +1,17 @@
 "use client"
 import { addToast } from '@/redux/slices/toastSlice';
-import React, { memo, RefObject, useRef, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PostComment from '../PostComment/PostComment';
 import { Post } from '@/lib/models/post';
 import { RootState } from '@/redux/store';
-import { addComments, createComment } from '@/redux/slices/postSlice';
+import { addComments, sendComment } from '@/redux/slices/postSlice';
 import PostCommentSkeleton from '../PostCommentSkeleton/PostCommentSkeleton';
 import { autoExpandInputHeight } from '@/main';
 import DataLoader from '../DataLoader/DataLoader';
 import { useSubcribeCommentWebSocket } from '@/hooks/useSubcribeCommentWebSocket';
 import { PostComment as PostCommentType } from '@/lib/models/comment';
+import { disableBtn, enableBtn } from '@/lib/utils/client';
 
 type Props = {
     postId: number,
@@ -83,13 +84,6 @@ const PostCommentSection = memo(({postId}: Props) => {
         )
     }
 
-    const disableBtnFor1s = (element: RefObject<HTMLButtonElement | null>) => {
-        (element.current as HTMLButtonElement).classList.add('pointer-events-none');
-        setTimeout(() => {
-            (element.current as HTMLButtonElement).classList.remove('pointer-events-none');
-        }, 1000);
-    }
-
     const sendCommentToServer = async (comment: string) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comment/create`, {
             method: 'POST',
@@ -110,23 +104,30 @@ const PostCommentSection = memo(({postId}: Props) => {
     
     const handleCommentSent = async () => {
         try {
+            disableBtn(commentSentBtnRef);
             if(!checkIsCommentSentable(commentState.commentingContent)) return;
             const sendedComment = await sendCommentToServer(commentState.commentingContent);
             setCommentState(() => ({
                 commentingContent: "",
             }));
-            dispatch(createComment({postId, comment: sendedComment}));
+            dispatch(sendComment({postId, comment: sendedComment}));
             dispatch(addToast({
                 type: 'success',
                 message: 'Comment sent'
             }));
-            disableBtnFor1s(commentSentBtnRef);
+            
+            // Scroll to top after comment sent
+            if(commentListRef.current) {
+                commentListRef.current.scrollTop = 0;
+            }
         } catch (error) {
             console.log(error);
             dispatch(addToast({
                 type: 'error',
                 message: "Comment couldn't be sent, please try again."
             }));
+        } finally {
+            enableBtn(commentSentBtnRef)
         }
     }
 

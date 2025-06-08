@@ -35,9 +35,10 @@ const PageClient = ({profileUser} : Props) => {
     const [coverUrl, setCoverUrl] = useState(profileUser?.coverUrl ?? defaultCoverUrl);
     const [currentSection, setCurrentSection] = useState('posts');
 
+    // Clear redux's posts state (clear post fetched from previous page)
     useEffect(() => {
         dispatch(setPosts([]));
-    })
+    }, [dispatch])
 
     useEffect(() => {
         dispatch(addUser(profileUser));

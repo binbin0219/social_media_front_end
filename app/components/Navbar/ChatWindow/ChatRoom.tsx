@@ -10,6 +10,7 @@ import ChatMessageList from './ChatMessageList';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { useWebSocket } from '@/context/WebSocketContext';
 import { setActiveChatRoomId } from '@/redux/slices/chatSlice';
+import { disableBtn, enableBtn } from '@/lib/utils/client';
 
 type Props = {
     actvieChatRoomId: string;
@@ -19,6 +20,7 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
     const dispatch = useDispatch();
     const { client, connected } = useWebSocket();
     const messageInputRef = useRef<HTMLTextAreaElement>(null);
+    const sendBtnRef = useRef<HTMLButtonElement>(null);
     const [typingMessage, setTypingMessage] = useState("");
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const currentUserId = useSelector((state: RootState) => state.currentUser!.id);
@@ -46,6 +48,7 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
         }
 
         try {
+            disableBtn(sendBtnRef);
             if(chatRoom.isTemp) {
                 client?.publish({
                     destination: '/app/chat.initPrivateChat',
@@ -70,6 +73,8 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
                 message: "Failed to send message",
                 type: 'error'
             }));
+        } finally {
+            enableBtn(sendBtnRef)
         }
     }
 
@@ -126,7 +131,7 @@ const ChatRoom = ({actvieChatRoomId} : Props) => {
                         {/* <button type='button' className='hover:opacity-20 cursor-pointer transition-opacity duration-300'>
                             <IconPhoto/>
                         </button> */}
-                        <button onClick={() => handleSendMessage()} type='button' className='hover:opacity-20 cursor-pointer transition-opacity duration-300'>
+                        <button ref={sendBtnRef} onClick={() => handleSendMessage()} type='button' className='hover:opacity-20 cursor-pointer transition-opacity duration-300'>
                             <IconSend/>
                         </button>
                     </div>

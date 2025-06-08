@@ -7,12 +7,14 @@ import { addPost } from '@/redux/slices/postSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
 import UserProfileLink from '../Link/UserProfileLink'
+import { disableBtn, enableBtn } from '@/lib/utils/client'
 
 
 const CreatePostForm = () => {
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const dispatch = useDispatch();
     const createPostBtnContainer = useRef<HTMLDivElement>(null);
+    const createPostBtnRef = useRef<HTMLButtonElement>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [form, setForm] = React.useState<{title: string, content: string}>({
         title: '',
@@ -21,31 +23,42 @@ const CreatePostForm = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/create`, { 
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include', 
-            body: JSON.stringify({
-                title: formData.get('title'),
-                content: formData.get('content')
-            })
-        });
-        if (!response.ok) {
-            return;
+        try {
+            disableBtn(createPostBtnRef)
+            const formData = new FormData(event.currentTarget);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/create`, { 
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include', 
+                body: JSON.stringify({
+                    title: formData.get('title'),
+                    content: formData.get('content')
+                })
+            });
+            if (!response.ok) {
+                return;
+            }
+            const createdPost = await response.json();
+            createdPost.user = currentUser;
+            createdPost.isNew = true;
+            dispatch(addPost(createdPost));
+            dispatch(addToast({
+                type: 'success',
+                message: 'Post created successfully'
+            }));
+            setForm({title: '', content: ''});
+            setIsFormOpen(false);
+        } catch (error) {
+            console.error(error);
+            dispatch(addToast({
+                type: 'error',
+                message: 'Failed to add post !'
+            }));
+        } finally {
+            enableBtn(createPostBtnRef);
         }
-        const createdPost = await response.json();
-        createdPost.user = currentUser;
-        createdPost.isNew = true;
-        dispatch(addPost(createdPost));
-        dispatch(addToast({
-            type: 'success',
-            message: 'Post created successfully'
-        }));
-        setForm({title: '', content: ''});
-        setIsFormOpen(false);
     };
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +127,7 @@ const CreatePostForm = () => {
                     </svg>
                 </button>
                 <div id="create-post-btn-container" ref={createPostBtnContainer} className={`flex gap-5 ${isFormOpen ? '' : 'hidden'}`}>
-                    <button type="submit">
+                    <button ref={createPostBtnRef} type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-square-rounded-check">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M9 12l2 2l4 -4" />

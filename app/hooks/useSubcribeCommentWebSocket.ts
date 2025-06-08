@@ -1,6 +1,6 @@
 import { useWebSocket } from "@/context/WebSocketContext";
 import { PostComment } from "@/lib/models/comment";
-import { createComment } from "@/redux/slices/postSlice";
+import { sendComment } from "@/redux/slices/postSlice";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,7 @@ export function useSubcribeCommentWebSocket(postId: number) {
             const sub = client.subscribe(`/topic/${postId}/postComments`, (msg) => {
                 const comment: PostComment = JSON.parse(msg.body);
                 if(comment.user?.id === currentUserId) return; // Skip add comment if is current user's comment
-                dispatch(createComment({ postId, comment : comment }));
+                dispatch(sendComment({ postId, comment : comment }));
             });
 
             return () => sub.unsubscribe();
