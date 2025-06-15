@@ -1,4 +1,5 @@
 import UserIcon from '@/components/UserIcon/UserIcon'
+import { useDialogContext } from '@/context/DialogContext';
 import { addToast } from '@/redux/slices/toastSlice';
 import { RootState } from '@/redux/store';
 import { IconArrowsShuffle, IconUpload } from '@tabler/icons-react'
@@ -14,16 +15,20 @@ type Props = {
 
 const AvatarChanger = ({avatar, updateUserData} : Props) => {
     const dispatch = useDispatch();
+    const dialog = useDialogContext();
+    const avatarCroppieContainerRef = useRef<HTMLDivElement>(null);
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const randomAvatarBtnRef = useRef<HTMLButtonElement>(null);
 
     const handleImgUpload = () => {
-        confDialog(
+        dialog.open(
             "Edit cover",
-            `<div class="w-full flex justify-center">
-                <div id="avatar_croppie"></div>
-            </div>`, 
+            (
+                <div className="w-full flex justify-center">
+                    <div ref={avatarCroppieContainerRef} id="avatar_croppie"></div>
+                </div>
+            ), 
             'Confirm', 
             async () => {
                 try {
@@ -40,7 +45,7 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
                         type: 'error'
                     }));
                 } finally {
-                    confDialog();
+                    dialog.close();
                     avatarCroppie.destroy();
                     if (avatarInputRef.current) {
                         avatarInputRef.current.value = '';
@@ -49,8 +54,10 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
             }
         )
 
-        const avatarCroppieContainer = document.querySelector('#avatar_croppie') as HTMLDivElement;
-        const avatarCroppie = initializeAvatarCroppie(avatarCroppieContainer);
+        let avatarCroppie: Croppie;
+        setTimeout(() => {
+            avatarCroppie = initializeAvatarCroppie(avatarCroppieContainerRef.current!);
+        }, 25);
     };
 
     const initializeAvatarCroppie = (element: HTMLElement): Croppie => {

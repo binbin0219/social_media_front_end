@@ -1,14 +1,20 @@
 "use client"
-import React, { FormEvent, useEffect } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import './login.css'
 import { useRouter } from 'next/navigation'
+import LoadingButton from '@/components/LoadingButton/LoadingButton'
 
 const Page = () => {
     const router = useRouter();
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const [isInputWrong, setIsInputWrong] = useState(false);
 
     const handleLogin = async (event : FormEvent) => {
         try {
             event.preventDefault();
+            if(isLoggingIn) return;
+            setIsLoggingIn(true);
+            setIsInputWrong(false);
             const target = event.target as HTMLFormElement;
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, { 
                 method: 'POST', 
@@ -23,7 +29,7 @@ const Page = () => {
             });
 
             if(!response.ok) {
-                displayMessage("show");
+                setIsInputWrong(true);
                 return;
             }
 
@@ -47,20 +53,10 @@ const Page = () => {
         } catch (e) {
             console.log(e);
             alert("Lost connection from server! please try again later.");
+        } finally {
+            setIsLoggingIn(false);
         }
     }
-    
-    const displayMessage = (action: string) => {
-        const messageDisplayer = document.querySelectorAll(".incorrectEmailOrPassword");
-
-        for (let i = 0; i < messageDisplayer.length; i++) {
-            if (action === "show") {
-            messageDisplayer[i].classList.remove("hidden");
-            } else {
-            messageDisplayer[i].classList.add("hidden");
-            }
-        }
-    };
 
     const inputIconAnimation = () => {
         document.querySelectorAll(".InputFields input").forEach(InputField => {
@@ -100,8 +96,11 @@ const Page = () => {
                                 </svg>
                                 <input name="email"/>
                                 <div className="InputFieldBottomLine"></div>
-                                <span className="incorrectEmailOrPassword hidden" style={{color: "red"}}>
-                                    Incorrect email or password</span>
+                                {isInputWrong && (
+                                    <span style={{color: 'red'}}>
+                                        Incorrect email or password
+                                    </span>
+                                )}
                             </div>
                         </div>
                         <div>
@@ -115,12 +114,21 @@ const Page = () => {
                             </svg>
                                 <input name="password" type="password"/>
                                 <div className="InputFieldBottomLine"></div>
-                                <span className="incorrectEmailOrPassword hidden" style={{color: 'red'}}>
-                                    Incorrect email or password</span>
+                                {isInputWrong && (
+                                    <span style={{color: 'red'}}>
+                                        Incorrect email or password
+                                    </span>
+                                )}
                             </div>
                         </div>
-                        
-                        <button type="submit" className="LoginButton poppins-regular mt-5">Login</button>
+                        <LoadingButton
+                            type='submit'
+                            className='LoginButton poppins-regular mt-5 flex gap-3 items-center justify-center'
+                            isLoading={isLoggingIn}
+                            text='Login'
+                            loadingText='Logging in...'
+                            loaderColor='#8F00FF'
+                        />
                     </form>
                     <div className="alreadyHaveAnAccount">
                         <p>Don&apos;t have an account?</p>

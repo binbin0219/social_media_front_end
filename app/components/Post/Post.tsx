@@ -12,6 +12,7 @@ import { deletePost, updatePost } from '@/redux/slices/postSlice'
 import { useRouter } from 'next/navigation'
 import { useSubcribeLikeWebSocket } from '@/hooks/useSubcribeLikeWebSocket'
 import { disableBtn, enableBtn } from '@/lib/utils/client'
+import { useDialogContext } from '@/context/DialogContext'
 
 type Props = {
     postId: number,
@@ -21,6 +22,7 @@ const Post = memo(({ postId: postId }: Props) => {
     useSubcribeLikeWebSocket(postId);
     const router = useRouter();
     const dispatch = useDispatch();
+    const dialog = useDialogContext();
     const likeBtnRef = useRef<HTMLButtonElement>(null);
     const currentUser : User = useSelector((state: RootState) => state.currentUser);
     const post = useSelector((state: RootState) => state.post.find((post: Post) => post.id === postId));
@@ -88,15 +90,18 @@ const Post = memo(({ postId: postId }: Props) => {
     const likeOnclickHandler = async () => {
         try {
             disableBtn(likeBtnRef);
-            await sendLikeToServer();
             setLikeState(prevState => ({
                 liked: !prevState.liked
             }));
+            await sendLikeToServer();
         } catch (error) {
             console.log(error);
             dispatch(addToast({
                 type: 'error',
                 message: "Failed to like post!"
+            }));
+            setLikeState(prevState => ({
+                liked: !prevState.liked
             }));
         } finally {
             disableBtnFor1s(likeBtnRef);
@@ -107,17 +112,35 @@ const Post = memo(({ postId: postId }: Props) => {
         setCommentExpanded(!commentExpanded);
     }
 
+    const PostEdit = () => {
+        const [title, setTitle] = useState(post.title);
+        const [content, setContent] = useState(post.content);
+        return (
+            <div className="flex flex-col w-[600px] max-w-[85vw]">
+                <p className="mb-1 text-sm">Header</p>
+                <input 
+                id="postEditTitle" 
+                onChange={(e) => setTitle(e.target.value)} 
+                value={title} 
+                type="text" 
+                className="w-full border rounded mb-3 p-2 text-sm focus:border-slate-400 outline-none"
+                />
+                <p className="mb-1 text-sm">Body</p>
+                <textarea 
+                id="postEditContent" 
+                onChange={(e) => setContent(e.target.value)} 
+                value={content} 
+                rows={7} 
+                className="w-full border rounded p-2 text-sm focus:border-slate-400 outline-none">
+                </textarea>
+            </div>
+        )
+    }
+
     const editBtnHandler = () => {
-        confDialog(
+        dialog.open(
             'Edit Post',
-            `   
-                <div class="flex flex-col w-[600px] max-w-[85vw]">
-                    <p class="mb-1 text-sm">Header</p>
-                    <input id="postEditTitle" value="${post.title}" type="text" class="w-full border rounded mb-3 p-2 text-sm focus:border-slate-400 outline-none"/>
-                    <p class="mb-1 text-sm">Body</p>
-                    <textarea id="postEditContent" rows="7" type="text" class="w-full border rounded p-2 text-sm focus:border-slate-400 outline-none">${post.content}</textarea>
-                </div>
-            `,
+            <PostEdit/>,
             'Done',
             async () => {
                 try {
@@ -138,21 +161,21 @@ const Post = memo(({ postId: postId }: Props) => {
                         type: 'success',
                         message: 'Post updated'
                     }));
-                    confDialog();
+                    dialog.close();
                 } catch (error) {
+                    dialog.close();
                     console.log(error);
                     dispatch(addToast({
                         type: 'error',
                         message: 'Failed to update post'
                     }));
-                    confDialog();
                 }
             }
         )
     }
 
     const deleteBtnHandler = () => {
-        confDialog(
+        dialog.open(
             'Delete Post',
             `Are you sure to delete this post?`,
             'Delete',
@@ -164,14 +187,14 @@ const Post = memo(({ postId: postId }: Props) => {
                         type: 'success',
                         message: 'Post deleted successfully'
                     }));
-                    confDialog();
                 } catch (error) {
                     console.log(error);
                     dispatch(addToast({
                         type: 'error',
                         message: 'Failed to delete post'
                     }));
-                    confDialog();
+                } finally {
+                    dialog.close();
                 }
             }
         )

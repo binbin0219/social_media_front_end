@@ -11,6 +11,7 @@ export type ChatRoom = {
     members: ChatRoomMember[];
     messages: ChatMessage[] | null
     unreadCount: number;
+    isAllMessagesLoaded?: boolean;
 }
 
 export type UnreadMessageCount = {

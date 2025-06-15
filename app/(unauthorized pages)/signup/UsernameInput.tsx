@@ -2,18 +2,18 @@ import Tooltip from '@/components/Tooltip/Tooltip';
 import React from 'react'
 import GenderInput from './GenderInput';
 import { Gender } from '@/lib/models/user';
+import { IconUser } from '@tabler/icons-react';
 
 type Props = {
     username: string;
     setUsername: (username: string) => void;
     isUsernameValid: boolean;
     setIsUsernameValid: (valid: boolean) => void;
-    setStep: React.Dispatch<React.SetStateAction<1 | 2 | 3>>;
     gender: Gender;
     setGender: (gender: Gender) => void;
 }
 
-const UsernameInput = ({username, setUsername, isUsernameValid, setIsUsernameValid, setStep, gender, setGender}: Props) => {
+const UsernameInput = ({username, setUsername, isUsernameValid, setIsUsernameValid, gender, setGender}: Props) => {
 
     function checkUsernameValidity(username: string): boolean {
         const isNotEmpty = username.trim().length > 0;
@@ -113,7 +113,7 @@ const UsernameInput = ({username, setUsername, isUsernameValid, setIsUsernameVal
                     </Tooltip>
                 </div>
                 <div className="InputFields">
-                    <span className="material-symbols-outlined icon"> person</span>
+                    <IconUser className='icon'/>
                     <input
                     value={username}
                     onInput={e => handleUsernameInput(e)}
@@ -134,12 +134,12 @@ const UsernameInput = ({username, setUsername, isUsernameValid, setIsUsernameVal
                 gender={gender}
                 setGender={setGender}
             />
-            <div className='flex flex-col gap-4 w-full' style={{ marginTop: "20px" }}>
+            {/* <div className='flex flex-col gap-4 w-full' style={{ marginTop: "20px" }}>
                 <button type="submit" className={`sign-up-button ${!isUsernameValid && 'disabled'}`}>Finish sign up</button>
                 <button onClick={() => setStep(2)} type="button" className={`w-[100%] flex justify-center items-center rounded-full border p-2 hover:bg-slate-200 transition-all`} >
                     Back
                 </button>
-            </div>
+            </div> */}
         </>
     )
 }

@@ -132,6 +132,16 @@ const chatSlice = createSlice({
                 state.chatRooms.push(newPrivateChat);
                 state.allUnreadCount++;
             }
+        },
+        setAllChatMessagesLoaded: (state, action: PayloadAction<{
+            chatRoomId: string;
+            isAllMessagesLoaded: boolean;
+        }>) => {
+            const { chatRoomId, isAllMessagesLoaded } = action.payload;
+            const chatRoom = state.chatRooms.find(chatRoom => chatRoom.id === chatRoomId);
+            if(chatRoom) {
+                chatRoom.isAllMessagesLoaded = isAllMessagesLoaded;
+            }
         }
     }
 });
@@ -144,7 +154,8 @@ export const {
     addMessages, 
     sendMessage, 
     initPrivateChat,
-    addPrivateChat
+    addPrivateChat,
+    setAllChatMessagesLoaded
 } = chatSlice.actions;
 export default chatSlice.reducer
 

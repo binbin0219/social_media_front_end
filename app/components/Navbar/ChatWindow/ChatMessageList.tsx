@@ -1,11 +1,11 @@
 "use client"
 import { RootState } from '@/redux/store'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ChatRoomType } from '@/lib/models/ChatRoom'
 import { ChatMessage } from '@/lib/models/ChatMessage'
 import DataLoader from '@/components/DataLoader/DataLoader'
-import { addMessages, setActiveChatRoomId } from '@/redux/slices/chatSlice'
+import { addMessages, setActiveChatRoomId, setAllChatMessagesLoaded } from '@/redux/slices/chatSlice'
 import styles from './styles.module.css';
 import { addToast } from '@/redux/slices/toastSlice'
 import Image from 'next/image'
@@ -19,8 +19,7 @@ const ChatMessageList = () => {
     const currentUserId = useSelector((state: RootState) => state.currentUser?.id)!;
     const chatRoom = useSelector((state: RootState) => 
         state.chat.chatRooms.find(chatRoom => chatRoom.id === state.chat.actvieChatRoomId))!;    
-    const [allMessageFetchedRoom, setAllMessageFetchedRoom] = useState<string[]>([]);
-    const isAllMessageFetched = allMessageFetchedRoom.includes(chatRoom.id);
+    const isAllMessageFetched = chatRoom.isAllMessagesLoaded;
     const isPrivateRoom = chatRoom?.type === ChatRoomType.PRIVATE ? true : false;
 
     useEffect(() => {
@@ -70,7 +69,10 @@ const ChatMessageList = () => {
 
         const isAllMessageFetched = messages.length < recordPerPage;
         if(isAllMessageFetched) {
-            setAllMessageFetchedRoom(prev => [...prev, chatRoom.id]);
+            dispatch(setAllChatMessagesLoaded({
+                chatRoomId: chatRoom.id,
+                isAllMessagesLoaded: isAllMessageFetched
+            }))
         }
     }
         

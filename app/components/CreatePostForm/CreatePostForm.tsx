@@ -7,14 +7,14 @@ import { addPost } from '@/redux/slices/postSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
 import UserProfileLink from '../Link/UserProfileLink'
-import { disableBtn, enableBtn } from '@/lib/utils/client'
+import LoadingButton from '../LoadingButton/LoadingButton'
 
 
 const CreatePostForm = () => {
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const dispatch = useDispatch();
     const createPostBtnContainer = useRef<HTMLDivElement>(null);
-    const createPostBtnRef = useRef<HTMLButtonElement>(null);
+    const [isCreatingForm, setIsCreatingForm] = useState(false);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [form, setForm] = React.useState<{title: string, content: string}>({
         title: '',
@@ -24,7 +24,8 @@ const CreatePostForm = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            disableBtn(createPostBtnRef)
+            if(isCreatingForm) return;
+            setIsCreatingForm(true);
             const formData = new FormData(event.currentTarget);
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/create`, { 
                 method: 'POST', 
@@ -57,7 +58,7 @@ const CreatePostForm = () => {
                 message: 'Failed to add post !'
             }));
         } finally {
-            enableBtn(createPostBtnRef);
+            setIsCreatingForm(false);
         }
     };
 
@@ -127,13 +128,18 @@ const CreatePostForm = () => {
                     </svg>
                 </button>
                 <div id="create-post-btn-container" ref={createPostBtnContainer} className={`flex gap-5 ${isFormOpen ? '' : 'hidden'}`}>
-                    <button ref={createPostBtnRef} type="submit">
+                    <LoadingButton
+                    isLoading={isCreatingForm}
+                    loaderColor='black'
+                    type='submit'
+                    text={(
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-square-rounded-check">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M9 12l2 2l4 -4" />
                             <path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
                         </svg>
-                    </button>
+                    )}
+                    />
                     <button disabled type="button" className="opacity-50">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-photo-plus">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />

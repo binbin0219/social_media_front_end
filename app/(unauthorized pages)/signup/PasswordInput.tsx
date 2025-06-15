@@ -1,5 +1,5 @@
 "use client"
-import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { IconEye, IconEyeOff, IconLock } from '@tabler/icons-react';
 import React, { useState } from 'react'
 
 type Props = {
@@ -51,7 +51,7 @@ const PasswordInput = ({password, setPassword, isPasswordValid, setStep, setIsPa
                     </button>
                 </div>
                 <div className="InputFields">
-                    <span className="material-symbols-outlined icon"> lock</span>
+                    <IconLock className='icon'/>
                     <input 
                     value={password} 
                     onInput={e => handlePasswordInput(e)} 

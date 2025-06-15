@@ -14,16 +14,18 @@ import SearchBar from './SearchBar';
 import UserProfileLink from '../Link/UserProfileLink';
 import { addToast } from '@/redux/slices/toastSlice';
 import { logout } from '@/lib/auth';
+import { useDialogContext } from '@/context/DialogContext';
 
 export const Navbar = () => {
     const dispatch = useDispatch();
     const router = useRouter();
+    const dialog = useDialogContext();
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const isSettingRoute = usePathname().startsWith('/settings');
     const isUserProfileRoute = usePathname().startsWith(`/user/profile/${currentUser!.id}`);
 
     function logoutConf() {
-        confDialog(
+        dialog.open(
             'Logout', 
             'Are you sure you want to logout?', 
             'Logout', 
@@ -36,7 +38,8 @@ export const Navbar = () => {
                         message: "Failed to logout",
                         type: "error"
                     }))
-                    confDialog();
+                } finally {
+                    dialog.close();
                 }
             }
         )

@@ -11,7 +11,7 @@ import { autoExpandInputHeight } from '@/main';
 import DataLoader from '../DataLoader/DataLoader';
 import { useSubcribeCommentWebSocket } from '@/hooks/useSubcribeCommentWebSocket';
 import { PostComment as PostCommentType } from '@/lib/models/comment';
-import { disableBtn, enableBtn } from '@/lib/utils/client';
+import LoadingButton from '../LoadingButton/LoadingButton';
 
 type Props = {
     postId: number,
@@ -20,8 +20,8 @@ type Props = {
 const PostCommentSection = memo(({postId}: Props) => {
     useSubcribeCommentWebSocket(postId);
     const commentInputRef = useRef<HTMLTextAreaElement>(null);
-    const commentSentBtnRef = useRef<HTMLButtonElement>(null);
     const commentListRef = useRef<HTMLDivElement>(null);
+    const [isSendingComment, setIsSendingComment] = useState(false);
     const [isAllCommentsFetched, setIsAllCommentsFetched] = useState(false);
     const dispatch = useDispatch();
     const commentIds : number[] = useSelector(
@@ -104,8 +104,9 @@ const PostCommentSection = memo(({postId}: Props) => {
     
     const handleCommentSent = async () => {
         try {
-            disableBtn(commentSentBtnRef);
             if(!checkIsCommentSentable(commentState.commentingContent)) return;
+            if(isSendingComment) return;
+            setIsSendingComment(true);
             const sendedComment = await sendCommentToServer(commentState.commentingContent);
             setCommentState(() => ({
                 commentingContent: "",
@@ -127,7 +128,7 @@ const PostCommentSection = memo(({postId}: Props) => {
                 message: "Comment couldn't be sent, please try again."
             }));
         } finally {
-            enableBtn(commentSentBtnRef)
+            setIsSendingComment(false);
         }
     }
 
@@ -144,6 +145,7 @@ const PostCommentSection = memo(({postId}: Props) => {
     }
 
     const handleCommentInput = (event : React.ChangeEvent<HTMLTextAreaElement>) => {
+        if(isSendingComment) return;
         setCommentState(prevState => ({
             ...prevState,
             commentingContent: event.target.value
@@ -167,13 +169,20 @@ const PostCommentSection = memo(({postId}: Props) => {
             </div>
             <div className="w-full flex gap-2 relative">
                 <textarea ref={commentInputRef} value={commentState.commentingContent} onChange={(e) => handleCommentInput(e)} placeholder='Write your comment...' className="w-full max-w-[100%] h-auto max-h-[200px] post-comment-input border rounded-lg p-3 pe-8 outline-none resize-none" rows={1}></textarea>
-                <button ref={commentSentBtnRef} onClick={async () => await handleCommentSent()} type="button" data-post-action="add-comment" className="absolute end-[10px] bottom-[13px] cursor-pointer hover:opacity-50">
+                <LoadingButton
+                type='submit'
+                className='absolute end-[10px] top-1/2 -translate-y-1/2 cursor-pointer hover:opacity-50'
+                isLoading={isSendingComment}
+                loaderColor='#9691a5'
+                onClick={async () => await handleCommentSent()}
+                text={(
                     <svg style={{pointerEvents: "none"}} data-post-action="add-comment" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-send">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                         <path d="M10 14l11 -11" />
                         <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
                     </svg>
-                </button>
+                )}
+                />
             </div>
         </div>
     )

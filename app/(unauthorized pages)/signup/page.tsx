@@ -5,6 +5,7 @@ import EmailInput from './EmailInput'
 import PasswordInput from './PasswordInput'
 import UsernameInput from './UsernameInput'
 import { Gender } from '@/lib/models/user'
+import LoadingButton from '@/components/LoadingButton/LoadingButton'
 
 type SignUpDetails = {
     username: string;
@@ -23,6 +24,7 @@ const Page = () => {
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [isUsernameValid, setIsUsernameValid] = useState(false);
+    const [isSigningUp, setIsSigningUp] = useState(false);
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [existedEmail, setExistedEmail] = useState<string[]>([]);
     const isEmailExisted = existedEmail.find(email => email == signUpDetails.email);
@@ -34,13 +36,13 @@ const Page = () => {
         document.querySelectorAll(".InputFields input").forEach(InputField => {
             InputField.addEventListener('focus', (event) => {
                 const target = event.target as HTMLElement;
-                const UserIcon = target.parentNode!.querySelector("span");
+                const UserIcon = target.parentNode!.querySelector(".tabler-icon");
                 UserIcon!.classList.add("IconFocus");
             })
 
             InputField.addEventListener('blur', (event) => {
                 const target = event.target as HTMLElement;
-                const UserIcon = target.parentNode!.querySelector("span");
+                const UserIcon = target.parentNode!.querySelector(".tabler-icon");
                 UserIcon!.classList.remove("IconFocus");
             })
         })
@@ -61,25 +63,34 @@ const Page = () => {
             return;
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: signUpDetails.username,
-                email: signUpDetails.email,
-                password: signUpDetails.password,
-                gender: signUpDetails.gender
-            })
-        });
+        try {
+            if(isSigningUp) return;
+            setIsSigningUp(true);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: signUpDetails.username,
+                    email: signUpDetails.email,
+                    password: signUpDetails.password,
+                    gender: signUpDetails.gender
+                })
+            });
 
-        if (!response.ok) {
-            alert("Something went wrong, please try again later.");
-            return;
+            if (!response.ok) {
+                alert("Something went wrong, please try again later.");
+                return;
+            }
+
+            window.location.href = '/signup/success';
+        } catch (error) {
+            console.error(error);
+            alert("Failed to sign up, please try again");
+        } finally {
+            setIsSigningUp(false);
         }
-
-        window.location.href = '/signup/success';
     }
 
     return (
@@ -113,10 +124,22 @@ const Page = () => {
                         setUsername={(username) => setSignUpDetails(prev => ({...prev, username}))}
                         isUsernameValid={isUsernameValid}
                         setIsUsernameValid={setIsUsernameValid}
-                        setStep={setStep}
                         gender={signUpDetails.gender}
                         setGender={(gender) => setSignUpDetails(prev => ({...prev, gender}))}
                     />
+                    <div className='flex flex-col gap-4 w-full' style={{ marginTop: "20px" }}>
+                        <LoadingButton
+                        type='submit'
+                        className={`sign-up-button ${!isUsernameValid && 'disabled'} flex items-center justify-center gap-3`}
+                        isLoading={isSigningUp}
+                        text='Finish sign up'
+                        loadingText='Signing up...'
+                        loaderColor='#8F00FF'
+                        />
+                        <button onClick={() => {if(isSigningUp) return; setStep(2)}} type="button" className={`w-[100%] flex justify-center items-center rounded-full border p-2 hover:bg-slate-200 transition-all`} >
+                            Back
+                        </button>
+                    </div>
                 </form>
             )}
             <div className="alreadyHaveAnAccount">

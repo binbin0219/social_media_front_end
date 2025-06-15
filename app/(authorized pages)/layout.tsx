@@ -13,6 +13,7 @@ import { initialState as notificationsInitialState } from "@/redux/slices/notifi
 import FileViewer from "@/components/FileViewer/FileViewer";
 import { WebSocketProvider } from "@/context/WebSocketContext";
 import { Poppins, Fugaz_One } from 'next/font/google';
+import { DialogContextProvider } from "@/context/DialogContext";
 
 const poppins = Poppins({
 	subsets: ['latin'],
@@ -78,11 +79,13 @@ export default async function RootLayout({
 							initialPosts={[]}
 							allUnreadMessagesCount={authUserData?.unreadChatMessageCount ?? 0}
 						>
-							<Navbar />
-							<ConfirmationDialog />
-							<ToastContainer />
-							<FileViewer/>
-							{children}
+							<DialogContextProvider>
+								<Navbar />
+								<ConfirmationDialog />
+								<ToastContainer />
+								<FileViewer/>
+								{children}
+							</DialogContextProvider>
 						</StoreProvider>
 					</WebSocketProvider>
 				</body>

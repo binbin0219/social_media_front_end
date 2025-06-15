@@ -7,12 +7,13 @@ import { deleteNotifWithCountById } from '@/redux/slices/notificationSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
 import { IconCheck, IconTrash, IconX } from '@tabler/icons-react'
-import React, { JSX } from 'react'
+import React, { JSX, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import UserIcon from '../UserIcon/UserIcon'
 import { useDeleteNotification } from '@/hooks/useDeleteNotification'
 import { friendshipService } from '@/lib/services/friendship'
 import { notifService } from '@/lib/services/notification'
+import LoadingButton from '../LoadingButton/LoadingButton'
 
 type Props = {
     notification: NotificationType,
@@ -24,6 +25,9 @@ const Notification = ({notification} : Props) => {
     const rejectFriendRequestOnClient = useRejectFriendRequest();
     const deleteNotificationOnClient = useDeleteNotification();
     const dispatch = useDispatch();
+    const [isAcceptingFriendReq, setIsAcceptingFriendReq] = useState(false);
+    const [isRejectingFriendReq, setIsRejectingFriendReq] = useState(false);
+    const [isDeletingNotification, setIsDeletingNotification] = useState(false);
     
     const notificationIcons: Record<NotificationTypes, () => JSX.Element> = {
         "LIKE": function () {
@@ -59,12 +63,26 @@ const Notification = ({notification} : Props) => {
     const FriendRequestButtons = () => {
         return (
             <>
-                <button onClick={() => handleRejectFriendRequest()} type="button" className="reject-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                <LoadingButton
+                loaderWidth={16}
+                className='reject-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600'
+                isLoading={isRejectingFriendReq}
+                onClick={() => handleRejectFriendRequest()}
+                text={(
                     <IconX width={16} height={16}/>
-                </button>
-                <button onClick={() => handleAcceptFriendRequest()} type="button" className="accept-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600">
+                )}
+                loaderColor='#fca5a5'
+                />
+                <LoadingButton
+                loaderWidth={16}
+                className='accept-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600'
+                isLoading={isAcceptingFriendReq}
+                onClick={() => handleAcceptFriendRequest()}
+                text={(
                     <IconCheck width={16} height={16}/>
-                </button>
+                )}
+                loaderColor='#86efac'
+                />
             </>
         )
     }
@@ -78,9 +96,16 @@ const Notification = ({notification} : Props) => {
                 <button type="button" className="mark-as-read-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600">
                     <IconCheck width={16} height={16}/>
                 </button> */}
-                <button onClick={() => handleDeleteNotification()} type="button" className="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                <LoadingButton
+                loaderWidth={16}
+                className='delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600'
+                isLoading={isDeletingNotification}
+                onClick={() => handleDeleteNotification()}
+                text={(
                     <IconTrash width={16} height={16}/>
-                </button>
+                )}
+                loaderColor='#fca5a5'
+                />
             </>
         )
     }
@@ -88,9 +113,16 @@ const Notification = ({notification} : Props) => {
     const CommentButtons = () => {
         return (
             <>
-                <button onClick={() => handleDeleteNotification()} type="button" className="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
+                <LoadingButton
+                loaderWidth={16}
+                className='delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600'
+                isLoading={isDeletingNotification}
+                onClick={() => handleDeleteNotification()}
+                text={(
                     <IconTrash width={16} height={16}/>
-                </button>
+                )}
+                loaderColor='#fca5a5'
+                />
             </>
         )
     }
@@ -109,6 +141,8 @@ const Notification = ({notification} : Props) => {
 
     const handleDeleteNotification = async () => {
         try {
+            if(isDeletingNotification) return;
+            setIsDeletingNotification(true);
             await notifService.deleteNotificationOnServer(notification.id);
             deleteNotificationOnClient(notification.id);
             dispatch(addToast({
@@ -121,11 +155,16 @@ const Notification = ({notification} : Props) => {
                 message: "Failed to delete notification",
                 type: "error"
             }))
+        } finally {
+            setIsDeletingNotification(false);
         }
     }
 
     const handleAcceptFriendRequest = async () => {
         try {
+            if(isRejectingFriendReq) return;
+            if(isAcceptingFriendReq) return;
+            setIsAcceptingFriendReq(true);
             await friendshipService.acceptFriendRequestOnServer(notification.senderId);
             acceptFriendRequestOnClient(friendship);
             dispatch(deleteNotifWithCountById(notification.id));
@@ -139,11 +178,16 @@ const Notification = ({notification} : Props) => {
                 message: "Failed to accept friend request",
                 type: "error"
             }))
+        } finally {
+            setIsAcceptingFriendReq(false);
         }
     }
 
     const handleRejectFriendRequest = async () => {
         try {
+            if(isRejectingFriendReq) return;
+            if(isAcceptingFriendReq) return;
+            setIsRejectingFriendReq(true);
             await friendshipService.rejectFriendRequestOnServer(notification.senderId);
             rejectFriendRequestOnClient(friendship);
             dispatch(deleteNotifWithCountById(notification.id));
@@ -157,6 +201,8 @@ const Notification = ({notification} : Props) => {
                 message: "Failed to reject friend request",
                 type: "error"
             }))
+        } finally {
+            setIsRejectingFriendReq(false);
         }
     }
 

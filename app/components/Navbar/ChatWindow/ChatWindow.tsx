@@ -77,9 +77,9 @@ const ChatWindow = () => {
         });
     }, [chatState.actvieChatRoomId, client, client?.connected]);
 
-    const InitialChatUi = () => {
+    const InitialChatUi = ({className}: {className?: string}) => {
         return (
-            <div className='w-full h-full flex flex-col gap-3 items-center justify-center'>
+            <div className={`w-full h-full flex flex-col gap-3 items-center justify-center ${className}`}>
                 <IconMessageChatbot width={45} height={45}/>
                 Search for users or select any chats to start chatting
             </div>

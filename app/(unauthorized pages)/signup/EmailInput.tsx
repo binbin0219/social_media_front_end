@@ -1,4 +1,6 @@
-import React from 'react'
+import LoadingButton from '@/components/LoadingButton/LoadingButton';
+import { IconMail } from '@tabler/icons-react';
+import React, { useState } from 'react'
 
 type Props = {
     email: string;
@@ -11,6 +13,7 @@ type Props = {
 }
 
 const EmailInput = ({email, setEmail, isEmailExisted, isEmailValid, setStep, setExistedEmail, setIsEmailValid}: Props) => {
+    const [isCheckingEmailExist, setIsCheckingEmailExist] = useState(false);
 
     const checkIsEmailExistedOnServer = async (email: string) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/email/exist?email=${email}`);
@@ -43,13 +46,21 @@ const EmailInput = ({email, setEmail, isEmailExisted, isEmailValid, setStep, set
             return;
         }
 
-        const isEmailExisted = await checkIsEmailExistedOnServer(email);
-        if(isEmailExisted) {
-            setExistedEmail(prev => [...prev , email]);
-            return;
-        }
+        try {
+            setIsCheckingEmailExist(true);
+            const isEmailExisted = await checkIsEmailExistedOnServer(email);
+            if(isEmailExisted) {
+                setExistedEmail(prev => [...prev , email]);
+                return;
+            }
 
-        setStep(2);
+            setStep(2);
+        } catch (error) {
+            console.error(error);
+            alert("Something went wrong while validating email, please try again");
+        } finally {
+            setIsCheckingEmailExist(false);
+        }
     }
 
     return (
@@ -57,7 +68,7 @@ const EmailInput = ({email, setEmail, isEmailExisted, isEmailValid, setStep, set
             <div>
                 <label>Email</label>
                 <div className="InputFields">
-                    <span className="material-symbols-outlined icon"> mail</span>
+                    <IconMail className='icon'/>
                     <input 
                     value={email} 
                     onInput={e => handleEmailInput(e)} 
@@ -79,7 +90,14 @@ const EmailInput = ({email, setEmail, isEmailExisted, isEmailValid, setStep, set
                     )}
                 </div>
             </div>
-            <button type="submit" className={`sign-up-button ${!isEmailValid && 'disabled'}`} style={{ marginTop: "30px" }}>Next</button>
+            <LoadingButton
+                type='submit'
+                className={`sign-up-button flex items-center justify-center gap-3 ${!isEmailValid && 'disabled'} mt-5`}
+                isLoading={isCheckingEmailExist}
+                text='Next'
+                loadingText='Validating email...'
+                loaderColor='#8F00FF'
+            />
         </form>
     )
 }
