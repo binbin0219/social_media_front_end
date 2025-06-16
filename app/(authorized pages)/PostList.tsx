@@ -55,7 +55,7 @@ const PostList = ({postLink} : Props) => {
             method: 'GET',
             credentials: 'include'
         });
-        if(!response.ok) throw new Error("Failed to fetch posts" + response.status);
+        if(!response.ok) throw new Error("Failed to fetch posts");
         return response.json();
     }, [postLink, postIds.length]);
 
