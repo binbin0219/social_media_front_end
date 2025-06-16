@@ -71,7 +71,7 @@ const PostList = ({postLink} : Props) => {
                     console.log(error);
                     dispatch(addToast({
                         type: 'error',
-                        message: 'Failed to load posts'
+                        message: 'Failed to load posts' + error
                     }));
                     setIsFetchPostFailed(true);
                 })
