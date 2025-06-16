@@ -55,7 +55,7 @@ const PostList = ({postLink} : Props) => {
             method: 'GET',
             credentials: 'include'
         });
-        if(!response.ok) throw new Error("Failed to fetch posts");
+        if(!response.ok) throw new Error("Failed to fetch posts" + response.status);
         return response.json();
     }, [postLink, postIds.length]);
 
@@ -71,7 +71,7 @@ const PostList = ({postLink} : Props) => {
                     console.log(error);
                     dispatch(addToast({
                         type: 'error',
-                        message: 'Failed to load posts' + error
+                        message: 'Failed to load posts'
                     }));
                     setIsFetchPostFailed(true);
                 })
