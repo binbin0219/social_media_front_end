@@ -142,3 +142,7 @@ body {
 .img-hover-effect:hover::after {
   background: rgba(128, 128, 128, 0.4);
 }
+
+button:disabled {
+  opacity: 0.5;
+}

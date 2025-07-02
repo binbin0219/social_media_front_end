@@ -5,11 +5,13 @@ type Props = {
     text: string,
     position?: "top" | "bottom" | "right" | "left",
     className?: string;
+    relative?: boolean;
+    style?: React.CSSProperties;
 }
 
-export default function Tooltip({ children, text, position = "bottom", className = ""}: Props) {
+export default function Tooltip({ children, text, position = "bottom", className = "", relative = true, style}: Props) {
     return (
-        <div className={"relative group inline-block " + className}>
+        <div className={`group inline-block ${relative && 'relative'} ` + className} style={style}>
             {children}
             <span
                 className={`

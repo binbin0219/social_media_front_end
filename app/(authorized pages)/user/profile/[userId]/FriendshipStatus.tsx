@@ -247,6 +247,9 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                 </button>
             </Tooltip>
             <div id="reply_friend_request" 
+            style={{
+                zIndex: 10
+            }}
             className={`
                 ${friendship.status === 'PENDING' && !isCurrentUserSender ? '' : 'hidden'}
                 dropdown

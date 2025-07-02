@@ -20,7 +20,7 @@ const EditCoverInputComponent = ({ setCoverUrl }: Props) => {
         dialog.open(
             "Edit cover",
             (
-                <div className="w-full flex justify-center">
+                <div className="w-full flex justify-center overflow-x-auto">
                     <div ref={coverCroppieContainerRef} id="avatar_croppie"></div>
                 </div>
             ), 

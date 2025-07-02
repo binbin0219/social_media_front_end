@@ -25,7 +25,7 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
         dialog.open(
             "Edit cover",
             (
-                <div className="w-full flex justify-center">
+                <div className="w-full flex justify-center overflow-x-auto">
                     <div ref={avatarCroppieContainerRef} id="avatar_croppie"></div>
                 </div>
             ), 

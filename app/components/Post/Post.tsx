@@ -13,6 +13,11 @@ import { useRouter } from 'next/navigation'
 import { useSubcribeLikeWebSocket } from '@/hooks/useSubcribeLikeWebSocket'
 import { disableBtn, enableBtn } from '@/lib/utils/client'
 import { useDialogContext } from '@/context/DialogContext'
+import PostAttachments from '../PostAttachments/PostAttachments'
+import { IconDotsVertical, IconPencil, IconTrash } from '@tabler/icons-react'
+import Dropdown from '../Dropdown/Dropdown'
+import PostContent from './PostContent'
+import CreatePostForm from '../CreatePostForm/CreatePostForm'
 
 type Props = {
     postId: number,
@@ -25,9 +30,14 @@ const Post = memo(({ postId: postId }: Props) => {
     const dialog = useDialogContext();
     const likeBtnRef = useRef<HTMLButtonElement>(null);
     const currentUser : User = useSelector((state: RootState) => state.currentUser);
-    const post = useSelector((state: RootState) => state.post.find((post: Post) => post.id === postId));
+    const post = useSelector((state: RootState) => state.post.find((post: Post) => post.id === postId))!;
+    const attachments = post.attachments.map(attachment => ({
+        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/post/${postId}/attachments/${attachment.id}/data.${attachment.format}`,
+        mimeType: attachment.mimeType
+    }))
     const isCurrentUserAuthor = currentUser?.id === post?.user?.id;
     const author = post?.user;
+    const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState(false);
     const [commentExpanded, setCommentExpanded] = useState(false);
     const [likeState, setLikeState] = useState({
         liked: post?.liked,
@@ -36,6 +46,44 @@ const Post = memo(({ postId: postId }: Props) => {
     if(!post) {
         console.error(`Failed to render post with id ${postId}: not found`);
         return null;
+    }
+
+    const handleOpenCreatePostDialog = () => {
+        dialog.open(
+            'Edit post',
+            <CreatePostForm 
+            onCancel={dialog.close} 
+            onSubmit={handleSubmit} 
+            enableAttachment={false}
+            initialData={{
+                title: post.title,
+                content: post.content
+            }}
+            />,
+        )
+    }
+
+    const handleSubmit = async (title: string, content: string) => {
+        try {
+            await updatePostToServer(title, content);
+            dispatch(updatePost({
+                postId: postId,
+                content: content,
+                title: title
+            }))
+            dispatch(addToast({
+                type: 'success',
+                message: 'Post updated'
+            }));
+            dialog.close();
+        } catch (error) {
+            dialog.close();
+            console.log(error);
+            dispatch(addToast({
+                type: 'error',
+                message: 'Failed to update post'
+            }));
+        }
     }
 
     const sendLikeToServer = async () => {
@@ -55,14 +103,13 @@ const Post = memo(({ postId: postId }: Props) => {
     }
 
     const updatePostToServer = async (title: string, content: string) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/update`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/update/${post.id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
             body: JSON.stringify({
-                postId: post.id,
                 content,
                 title
             })
@@ -112,68 +159,6 @@ const Post = memo(({ postId: postId }: Props) => {
         setCommentExpanded(!commentExpanded);
     }
 
-    const PostEdit = () => {
-        const [title, setTitle] = useState(post.title);
-        const [content, setContent] = useState(post.content);
-        return (
-            <div className="flex flex-col w-[600px] max-w-[85vw]">
-                <p className="mb-1 text-sm">Header</p>
-                <input 
-                id="postEditTitle" 
-                onChange={(e) => setTitle(e.target.value)} 
-                value={title} 
-                type="text" 
-                className="w-full border rounded mb-3 p-2 text-sm focus:border-slate-400 outline-none"
-                />
-                <p className="mb-1 text-sm">Body</p>
-                <textarea 
-                id="postEditContent" 
-                onChange={(e) => setContent(e.target.value)} 
-                value={content} 
-                rows={7} 
-                className="w-full border rounded p-2 text-sm focus:border-slate-400 outline-none">
-                </textarea>
-            </div>
-        )
-    }
-
-    const editBtnHandler = () => {
-        dialog.open(
-            'Edit Post',
-            <PostEdit/>,
-            'Done',
-            async () => {
-                try {
-                    const postEditTitle = document.getElementById('postEditTitle') as HTMLInputElement;
-                    const postEditContent = document.getElementById('postEditContent') as HTMLTextAreaElement;
-                    const newTitle = postEditTitle.value;
-                    const newContent = postEditContent.value;
-                    if(newTitle.trim() === '') postEditTitle.classList.add('border-red-500');
-                    if(newContent.trim() === '') postEditContent.classList.add('border-red-500');
-                    if(newTitle.trim() === '' || newContent.trim() === '') return;
-                    await updatePostToServer(newTitle, newContent);
-                    dispatch(updatePost({
-                        postId: postId,
-                        content: newContent,
-                        title: newTitle
-                    }))
-                    dispatch(addToast({
-                        type: 'success',
-                        message: 'Post updated'
-                    }));
-                    dialog.close();
-                } catch (error) {
-                    dialog.close();
-                    console.log(error);
-                    dispatch(addToast({
-                        type: 'error',
-                        message: 'Failed to update post'
-                    }));
-                }
-            }
-        )
-    }
-
     const deleteBtnHandler = () => {
         dialog.open(
             'Delete Post',
@@ -201,9 +186,31 @@ const Post = memo(({ postId: postId }: Props) => {
     }
 
     return (
-        <div className={`post w-full rounded-lg p-3 flex flex-col gap-2 border rounded-lg bg-white ${post.isNew ? 'post-new' : ''}`}
+        <div className={`post relative w-full rounded-lg p-3 flex flex-col gap-2 border rounded-lg bg-white ${post.isNew ? 'post-new' : ''}`}
         data-liked={likeState.liked}
         data-comment-expanded={commentExpanded}>
+            {isCurrentUserAuthor && (
+                <div className='absolute end-0 top-0 mt-2 me-2' style={{zIndex: 10}}>
+                    <Dropdown
+                    toggleButton={
+                        <button className=' text-slate-700 hover:opacity-50 transition-opacity duration-200'>
+                            <IconDotsVertical/>
+                        </button>
+                    }
+                    setIsOpen={(isOpen: boolean) => setIsOptionsDropdownOpen(isOpen)}
+                    isOpen={isOptionsDropdownOpen}
+                    >
+                        <button onClick={handleOpenCreatePostDialog} className='dropdown-item flex gap-2 items-center'>
+                            <IconPencil/>
+                            Edit
+                        </button>
+                        <button onClick={deleteBtnHandler} className='dropdown-item flex gap-2 items-center text-red-500'>
+                            <IconTrash/>
+                            Delete
+                        </button>
+                    </Dropdown>
+                </div>
+            )}
             <div className="flex flex-col gap-1">
                 <div className="flex gap-1 cursor-pointer">
                     <UserIcon userId={author?.id} userAvatar={author?.avatar} />
@@ -215,14 +222,8 @@ const Post = memo(({ postId: postId }: Props) => {
                 <h1 className="post-title font-bold mt-3" style={{wordWrap: "break-word"}}>
                     {post.title}
                 </h1>
-                <p className="post-content" style={{wordWrap: "break-word"}}>
-                {post.content.split("\n").map((line, index) => (
-                    <React.Fragment key={index}>
-                        {line}
-                        <br />
-                    </React.Fragment>
-                ))}
-                </p>
+                <PostContent content={post.content}/>
+                {attachments.length > 0 && <PostAttachments attachments={attachments} />}
             </div>
             <div className="mt-3 border-t-2 border-gray-200">
                 <div className="buttons flex gap-5 mt-2 rounded-lg p-3 items-center w-fit border-2 bg-slate-100 border-slate-300">
@@ -258,31 +259,6 @@ const Post = memo(({ postId: postId }: Props) => {
                         </svg>
                         <p className="comment-count">{post.commentCount}</p>
                     </button>
-                    { isCurrentUserAuthor ?
-                    <>
-                        <button
-                            onClick={editBtnHandler}
-                            data-post-action="edit-post"
-                            className="edit edit-button editing-disabled">
-                            <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9725FB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-edit icon-edit-post">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                <path d="M16 5l3 3" />
-                            </svg>
-                        </button>
-                        <button onClick={deleteBtnHandler} data-post-action="delete-post" className="delete editing-disabled">
-                            <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF0005" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-trash">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M4 7l16 0" />
-                                <path d="M10 11l0 6" />
-                                <path d="M14 11l0 6" />
-                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                            </svg>
-                        </button>
-                    </>
-                    : null}
                 </div>
                 <PostCommentSection postId={post.id}/>
             </div>
