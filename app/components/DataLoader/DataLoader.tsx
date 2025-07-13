@@ -1,43 +1,55 @@
-"use client"
-import React, { useEffect, useRef, useState } from 'react'
+"use client";
+import React, { useEffect, useRef } from "react";
 
 type Props = {
-    className?: string,
-    children: React.ReactNode,
-    onVisible: () => void | Promise<void>
-}
+    className?: string;
+    children: React.ReactNode;
+    onVisible: () => void | Promise<void>;
+};
 
-const DataLoader = ({className, children, onVisible} : Props) => {
+const DataLoader = ({ className, children, onVisible }: Props) => {
     const loaderRef = useRef<HTMLDivElement>(null);
-    const [isLoaderVisible, setIsLoaderVisible] = useState(false);
-    
+    const hasBeenOutOfView = useRef(true);
+    const isFetchingRef = useRef(false);
+
     useEffect(() => {
-        if(!loaderRef.current) return;
+        if (!loaderRef.current) return;
 
         const observer = new IntersectionObserver(
-            (entries) => {
+            async (entries) => {
                 const [entry] = entries;
-                setIsLoaderVisible(entry.isIntersecting);
+
+                if (entry.isIntersecting && hasBeenOutOfView.current && !isFetchingRef.current) {
+                    hasBeenOutOfView.current = false;
+                    isFetchingRef.current = true;
+
+                    try {
+                        await onVisible();
+                    } finally {
+                        isFetchingRef.current = false;
+                    }
+                }
+
+                if (!entry.isIntersecting) {
+                    hasBeenOutOfView.current = true;
+                }
             },
-            {root: null, threshold: 0.4}
+            {
+                root: null,
+                threshold: 0.4,
+            }
         );
 
         observer.observe(loaderRef.current);
 
         return () => observer.disconnect();
-    }, []);
-
-    useEffect(() => {
-        if(isLoaderVisible) {
-            onVisible();
-        }
-    }, [isLoaderVisible, onVisible]);
+    }, [onVisible]);
 
     return (
         <div className={className} ref={loaderRef}>
-            {children}
+        {children}
         </div>
-    )
-}
+    );
+};
 
-export default DataLoader
+export default DataLoader;

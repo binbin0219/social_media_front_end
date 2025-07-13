@@ -22,9 +22,11 @@ const NotificationDropdown = memo(() => {
     useSubcribeNotifWebSocket(isOpen);
 
     const handleDataLoaderVisible = async () => {
+
         setTimeout(async () => {
             if(isAllNotificationFetched) return;
-            const {unseenNotifications, seenNotifications} = await notifService.fetchNotifications();
+
+            const {unseenNotifications, seenNotifications} = await notifService.fetchNotifications(Object.keys(notifications).length);
             dispatch(addNotifications(unseenNotifications));
             setIsAllNotificationFetched(
                 (unseenNotifications.length + seenNotifications.length) < 6
