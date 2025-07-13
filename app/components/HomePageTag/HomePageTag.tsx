@@ -85,7 +85,7 @@ const HomePageTag = () => {
                     <UserProfileLink userId={currentUser!.id}>
                         <h4 className="font-bold hover:underline">Welcome! {currentUser && currentUser.username}</h4>
                     </UserProfileLink>
-                    <h6 className="text-sm">Have something to share?</h6>
+                    <h6 className="text-sm text-slate-500">Have something to share?</h6>
                 </div>
             </div>
             <div className="gap-5 rounded-full p-3 items-center w-fit border-2 bg-green-200 border-green-400">

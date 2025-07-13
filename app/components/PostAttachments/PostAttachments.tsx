@@ -32,13 +32,6 @@ const PostAttachments = ({attachments, onDelete}: Props) => {
         setFailedIndexes(prev => new Set(prev).add(index));
     };
 
-    const renderFallback = (index: number) => (
-        <div key={index} className={`flex flex-col gap-2 items-center justify-center w-full h-[400px] bg-gray-100 text-gray-500 ${index !== currentAttachmentIndex && 'hidden'}`}>
-            <IconAlertCircle size={40}/>
-            <p>Failed to load media</p>
-        </div>
-    );
-
     const handleNext = () => {
         setCurrentAttachmentIndex(Math.min(currentAttachmentIndex + 1, attachments.length - 1));
     }
@@ -48,64 +41,55 @@ const PostAttachments = ({attachments, onDelete}: Props) => {
     }
 
     return (
-        <div className='relative'>
+        <div className="relative w-full h-[400px] overflow-hidden rounded-md">
             {attachments.map((attachment: PostAttachmentPreview, index: number) => {
-                if (failedIndexes.has(index)) {
-                    return renderFallback(index);
-                }
+                const isActive = index === currentAttachmentIndex;
+                const direction = index < currentAttachmentIndex ? '-translate-x-full' : 'translate-x-full';
 
-                switch (true) {
-                    case attachment.mimeType.startsWith('image'):
-                        return (
-                            <div
-                                key={index}
-                                className={`relative w-full h-[400px] overflow-hidden ${index !== currentAttachmentIndex && 'hidden'}`}
-                            >
-                                {/* Blurred Background */}
-                                <Image
-                                src={attachment.src}
-                                alt="blurred bg"
-                                fill
-                                className="object-cover blur-xl scale-110"
-                                onError={() => handleFail(index)}
-                                />
+                const baseClasses = `absolute top-0 left-0 w-full h-full transition-transform duration-500 ease-in-out overflow-hidden`;
+                const activeClass = isActive ? 'translate-x-0' : `${direction} pointer-events-none`;
 
-                                {/* Main Image */}
-                                <Image
-                                src={attachment.src}
-                                alt="main"
-                                fill
-                                className="object-contain"
-                                onError={() => handleFail(index)}
-                                />
+                return (
+                    <div key={index} className={`${baseClasses} ${activeClass}`}>
+                        {failedIndexes.has(index) ? (
+                            <div className="flex flex-col gap-2 items-center justify-center w-full h-full bg-gray-100 text-gray-500">
+                                <IconAlertCircle size={40} />
+                                <p>Failed to load media</p>
                             </div>
-                        );
-
-                    case attachment.mimeType.startsWith('video'):
-                        return (
-                            <div
-                                key={index}
-                                className={`relative w-full h-[400px] ${index !== currentAttachmentIndex && 'hidden'}`}
-                            >
-                                <video
+                        ) : attachment.mimeType.startsWith('image') ? (
+                            <>
+                                <Image
+                                    src={attachment.src}
+                                    alt="blurred bg"
+                                    fill
+                                    className="object-cover blur-xl scale-110"
+                                    onError={() => handleFail(index)}
+                                />
+                                <Image
+                                    src={attachment.src}
+                                    alt="main"
+                                    fill
+                                    className="object-contain"
+                                    onError={() => handleFail(index)}
+                                />
+                            </>
+                        ) : attachment.mimeType.startsWith('video') ? (
+                            <video
                                 controls
                                 src={attachment.src}
                                 className="w-full h-full"
                                 onError={() => handleFail(index)}
-                                />
-                            </div>
-                        );
-
-                    default:
-                        return null;
-                }
+                            />
+                        ) : null}
+                    </div>
+                );
             })}
-            <Tooltip text='Back' relative={false} className='absolute start-0 top-1/2 -translate-y-1/2 ms-2'>
+            <Tooltip text='Back' relative={false} className={`absolute start-0 top-1/2 -translate-y-1/2 ms-2 ${(currentAttachmentIndex === 0 || attachments.length === 0) && 'hidden'}`}>
                 <button disabled={isAtFirstAttachment} onClick={handleBack} type='button' className='flex items-center justify-center rounded-full bg-dark-btn text-white p-1 hover:opacity-50 transition-all'>
                     <IconChevronLeft/>
                 </button>
             </Tooltip>
-            <Tooltip text='Next' relative={false} className='absolute end-0 top-1/2 -translate-y-1/2 me-2'>
+            <Tooltip text='Next' relative={false} className={`absolute end-0 top-1/2 -translate-y-1/2 me-2 ${(currentAttachmentIndex === attachments.length - 1 || attachments.length === 0) && 'hidden'}`}>
                 <button disabled={isAtLastAttachment} onClick={handleNext} type='button' className='flex items-center justify-center rounded-full bg-dark-btn text-white p-1 hover:opacity-50 transition-all'>
                     <IconChevronRight/>
                 </button>

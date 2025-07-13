@@ -18,6 +18,7 @@ import { IconDotsVertical, IconPencil, IconTrash } from '@tabler/icons-react'
 import Dropdown from '../Dropdown/Dropdown'
 import PostContent from './PostContent'
 import CreatePostForm from '../CreatePostForm/CreatePostForm'
+import Tooltip from '../Tooltip/Tooltip'
 
 type Props = {
     postId: number,
@@ -186,14 +187,13 @@ const Post = memo(({ postId: postId }: Props) => {
     }
 
     return (
-        <div className={`post relative w-full rounded-lg p-3 flex flex-col gap-2 border rounded-lg bg-white ${post.isNew ? 'post-new' : ''}`}
-        data-liked={likeState.liked}
+        <div className={`post relative w-full rounded-lg p-3 flex flex-col gap-2 rounded-xl bg-white ${post.isNew ? 'post-new' : ''}`}
         data-comment-expanded={commentExpanded}>
             {isCurrentUserAuthor && (
                 <div className='absolute end-0 top-0 mt-2 me-2' style={{zIndex: 10}}>
                     <Dropdown
                     toggleButton={
-                        <button className=' text-slate-700 hover:opacity-50 transition-opacity duration-200'>
+                        <button className=' text-slate-400 hover:opacity-50 transition-opacity duration-200'>
                             <IconDotsVertical/>
                         </button>
                     }
@@ -216,7 +216,9 @@ const Post = memo(({ postId: postId }: Props) => {
                     <UserIcon userId={author?.id} userAvatar={author?.avatar} />
                     <div className="flex flex-col">
                         <h4 onClick={() => router.push(`/user/profile/${author?.id}`)} className="font-bold hover:underline">{author?.username ?? "Unknown"} {isCurrentUserAuthor ? '(You)' : ''}</h4>
-                        <h6 className="text-sm hover:underline">{new Date(post.create_at).toLocaleString()} ({timeAgo(post.create_at)})</h6>
+                        <Tooltip className='w-fit' text={new Date(post.create_at).toLocaleString()} >
+                            <h6 className="text-sm text-slate-500 hover:underline">{timeAgo(post.create_at)}</h6>
+                        </Tooltip>
                     </div>
                 </div>
                 <h1 className="post-title font-bold mt-3" style={{wordWrap: "break-word"}}>
@@ -225,27 +227,38 @@ const Post = memo(({ postId: postId }: Props) => {
                 <PostContent content={post.content}/>
                 {attachments.length > 0 && <PostAttachments attachments={attachments} />}
             </div>
-            <div className="mt-3 border-t-2 border-gray-200">
-                <div className="buttons flex gap-5 mt-2 rounded-lg p-3 items-center w-fit border-2 bg-slate-100 border-slate-300">
+            <div className="mt-2">
+                <div className="buttons flex gap-2 mt-2 rounded-lg items-center w-fit">
                     <button
                         ref={likeBtnRef}
                         onClick={() => likeOnclickHandler()}
                         style={{color: "black"}}
-                        className="post-like-toggle flex gap-2 editing-disabled">
-                        <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#F9452C" stroke="#F9452C" className="icon icon-tabler icons-tabler-filled icon-tabler-heart icon-liked">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
-                        </svg>
-                        <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F9452C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-heart icon-like">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
-                        </svg>
-                        <p className="like-count">{post.likeCount}</p>
+                        className={`flex gap-2 p-2 rounded-lg ${likeState.liked ? 'hover:bg-red-200' : 'hover:bg-slate-200'}`}>
+                        {likeState.liked &&
+                            <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#F9452C" stroke="#F9452C" className="icon icon-tabler icons-tabler-filled icon-tabler-heart icon-liked">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+                            </svg>
+                        }
+                        {!likeState.liked &&
+                            <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F9452C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-heart icon-like">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                            </svg>
+                        }
+                        <div className='flex gap-2 items-center'>
+                            <p className={`${likeState.liked ? 'text-red-500' : 'text-slate-500'}`}>
+                                {likeState.liked ? 'Liked' : 'Like'}
+                            </p>
+                            <p className={`px-4 rounded-2xl ${likeState.liked ? 'bg-red-100 text-red-500' : 'bg-slate-100 text-slate-500'}`}>
+                                {post.likeCount}
+                            </p>
+                        </div>
                     </button>
                     <button 
                         onClick={() => commentExpandOnclickHandler()}
                         data-post-action="toggle-comment-section"
-                        className="comment flex gap-2 editing-disabled text-black"
+                        className="flex gap-2 hover:bg-slate-200 p-2 rounded-lg"
                         >
                         <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#2293F9" stroke="#2293F9" className="icon icon-tabler icons-tabler-filled icon-tabler-message icon-comment-opened">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -257,7 +270,14 @@ const Post = memo(({ postId: postId }: Props) => {
                             <path d="M8 13h6" />
                             <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
                         </svg>
-                        <p className="comment-count">{post.commentCount}</p>
+                        <div className='flex gap-2 items-center'>
+                            <p className='text-slate-500'>
+                                Comments
+                            </p>
+                            <p className='text-slate-500 bg-slate-100 px-4 rounded-2xl'>
+                                {post.commentCount}
+                            </p>
+                        </div>
                     </button>
                 </div>
                 <PostCommentSection postId={post.id}/>
