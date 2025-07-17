@@ -10,7 +10,6 @@ import { User } from '@/lib/models/user'
 import { RootState } from '@/redux/store'
 import { deletePost, updatePost } from '@/redux/slices/postSlice'
 import { useRouter } from 'next/navigation'
-import { useSubcribeLikeWebSocket } from '@/hooks/useSubcribeLikeWebSocket'
 import { disableBtn, enableBtn } from '@/lib/utils/client'
 import { useDialogContext } from '@/context/DialogContext'
 import PostAttachments from '../PostAttachments/PostAttachments'
@@ -18,14 +17,15 @@ import { IconDotsVertical, IconPencil, IconTrash } from '@tabler/icons-react'
 import Dropdown from '../Dropdown/Dropdown'
 import PostContent from './PostContent'
 import CreatePostForm from '../CreatePostForm/CreatePostForm'
-import Tooltip from '../Tooltip/Tooltip'
+import DynamicTooltip from '../Tooltip/DynamicToolTip'
+import { decrementLikeCount, incrementLikeCount } from "@/redux/slices/postSlice";
+import { incrementLikeCount as incrementCurrentUserLikeCount, decrementLikeCount as decrementCurrentUserLikeCount, decrementPostCount } from "@/redux/slices/currentUserSlice";
 
 type Props = {
     postId: number,
 }
 
 const Post = memo(({ postId: postId }: Props) => {
-    useSubcribeLikeWebSocket(postId);
     const router = useRouter();
     const dispatch = useDispatch();
     const dialog = useDialogContext();
@@ -135,12 +135,26 @@ const Post = memo(({ postId: postId }: Props) => {
         }, 1000);
     }
 
+    const toggleLikeState = () => {
+        const isLiked = !likeState.liked;
+        setLikeState({ liked: isLiked });
+        if(isLiked === true) {
+            if(post.user?.id == currentUser?.id) {
+                dispatch(incrementCurrentUserLikeCount());
+            }
+            dispatch(incrementLikeCount({postId}));
+        } else {
+            if(post.user?.id == currentUser?.id) {
+                dispatch(decrementCurrentUserLikeCount());
+            }
+            dispatch(decrementLikeCount({postId}));
+        }
+    }
+
     const likeOnclickHandler = async () => {
         try {
             disableBtn(likeBtnRef);
-            setLikeState(prevState => ({
-                liked: !prevState.liked
-            }));
+            toggleLikeState();
             await sendLikeToServer();
         } catch (error) {
             console.log(error);
@@ -148,9 +162,7 @@ const Post = memo(({ postId: postId }: Props) => {
                 type: 'error',
                 message: "Failed to like post!"
             }));
-            setLikeState(prevState => ({
-                liked: !prevState.liked
-            }));
+            toggleLikeState();
         } finally {
             disableBtnFor1s(likeBtnRef);
         }
@@ -169,6 +181,8 @@ const Post = memo(({ postId: postId }: Props) => {
                 try {
                     await deletePostFromServer();
                     dispatch(deletePost(postId));
+                    dispatch(decrementPostCount());
+                    dispatch(decrementCurrentUserLikeCount({count: post.likeCount}));
                     dispatch(addToast({
                         type: 'success',
                         message: 'Post deleted successfully'
@@ -216,9 +230,9 @@ const Post = memo(({ postId: postId }: Props) => {
                     <UserIcon userId={author?.id} userAvatar={author?.avatar} />
                     <div className="flex flex-col">
                         <h4 onClick={() => router.push(`/user/profile/${author?.id}`)} className="font-bold hover:underline">{author?.username ?? "Unknown"} {isCurrentUserAuthor ? '(You)' : ''}</h4>
-                        <Tooltip className='w-fit' text={new Date(post.create_at).toLocaleString()} >
+                        <DynamicTooltip className='w-fit' text={new Date(post.create_at).toLocaleString()} >
                             <h6 className="text-sm text-slate-500 hover:underline">{timeAgo(post.create_at)}</h6>
-                        </Tooltip>
+                        </DynamicTooltip>
                     </div>
                 </div>
                 <h1 className="post-title font-bold mt-3" style={{wordWrap: "break-word"}}>

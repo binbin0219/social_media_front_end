@@ -1,7 +1,7 @@
 import { addToast } from "@/redux/slices/toastSlice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import Tooltip from "../Tooltip/Tooltip";
+import DynamicTooltip from "../Tooltip/DynamicToolTip";
 import { IconMoodSmile, IconPhotoPlus } from "@tabler/icons-react";
 import PostAttachments, { PostAttachmentPreview } from "../PostAttachments/PostAttachments";
 import LoadingButton from "../LoadingButton/LoadingButton";
@@ -136,13 +136,13 @@ const CreatePostForm = ({onSubmit, onCancel, initialData, enableAttachment = tru
                 </div>
                 <div className='w-100 justify-end flex items-end mt-4'>
                     <div className='flex gap-4'>
-                        <Tooltip className="hidden" text='Emoji'>
+                        <DynamicTooltip className="hidden" text='Emoji'>
                             <button type='button' className='hover:opacity-50'> 
                                 <IconMoodSmile width={30} height={30}/>
                             </button>
-                        </Tooltip>
+                        </DynamicTooltip>
                         {enableAttachment && (
-                            <Tooltip text='Images/Videos'>
+                            <DynamicTooltip text='Images/Videos'>
                                 <label htmlFor='postImg' className='hover:opacity-50 cursor-pointer'> 
                                     <IconPhotoPlus width={30} height={30}/>
                                 </label>
@@ -154,7 +154,7 @@ const CreatePostForm = ({onSubmit, onCancel, initialData, enableAttachment = tru
                                 accept="image/*, video/mp4"
                                 className='hidden'
                                 />
-                            </Tooltip>
+                            </DynamicTooltip>
                         )}
                     </div>
                 </div>

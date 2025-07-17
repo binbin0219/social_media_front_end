@@ -6,6 +6,7 @@ export type User = {
     username: string;
     firstName: string;
     lastName: string;
+    description: string | null;
     occupation: string | null;
     country: string | null;
     region: string | null;
@@ -18,6 +19,9 @@ export type User = {
     newNotificationCount? : number;
     seenNotificationCount? : number;
     unreadChatMessageCount: number;
+    postCount: number | null;
+    likeCount: number | null;
+    friendCount: number | null;
 } | null
 
 export type Gender = "male" | "female"
@@ -32,15 +36,8 @@ export type PhoneNumber = {
 
 export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'avatar'>;
 
-export const safeUserColumnSelections = {
-    id: true,
-    first_name: true, 
-    last_name: true,
-    username: true,
-    gender: true,
-    occupation: true,
-    region: true,
-    phone_number: true,
-    country: true,
-    create_at: true,
+export type RecommendedUsers = {
+    id: number;
+    username: string;
+    avatar: string;
 }

@@ -9,7 +9,7 @@ import UnreadMessageCounter from './unreadMessageCounter'
 import { useWebSocket } from '@/context/WebSocketContext'
 import ChatMenu from './ChatMenu'
 import styles from './styles.module.css'
-import Tooltip from '@/components/Tooltip/Tooltip'
+import DynamicTooltip from '@/components/Tooltip/DynamicToolTip'
 
 const ChatWindow = () => {
     const dispatch = useDispatch();
@@ -88,12 +88,12 @@ const ChatWindow = () => {
 
     return (
         <div className='relative flex'>
-            <Tooltip text='Chat'>
+            <DynamicTooltip text='Chat'>
                 <button onClick={() => dispatch(setIsChatOpen(!chatState.isOpen))} className='flex'>
                     <UnreadMessageCounter/>
                     <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
                 </button>
-            </Tooltip>
+            </DynamicTooltip>
             <div data-mobile-section={mobileSection} className={`${styles['chat-window']} ${chatState.isOpen && styles['show']} shadow-lg`}>
                 <ChatMenu/>
                 <div className={`${styles['chat-window__chat']}`}>

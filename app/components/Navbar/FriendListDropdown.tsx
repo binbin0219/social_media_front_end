@@ -8,7 +8,7 @@ import UserIcon from '../UserIcon/UserIcon'
 import UserProfileLink from '../Link/UserProfileLink'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
-import Tooltip from '../Tooltip/Tooltip'
+import DynamicTooltip from '../Tooltip/DynamicToolTip'
 import { friendshipService } from '@/lib/services/friendship'
 
 
@@ -32,11 +32,11 @@ const FriendListDropdown = () => {
         isOpen={isOpen}
         setIsOpen={(isOpen: boolean) => setIsOpen(isOpen)}
         toggleButton={
-            <Tooltip text='Friends' className='flex'>
+            <DynamicTooltip text='Friends' className='flex'>
                 <button className='dropdown-toggle' onClick={() => setIsOpen(!isOpen)}>
                     <IconUsers className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
                 </button>
-            </Tooltip>
+            </DynamicTooltip>
         }
         >
             <ul className="dropdown-content relative max-h-[400px] overflow-y-auto" style={{minWidth: "250px"}}>

@@ -1,4 +1,4 @@
-import Tooltip from '@/components/Tooltip/Tooltip';
+import DynamicTooltip from '@/components/Tooltip/DynamicToolTip';
 import React from 'react'
 import GenderInput from './GenderInput';
 import { Gender } from '@/lib/models/user';
@@ -87,7 +87,7 @@ const UsernameInput = ({username, setUsername, isUsernameValid, setIsUsernameVal
             <div>
                 <div className='w-full flex justify-between'>
                     <label>Username</label>
-                    <Tooltip text='Random name'>
+                    <DynamicTooltip text='Random name'>
                         <button onClick={() => handleRandonNameBtnClick()} type='button'>
                             <svg className='hover:fill-violet-800' xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" height="25px" width="25px" version="1.1" id="_x32_" viewBox="0 0 512 512" xmlSpace="preserve">
                                 
@@ -110,7 +110,7 @@ const UsernameInput = ({username, setUsername, isUsernameValid, setIsUsernameVal
                                 </g>
                             </svg>
                         </button>
-                    </Tooltip>
+                    </DynamicTooltip>
                 </div>
                 <div className="InputFields">
                     <IconUser className='icon'/>

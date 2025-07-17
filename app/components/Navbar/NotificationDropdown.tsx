@@ -8,7 +8,7 @@ import { RootState } from '@/redux/store';
 import { addNotifications, setIsNotificationOpen } from '@/redux/slices/notificationSlice';
 import { IconBell, IconBellOff } from '@tabler/icons-react';
 import Dropdown from '../Dropdown/Dropdown';
-import Tooltip from '../Tooltip/Tooltip';
+import DynamicTooltip from '../Tooltip/DynamicToolTip';
 import DataLoader from '../DataLoader/DataLoader';
 import { useSubcribeNotifWebSocket } from '@/hooks/useSubcribeNotifWebSocket';
 import { notifService } from '@/lib/services/notification';
@@ -39,12 +39,12 @@ const NotificationDropdown = memo(() => {
             setIsOpen={(isOpen: boolean) => dispatch(setIsNotificationOpen(isOpen))}
             isOpen={isOpen}
             toggleButton={(
-                <Tooltip text='Notifications'>
+                <DynamicTooltip text='Notifications'>
                     <button onClick={() => dispatch(setIsNotificationOpen(!isOpen))} data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center hover:opacity-50">
                         <IconBell className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
                         <NotificationCounter/>
                     </button>
-                </Tooltip>
+                </DynamicTooltip>
             )}
         >
             <ul id="notification_list" className="dropdown-content relative max-h-[400px] overflow-y-auto" style={{minWidth: "250px"}}>

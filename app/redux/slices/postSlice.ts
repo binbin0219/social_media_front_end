@@ -73,7 +73,7 @@ const postSlice = createSlice({
                 post.likeCount--;
             }
         },
-        setPosts: (state, action: PayloadAction<Post[]>) => action.payload
+        setPosts: (state, action: PayloadAction<Post[]>) => action.payload,
     },
 });
 

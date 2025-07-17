@@ -1,11 +1,11 @@
-import Tooltip from '@/components/Tooltip/Tooltip'
+import DynamicTooltip from '@/components/Tooltip/DynamicToolTip'
 import { useAcceptFriendRequest } from '@/hooks/useAcceptFriendRequest'
 import { useRejectFriendRequest } from '@/hooks/useRejectFriendRequest'
 import { friendshipService } from '@/lib/services/friendship'
 import { Friendship } from '@/lib/models/friendship'
 import { decrementUnseenNotifCount, deleteNotifWithCountById } from '@/redux/slices/notificationSlice'
 import { addToast } from '@/redux/slices/toastSlice'
-import { updateFriendship } from '@/redux/slices/userSlice'
+// import { updateFriendship } from '@/redux/slices/userSlice'
 import { RootState } from '@/redux/store'
 import { IconUserCheck, IconUserExclamation, IconUserX } from '@tabler/icons-react'
 import React, { memo, useRef, useState } from 'react'
@@ -14,11 +14,12 @@ import LoadingButton from '@/components/LoadingButton/LoadingButton'
 import { useDialogContext } from '@/context/DialogContext'
 
 type Props = {
-    friendship?: Friendship,
-    profileUserId: number
+    friendship: Friendship,
+    userId: number
 }
 
-const FriendshipStatus = memo(({profileUserId} : Props) => {
+const FriendshipStatus = memo((props : Props) => {
+    const { userId } = props;
     const dispatch = useDispatch();
     const dialog = useDialogContext();
     const acceptFriendRequestOnClient = useAcceptFriendRequest();
@@ -29,10 +30,11 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
     const unsendFriendReqBtnRef = useRef<HTMLButtonElement>(null);
     const unfriendReqBtnRef = useRef<HTMLButtonElement>(null);
     const currentUserId = useSelector((state: RootState) => state.currentUser!.id);
-    const friendship = useSelector((state: RootState) => state.user.find(user => user?.id == profileUserId)?.friendship);
+    // const friendship = useSelector((state: RootState) => state.user.find(user => user?.id == userId)?.friendship);
+    const [friendship, setFriendShip] = useState<Friendship>(props.friendship);
     const friendReqNotif = useSelector((state: RootState) => {
         return Object.values(state.notifications.data).find(
-            (notif) => notif.senderId === profileUserId && notif.recipientId === currentUserId
+            (notif) => notif.senderId === userId && notif.recipientId === currentUserId
         );
     });
 
@@ -41,23 +43,24 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
     const isCurrentUserSender = friendship.userId === currentUserId;
     const isRejected = friendship.status === 'REJECTED';
     const isRejectedByCurrentUser = isRejected && friendship.friendId === currentUserId;
-    const isRejectedByOtherUser = isRejected && friendship.friendId === profileUserId;
+    const isRejectedByOtherUser = isRejected && friendship.friendId === userId;
 
     const sendFriendRequestOnClient = () => {
         const updatedFriendship: Friendship = { 
             ...friendship, 
             userId: currentUserId!,
-            friendId: profileUserId!,
+            friendId: userId!,
             status: "PENDING"
         };
-        dispatch(updateFriendship({
-            userId: profileUserId!,
-            newFriendship: updatedFriendship
-        }));
+        setFriendShip(updatedFriendship);
+        // dispatch(updateFriendship({
+        //     userId: userId!,
+        //     newFriendship: updatedFriendship
+        // }));
     }
 
     const unsendFriendRequestOnServer = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/request/unsend?friendId=${profileUserId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/request/unsend?friendId=${userId}`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -69,14 +72,15 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     const unsendFriendRequestOnClient = () => {
         const updatedFriendship: Friendship = { ...friendship, status: null};
-        dispatch(updateFriendship({
-            userId: profileUserId!,
-            newFriendship: updatedFriendship
-        }));
+        setFriendShip(updatedFriendship);
+        // dispatch(updateFriendship({
+        //     userId: userId!,
+        //     newFriendship: updatedFriendship
+        // }));
     }
 
     const unfriendOnServer = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/unfriend?friendId=${profileUserId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/friendship/unfriend?friendId=${userId}`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -88,17 +92,18 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
 
     const unfriendOnClient = () => {
         const updatedFriendship: Friendship = { ...friendship, status: null};
-        dispatch(updateFriendship({
-            userId: profileUserId!,
-            newFriendship: updatedFriendship
-        }));
+        setFriendShip(updatedFriendship);
+        // dispatch(updateFriendship({
+        //     userId: userId!,
+        //     newFriendship: updatedFriendship
+        // }));
     }
 
     const addFriendBtnHandler = async () => {
         try {
             if(isSendingFriendReq) return;
             setIsSendingFriendReq(true);
-            await friendshipService.sendFriendRequestOnServer(profileUserId);
+            await friendshipService.sendFriendRequestOnServer(userId);
             sendFriendRequestOnClient();
             dispatch(addToast({
                 type: 'success',
@@ -171,7 +176,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
         try {
             if(isAcceptingFriendReq) return;
             setIsAcceptingFriendReq(true);
-            await friendshipService.acceptFriendRequestOnServer(profileUserId);
+            await friendshipService.acceptFriendRequestOnServer(userId);
             acceptFriendRequestOnClient(friendship);
             if(friendReqNotif) {
                 dispatch(deleteNotifWithCountById(friendReqNotif.id));
@@ -197,7 +202,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
         try {
             if(isRejectingFriendReq) return;
             setIsRejectingFriendReq(true);
-            await friendshipService.rejectFriendRequestOnServer(profileUserId);
+            await friendshipService.rejectFriendRequestOnServer(userId);
             rejectFriendRequestOnClient(friendship);
             if(friendReqNotif) {
                 dispatch(deleteNotifWithCountById(friendReqNotif.id));
@@ -220,8 +225,8 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
     }
 
     return (
-        <>
-            <Tooltip className={isRejectedByOtherUser ? '' : 'hidden'} text='Friend request rejected' position='bottom'>
+        <div>
+            <DynamicTooltip className={isRejectedByOtherUser ? '' : 'hidden'} text='Friend request rejected' position='bottom'>
                 <button type="button" 
                 className={`
                     bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1`}>
@@ -234,8 +239,8 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                     </svg>
                     {/* Friend request rejected */}
                 </button>
-            </Tooltip>
-            <Tooltip text='Friend request sent' position='bottom' className={friendship.status === 'PENDING' && isCurrentUserSender ? '' : 'hidden'}>
+            </DynamicTooltip>
+            <DynamicTooltip text='Friend request sent' position='bottom' className={friendship.status === 'PENDING' && isCurrentUserSender ? '' : 'hidden'}>
                 <button ref={unsendFriendReqBtnRef} id="unsend_request_button" type="button" 
                 onClick={() => handleUnsendFriendRequest()}
                 className={`
@@ -245,7 +250,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                     <IconUserCheck/>
                     {/* Friend request sent */}
                 </button>
-            </Tooltip>
+            </DynamicTooltip>
             <div id="reply_friend_request" 
             style={{
                 zIndex: 10
@@ -254,12 +259,12 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                 ${friendship.status === 'PENDING' && !isCurrentUserSender ? '' : 'hidden'}
                 dropdown
             `}>
-                <Tooltip text='Reply friend request' position='bottom'>
+                <DynamicTooltip text='Reply friend request' position='bottom'>
                     <button onClick={(event) => handleDropdownToggle(event)} type="button" className="dropdown-toggle bg-cyan-200 border-cyan-400 text-cyan-600 hover:bg-cyan-300 border-2 px-3 py-2 rounded-lg mb-1">
                         {/* Reply friend request */}
                         <IconUserExclamation/>
                     </button>
-                </Tooltip>
+                </DynamicTooltip>
                 <div className="dropdown-menu w-[200px]">
                     <ul className="dropdown-content">
                         <span className='font-bold'>Pending friend request</span>
@@ -299,7 +304,7 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                     </ul>
                 </div>
             </div>
-            <Tooltip text='Unfriend' position='bottom' className={friendship.status === 'ACCEPTED' ? '' : 'hidden'}>
+            <DynamicTooltip text='Unfriend' position='bottom' className={friendship.status === 'ACCEPTED' ? '' : 'hidden'}>
                 <button ref={unfriendReqBtnRef} id="unfriend_button" type="button" 
                 onClick={() => unfriendBtnHandler()}
                 className={`
@@ -314,8 +319,8 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                     </svg>
                     {/* Unfriend */}
                 </button>
-            </Tooltip>
-            <Tooltip text='Add friend' position='bottom' className={friendship.status === null || isRejectedByCurrentUser ? '' : 'hidden'}>
+            </DynamicTooltip>
+            <DynamicTooltip text='Add friend' position='bottom' className={friendship.status === null || isRejectedByCurrentUser ? '' : 'hidden'}>
                 <LoadingButton
                 className='bg-sky-200 border-sky-400 text-sky-600 hover:bg-sky-300 border-2 px-3 py-2 rounded-lg mb-1'
                 isLoading={isSendingFriendReq}
@@ -332,8 +337,8 @@ const FriendshipStatus = memo(({profileUserId} : Props) => {
                     </svg>
                 )}
                 />
-            </Tooltip>
-        </>
+            </DynamicTooltip>
+        </div>
     )
 });
 

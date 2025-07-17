@@ -12,10 +12,11 @@ import './style.css'
 import MobileSectionToggles from './MobileSectionToggles';
 import { addUser } from '@/redux/slices/userSlice';
 import { generateCurrentTime } from '@/utils/helpers';
-import ChatButton from './ChatButton';
+import ChatButton from '@/components/ChatButton';
 import PostSection from './sections/PostSection';
 import { setPosts } from '@/redux/slices/postSlice';
 import FriendsSection from './sections/FriendsSection';
+import { defaultCoverUrl } from '@/lib/constants';
 
 type Props = {
     profileUser: User
@@ -28,7 +29,6 @@ const DynamicCoverImage = dynamic(() => import("next/image"), {
 
 const PageClient = ({profileUser} : Props) => {
     const dispatch = useDispatch();
-    const defaultCoverUrl = 'https://img.freepik.com/premium-photo/seamless-geometric-pattern-fabric-wallpaper-background-design_955379-17743.jpg?semt=ais_hybrid';
     const defaultProfileUrl = '/assets/default_avatar.png';
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const isCurrentUserProfile = profileUser?.id === currentUser?.id;
@@ -84,7 +84,7 @@ const PageClient = ({profileUser} : Props) => {
                         :
                         <div className='flex gap-2'>
                             <ChatButton targetUserId={profileUser!.id!}/>
-                            <FriendshipStatus friendship={profileUser?.friendship} profileUserId={profileUser!.id}/>
+                            <FriendshipStatus friendship={profileUser!.friendship!} userId={profileUser!.id}/>
                         </div>
                         }
                     </div>

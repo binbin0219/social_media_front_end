@@ -54,7 +54,6 @@ export default async function RootLayout({
 		};
 
 		authUserData = await response.json();
-		console.log(authUserData)
 	} catch (e) {
 		console.log("Failed to authenticate user :" + e);
 		redirect('/login');

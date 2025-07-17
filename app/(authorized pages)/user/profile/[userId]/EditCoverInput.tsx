@@ -29,7 +29,7 @@ const EditCoverInputComponent = ({ setCoverUrl }: Props) => {
                 try {
                     const resultCover = await coverCroppie.result({
                         type: 'blob',
-                        size: 'viewport',
+                        size: 'original',
                         format: 'png',
                     });
                     const formData = new FormData();
@@ -100,7 +100,7 @@ const EditCoverInputComponent = ({ setCoverUrl }: Props) => {
                     <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
                 </svg>
             </label>
-            <input ref={coverInputRef} onInput={() => handleEditCover()} type="file" accept="image/png" name="edit_cover_input" id="edit_cover_input" className="hidden"></input>
+            <input ref={coverInputRef} onInput={() => handleEditCover()} type="file" accept="image/*" name="edit_cover_input" id="edit_cover_input" className="hidden"></input>
         </>
     )
 };

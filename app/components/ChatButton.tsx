@@ -1,4 +1,4 @@
-import Tooltip from '@/components/Tooltip/Tooltip';
+import DynamicTooltip from '@/components/Tooltip/DynamicToolTip';
 import { chatService } from '@/lib/services/chat';
 import { addChatRooms, setActiveChatRoomId, setIsChatOpen } from '@/redux/slices/chatSlice';
 import { IconMessageCircle } from '@tabler/icons-react'
@@ -20,7 +20,7 @@ const ChatButton = ({targetUserId} : Props) => {
     }
 
     return (
-        <Tooltip text='Chat'>
+        <DynamicTooltip text='Chat'>
             <button 
             onClick={() => handleCharButtonClick()}
             type='button'
@@ -28,7 +28,7 @@ const ChatButton = ({targetUserId} : Props) => {
             >
                 <IconMessageCircle/>
             </button>
-        </Tooltip>
+        </DynamicTooltip>
     )
 }
 

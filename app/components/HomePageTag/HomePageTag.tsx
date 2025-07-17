@@ -10,6 +10,7 @@ import CreatePostForm, { AttachmentUrlAndFile } from '../CreatePostForm/CreatePo
 import { postService } from '@/lib/services/post'
 import { addPost } from '@/redux/slices/postSlice'
 import { addToast } from '@/redux/slices/toastSlice'
+import { incrementPostCount } from '@/redux/slices/currentUserSlice'
 
 
 const HomePageTag = () => {
@@ -55,6 +56,7 @@ const HomePageTag = () => {
             }
 
             dispatch(addPost(post));
+            dispatch(incrementPostCount());
             dispatch(addToast({
                 type: 'success',
                 message: 'Post created successfully'

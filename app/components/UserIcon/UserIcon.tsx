@@ -8,9 +8,10 @@ type Props = {
     width?: number | string;
     height?: number | string;
     navigateToUserProfile?: boolean;
+    className?: string;
 }
 
-const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserProfile = true} : Props) => {
+const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserProfile = true, className} : Props) => {
     const userAvatarSrc = userAvatar && userAvatar.trim() !== "" ? userAvatar : '/assets/default_avatar.png';
     const handleOnclick = () => {
         if (userId) {
@@ -28,7 +29,7 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserPr
             width: typeof width === 'string' ? width : `${width}px`,
             height: typeof height === 'string' ? height : `${height}px`
         }}
-        className={` rounded-full hover:opacity-50 cursor-pointer`} 
+        className={` rounded-full hover:opacity-50 cursor-pointer ${className}`} 
         src={userAvatarSrc} 
         alt="User Icon" 
         />

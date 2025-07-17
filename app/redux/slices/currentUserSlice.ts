@@ -17,9 +17,42 @@ const currentUserSlice = createSlice({
             if (state) {
                 Object.assign(state, action.payload);
             }
+        },
+        incrementPostCount: (state) => {
+            if(state?.postCount) {
+                state.postCount++;
+            } else {
+                state!.postCount = 1;
+            }
+        },
+        decrementPostCount: (state) => {
+            if(state?.postCount) {
+                const newPostCount = state.postCount - 1;
+                state.postCount = Math.max(newPostCount, 0);
+            }
+        },
+        incrementLikeCount: (state) => {
+            if(state?.likeCount) {
+                state.likeCount++;
+            } else {
+                state!.likeCount = 1;
+            }
+        },
+        decrementLikeCount: {
+            reducer: (state, action: PayloadAction<{ count?: number }>) => {
+                const count = action?.payload?.count ?? 1;
+
+                    if(state?.likeCount) {
+                        const newLikeCount = state.likeCount - count;
+                        state.likeCount = Math.max(newLikeCount, 0);
+                    }
+            },
+            prepare: (payload?: { count?: number }) => {
+                return { payload: payload ?? {} };
+            }
         }
     }
 });
 
-export const {setCurrentUser, updateCoverUrl, updateProfile} = currentUserSlice.actions;
+export const {setCurrentUser, updateCoverUrl, updateProfile, incrementPostCount, decrementPostCount, incrementLikeCount, decrementLikeCount} = currentUserSlice.actions;
 export default currentUserSlice.reducer;
