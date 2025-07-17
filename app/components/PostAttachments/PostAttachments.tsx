@@ -84,18 +84,18 @@ const PostAttachments = ({attachments, onDelete}: Props) => {
                     </div>
                 );
             })}
-            <DynamicTooltip text='Back' relative={false} className={`absolute start-0 top-1/2 -translate-y-1/2 ms-2 ${(currentAttachmentIndex === 0 || attachments.length === 0) && 'hidden'}`}>
+            <DynamicTooltip text='Back' className={`absolute start-0 top-1/2 -translate-y-1/2 ms-2 ${(currentAttachmentIndex === 0 || attachments.length === 0) && 'hidden'}`}>
                 <button disabled={isAtFirstAttachment} onClick={handleBack} type='button' className='flex items-center justify-center rounded-full bg-dark-btn text-white p-1 hover:opacity-50 transition-all'>
                     <IconChevronLeft/>
                 </button>
             </DynamicTooltip>
-            <DynamicTooltip text='Next' relative={false} className={`absolute end-0 top-1/2 -translate-y-1/2 me-2 ${(currentAttachmentIndex === attachments.length - 1 || attachments.length === 0) && 'hidden'}`}>
+            <DynamicTooltip text='Next' className={`absolute end-0 top-1/2 -translate-y-1/2 me-2 ${(currentAttachmentIndex === attachments.length - 1 || attachments.length === 0) && 'hidden'}`}>
                 <button disabled={isAtLastAttachment} onClick={handleNext} type='button' className='flex items-center justify-center rounded-full bg-dark-btn text-white p-1 hover:opacity-50 transition-all'>
                     <IconChevronRight/>
                 </button>
             </DynamicTooltip>
             {onDelete && (
-                <DynamicTooltip text='Delete' relative={false} className='absolute end-0 me-2' style={{top: '55px'}}>
+                <DynamicTooltip text='Delete' className='absolute end-0 me-2' style={{top: '55px'}}>
                     <button onClick={() => onDelete(currentAttachmentIndex)} type='button' className='flex items-center justify-center rounded-full bg-red-600 text-white p-1 hover:opacity-50 transition-all'>
                         <IconTrash/>
                     </button>
