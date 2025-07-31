@@ -35,7 +35,7 @@ function Dropdown({ toggleButton, children, isOpen, setIsOpen }: Props) {
                 className={`dropdown-menu shadow-lg`}
                 style={{ 
                     top: "120%",
-                    display: isOpen ? 'block' : 'none'
+                    display: isOpen ? 'flex' : 'none'
                 }}
             >
                 {children}

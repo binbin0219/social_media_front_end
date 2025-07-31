@@ -24,7 +24,7 @@ const ChatButton = ({targetUserId} : Props) => {
             <button 
             onClick={() => handleCharButtonClick()}
             type='button'
-            className='bg-green-200 border-green-400 text-green-600 hover:bg-green-300 border-2 px-3 py-2 rounded-lg mb-1'
+            className='bg-green-500 text-white text-sm px-4 py-2 rounded-md hover:bg-green-600'
             >
                 <IconMessageCircle/>
             </button>

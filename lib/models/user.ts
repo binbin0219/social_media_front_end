@@ -13,6 +13,7 @@ export type User = {
     phoneNumber: PhoneNumber;
     relationshipStatus: string | null;
     create_at: string;
+    updatedAt?: string;
     avatar?: string | null;
     coverUrl?: string;
     friendship?: Friendship;
@@ -34,10 +35,6 @@ export type PhoneNumber = {
     phoneNumberBody: string;
 }
 
-export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'avatar'>;
+export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'updatedAt'>;
 
-export type RecommendedUsers = {
-    id: number;
-    username: string;
-    avatar: string;
-}
+export type RecommendedUsers = Pick<NonNullable<User>, 'id' | 'username' | 'updatedAt'>;

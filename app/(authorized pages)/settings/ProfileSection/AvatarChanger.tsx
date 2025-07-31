@@ -1,11 +1,12 @@
-import UserIcon from '@/components/UserIcon/UserIcon'
+import LoadingButton from '@/components/LoadingButton/LoadingButton';
 import { useDialogContext } from '@/context/DialogContext';
 import { addToast } from '@/redux/slices/toastSlice';
 import { RootState } from '@/redux/store';
 import { IconArrowsShuffle, IconUpload } from '@tabler/icons-react'
 import Croppie from 'croppie';
 import "croppie/croppie.css";
-import React, { useRef } from 'react'
+import Image from 'next/image';
+import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 type Props = {
@@ -20,6 +21,7 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
     const currentUser = useSelector((state: RootState) => state.currentUser);
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const randomAvatarBtnRef = useRef<HTMLButtonElement>(null);
+    const [isFetchingRandomAvatar, setFetchingRandomAvatar] = useState(false);
 
     const handleImgUpload = () => {
         dialog.open(
@@ -84,6 +86,8 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
 
     const handleRandomAvatar = async () => {
         try {
+            if(isFetchingRandomAvatar) return;
+            setFetchingRandomAvatar(true);
             if(randomAvatarBtnRef.current) {
                 randomAvatarBtnRef.current.classList.add('button-disabled');
             }
@@ -100,6 +104,7 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
             if(randomAvatarBtnRef.current) {
                 randomAvatarBtnRef.current.classList.remove('button-disabled');
             }
+            setFetchingRandomAvatar(false);
         }
     }
 
@@ -116,22 +121,34 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
 
     return (
         <div className="flex gap-7 mt-8 justify-center">
-            <UserIcon 
-                userId={currentUser?.id}
-                userAvatar={avatar}
-                width={100}
-                height={100}
-            />
+            {avatar && (
+                <Image 
+                    width={100}
+                    height={100}
+                    src={avatar!}
+                    alt={'image'}
+                />
+            )}
             <div className="flex flex-col gap-3">
                 <label htmlFor="upload_img_input" className="flex gap-2 items-center rounded-lg px-3 py-2 border-2 border-green-300 bg-green-100 text-sm text-green-600 hover:bg-green-200 cursor-pointer">
                     <IconUpload/>
                     Upload image
                     <input onInput={() => handleImgUpload()} ref={avatarInputRef} id="upload_img_input" accept="image/jpeg, image/png" type="file" name="avatar" className="hidden"/>
                 </label>
-                <button ref={randomAvatarBtnRef} onClick={() => handleRandomAvatar()} id="random_avatar_btn" type="button" className="flex gap-2 items-center rounded-lg px-3 py-2 border-2 border-indigo-300 bg-indigo-100 text-sm text-indigo-600 hover:bg-indigo-200">
-                    <IconArrowsShuffle/>
-                    Random Avatar
-                </button>
+                <LoadingButton
+                isLoading={isFetchingRandomAvatar}
+                loaderColor='#4f46e5'
+                onClick={() => handleRandomAvatar()}
+                text={(
+                    <>
+                        <IconArrowsShuffle/>
+                        Random Avatar
+                    </>
+                )}
+                loadingText='Generating...'
+                className='flex gap-2 items-center rounded-lg px-3 py-2 border-2 border-indigo-300 bg-indigo-100 text-sm text-indigo-600 hover:bg-indigo-200'
+                >
+                </LoadingButton>
             </div>
         </div>
     )

@@ -8,25 +8,33 @@ import { userService } from '@/lib/services/user';
 
 type Props = {
     username: string;
-    className?: string;
     onItemClick: (result: User) => void;
+    className?: string;
+    recordPerPage?: number;
 }
 
-const UserLazyLoadList = ({username, className, onItemClick}: Props) => {
+const UserLazyLoadList = ({username, className, onItemClick, recordPerPage = 6}: Props) => {
     const [searchResults, setSearchResults] = useState<User[]>([]);
     const [isAllResultFetched, setIsAllResultFetched] = useState(false);
 
     const handleDataLoaderVisible = (username: string) => {
         setTimeout(async () => {
-            const recordPerPage = 6;
-            const users = await userService.fetchUsersByUsername(username, searchResults.length, recordPerPage);
+            const users = await userService.fetchUsersByUsername(
+                username,
+                searchResults.length,
+                recordPerPage
+            );
 
-            setSearchResults(prev => [...prev, ...users]);
-            if(users.length < 6) {
+            const uniqueNewUsers = users.filter(
+                (newUser) => !searchResults.some(existingUser => existingUser!.id === newUser!.id)
+            );
+
+            setSearchResults(prev => [...prev, ...uniqueNewUsers]);
+            if (users.length < (recordPerPage)) {
                 setIsAllResultFetched(true);
             }
         }, 1000);
-    }
+    };
 
     const NoResults = () => {
         return (
@@ -43,8 +51,8 @@ const UserLazyLoadList = ({username, className, onItemClick}: Props) => {
                 <NoResults/>
             )}
             {searchResults.map((result, index) => (
-                <div key={index} onClick={() => onItemClick(result)} className='dropdown-item flex gap-2 items-center p-2 hover:bg-slate-200 cursor-pointer rounded-lg'>
-                    <UserIcon width={45} height={45} userAvatar={result?.avatar} userId={result?.id}/>
+                <div key={index} onClick={() => onItemClick(result)} className='flex gap-2 items-center list-item-general'>
+                    <UserIcon width={45} height={45} updatedAt={result?.updatedAt} userId={result!.id}/>
                     <p className='text-sm'>{result?.username}</p>
                 </div>
             ))}

@@ -2,8 +2,8 @@ export type Notification = {
     id: number;
     recipientId: number;
     senderId: number;
-    senderAvatar: string;
     senderUsername: string;
+    senderUpdatedAt?: string;
     type: NotificationType;
     content: string;
     link: string;

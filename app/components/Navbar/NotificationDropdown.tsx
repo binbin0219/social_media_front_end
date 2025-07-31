@@ -40,8 +40,14 @@ const NotificationDropdown = memo(() => {
             isOpen={isOpen}
             toggleButton={(
                 <DynamicTooltip text='Notifications'>
-                    <button onClick={() => dispatch(setIsNotificationOpen(!isOpen))} data-data-loaded="false" id="notifications_btn" type="button" className="flex gap-1 items-center hover:opacity-50">
-                        <IconBell className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
+                    <button 
+                    onClick={() => dispatch(setIsNotificationOpen(!isOpen))} 
+                    data-data-loaded="false" 
+                    id="notifications_btn" 
+                    type="button" 
+                    className="relative p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition-colors"
+                    >
+                        <IconBell className='w-6 h-6'/>
                         <NotificationCounter/>
                     </button>
                 </DynamicTooltip>

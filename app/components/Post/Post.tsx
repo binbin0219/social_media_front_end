@@ -201,7 +201,7 @@ const Post = memo(({ postId: postId }: Props) => {
     }
 
     return (
-        <div className={`post relative w-full rounded-lg p-3 flex flex-col gap-2 rounded-xl bg-white ${post.isNew ? 'post-new' : ''}`}
+        <div className={`post relative w-full rounded-lg p-3 flex flex-col gap-2 rounded-xl bg-white card-shadow ${post.isNew ? 'post-new' : ''}`}
         data-comment-expanded={commentExpanded}>
             {isCurrentUserAuthor && (
                 <div className='absolute end-0 top-0 mt-2 me-2' style={{zIndex: 10}}>
@@ -227,7 +227,7 @@ const Post = memo(({ postId: postId }: Props) => {
             )}
             <div className="flex flex-col gap-1">
                 <div className="flex gap-1 cursor-pointer">
-                    <UserIcon userId={author?.id} userAvatar={author?.avatar} />
+                    <UserIcon userId={author!.id} updatedAt={author?.updatedAt} />
                     <div className="flex flex-col">
                         <h4 onClick={() => router.push(`/user/profile/${author?.id}`)} className="font-bold hover:underline">{author?.username ?? "Unknown"} {isCurrentUserAuthor ? '(You)' : ''}</h4>
                         <DynamicTooltip className='w-fit' text={new Date(post.create_at).toLocaleString()} >
@@ -247,7 +247,7 @@ const Post = memo(({ postId: postId }: Props) => {
                         ref={likeBtnRef}
                         onClick={() => likeOnclickHandler()}
                         style={{color: "black"}}
-                        className={`flex gap-2 p-2 rounded-lg ${likeState.liked ? 'hover:bg-red-200' : 'hover:bg-slate-200'}`}>
+                        className={`flex gap-2 p-2 rounded-lg hover-soft ${likeState.liked ? 'hover:bg-red-200' : 'hover:bg-slate-200'}`}>
                         {likeState.liked &&
                             <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#F9452C" stroke="#F9452C" className="icon icon-tabler icons-tabler-filled icon-tabler-heart icon-liked">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -272,7 +272,7 @@ const Post = memo(({ postId: postId }: Props) => {
                     <button 
                         onClick={() => commentExpandOnclickHandler()}
                         data-post-action="toggle-comment-section"
-                        className="flex gap-2 hover:bg-slate-200 p-2 rounded-lg"
+                        className="flex gap-2 hover:bg-slate-200 p-2 rounded-lg hover-soft"
                         >
                         <svg style={{pointerEvents: "none"}} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#2293F9" stroke="#2293F9" className="icon icon-tabler icons-tabler-filled icon-tabler-message icon-comment-opened">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />

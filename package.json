@@ -17,6 +17,7 @@
     "@tabler/icons-react": "^3.31.0",
     "bcrypt": "^5.1.1",
     "cookie": "^1.0.2",
+    "country-region-data": "^3.1.0",
     "croppie": "^2.6.5",
     "dotenv": "^16.4.7",
     "emoji-mart": "^5.6.0",
@@ -29,7 +30,8 @@
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "sharp": "^0.33.5",
-    "sockjs-client": "^1.6.1"
+    "sockjs-client": "^1.6.1",
+    "world_countries_lists": "^3.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

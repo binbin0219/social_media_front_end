@@ -1,5 +1,5 @@
 "use client"
-import { IconMessageChatbot, IconMessageCircleFilled } from '@tabler/icons-react'
+import { IconMessageChatbot, IconMessageCircle } from '@tabler/icons-react'
 import React, { useEffect } from 'react'
 import ChatRoom from './ChatRoom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -89,9 +89,12 @@ const ChatWindow = () => {
     return (
         <div className='relative flex'>
             <DynamicTooltip text='Chat'>
-                <button onClick={() => dispatch(setIsChatOpen(!chatState.isOpen))} className='flex'>
+                <button 
+                onClick={() => dispatch(setIsChatOpen(!chatState.isOpen))} 
+                className='p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition-colors'
+                >
                     <UnreadMessageCounter/>
-                    <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
+                    <IconMessageCircle className='h-6 w-6'/>
                 </button>
             </DynamicTooltip>
             <div data-mobile-section={mobileSection} className={`${styles['chat-window']} ${chatState.isOpen && styles['show']} shadow-lg`}>
@@ -106,15 +109,3 @@ const ChatWindow = () => {
 }
 
 export default ChatWindow
-
-{/* {!isAllDataFetched && (
-    <DataLoader className='flex flex-col gap-2' onVisible={() => handleDataLoaderVisible()}>
-        <UserIconSkeleton width={50} height={50}/>
-        <UserIconSkeleton width={50} height={50}/>
-        <UserIconSkeleton width={50} height={50}/>
-        <UserIconSkeleton width={50} height={50}/>
-        <UserIconSkeleton width={50} height={50}/>
-        <UserIconSkeleton width={50} height={50}/>
-        <UserIconSkeleton width={50} height={50}/>
-    </DataLoader>
-)} */}

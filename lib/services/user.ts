@@ -42,6 +42,32 @@ async function getRecommendations(limit: number): Promise<RecommendedUsers[]> {
     return userRecommendations;
 }
 
+export const updateUserProfileOnServer = async (newProfile: Partial<User>) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile/update`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            ...newProfile
+        })
+    });
+    if (!response.ok) {
+        throw new Error("Failed to update user data on server");
+    }
+}
+
+export function getUserAvatarLink(userId: number, updatedAt?: string) {
+    const baseAvatarUrl = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/user/${userId}/avatar/avatar.png`;
+    return updatedAt ? `${baseAvatarUrl}?${new Date(updatedAt).getTime()}` : baseAvatarUrl;
+}
+
+export function getUserCoverLink(userId: number, updatedAt?: string) {
+    const baseAvatarUrl = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/user/${userId}/cover/cover.png`;
+    return updatedAt ? `${baseAvatarUrl}?${new Date(updatedAt).getTime()}` : baseAvatarUrl;
+}
+
 export const userService = {
     fetchProfileUserFromServer,
     fetchUsersByUsername,

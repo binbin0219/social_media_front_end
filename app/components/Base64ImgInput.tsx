@@ -10,7 +10,6 @@ const Base64ImgInput = ({ onInput, id, className }: Props) => {
     const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
         const file = e.currentTarget.files?.[0];
         if (!file) return;
-        console.log(URL.createObjectURL(file));
         const reader = new FileReader();
         reader.onload = () => {
             const result = reader.result as string;

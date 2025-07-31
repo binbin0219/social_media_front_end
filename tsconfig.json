@@ -24,8 +24,8 @@
       "@/models/*": ["./lib/models/*"],
       "@/components/*": ["./app/components/*"],
       "@/public/*": ["./public/*"]
-    }
+    },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "public/global.js"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

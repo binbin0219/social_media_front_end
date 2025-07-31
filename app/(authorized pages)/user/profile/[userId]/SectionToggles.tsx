@@ -6,7 +6,7 @@ type Props = {
 
 const SectionToggles = memo(({ setCurrentSection } : Props) => {
     return (
-        <div className="w-full bg-white background-footer">
+        <div className="w-full bg-white rounded-lg card-shadow">
             <div id="section_buttons_container" className="section-buttons-container flex gap-2 h-full w-fit mx-auto">
                 <button 
                 onClick={() => setCurrentSection('posts')} 
@@ -21,7 +21,7 @@ const SectionToggles = memo(({ setCurrentSection } : Props) => {
                     </svg>
                     Posts
                 </button>
-                <button 
+                {/* <button 
                 onClick={() => setCurrentSection('about')} 
                 data-data-loaded="true" 
                 data-profile-section="about_section" 
@@ -36,7 +36,7 @@ const SectionToggles = memo(({ setCurrentSection } : Props) => {
                         <path d="M7 16l10 0" />
                     </svg>
                     About
-                </button>
+                </button> */}
                 <button 
                 onClick={() => setCurrentSection('friends')} 
                 data-data-loaded="false" 

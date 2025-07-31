@@ -4,6 +4,7 @@ import UserIcon from '@/components/UserIcon/UserIcon'
 import { ChatRoom, ChatRoomType } from '@/lib/models/ChatRoom'
 import { chatService } from '@/lib/services/chat'
 import { addChatRooms, setActiveChatRoomId } from '@/redux/slices/chatSlice'
+import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,11 +19,16 @@ const ChatRoomList = () => {
     const handleDataLoaderVisible = async () => {
         setTimeout(async () => {
             try {
-                const fecthedChatRooms = await chatService.fetchChatRooms(chatRooms.length, 6);
+                const fecthedChatRooms = await chatService.fetchChatRooms(chatRooms.length, 20);
                 dispatch(addChatRooms(fecthedChatRooms));
-                setIsAllDataFetched(fecthedChatRooms.length < 6);
+                setIsAllDataFetched(fecthedChatRooms.length < 20);
             } catch (error) {
                 console.log(error);
+                setIsAllDataFetched(true);
+                dispatch(addToast({
+                    message: "Failed to load chats! Try refresh the page",
+                    type: "error"
+                }))
             }
         }, 500);
     }
@@ -58,7 +64,7 @@ const ChatRoomList = () => {
 
         return (
             <>
-                <UserIcon userId={peer.userId} userAvatar={peer.avatar} width={45} height={45} />
+                <UserIcon userId={peer.userId} updatedAt={peer.userUpdatedAt} width={45} height={45} />
                 <div className='flex flex-col gap-1 h-100 w-full'>
                     <div className='flex w-full justify-between'>
                         <p className='text-sm flex-1'>{peer.username}</p>
@@ -87,7 +93,7 @@ const ChatRoomList = () => {
                 <div 
                 onClick={() => handleChatRoomClick(chatRoom.id)} 
                 key={chatRoom.id} 
-                className={`w-full flex items-center gap-3 rounded p-3 cursor-pointer hover:bg-slate-300 ${actvieChatRoomId === chatRoom.id ? 'bg-slate-200' : ''}`}
+                className={`w-full flex items-center gap-3 rounded p-3 cursor-pointer hover-soft hover:bg-slate-100 ${actvieChatRoomId === chatRoom.id ? 'bg-slate-200' : ''}`}
                 >
                     {chatRoom.type === ChatRoomType.GROUP ? (
                         <>

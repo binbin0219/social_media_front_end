@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/Navbar/Navbar";
 import '../globals.css';
 import Script from "next/script";
 import { Suspense } from "react";
@@ -14,6 +13,7 @@ import FileViewer from "@/components/FileViewer/FileViewer";
 import { WebSocketProvider } from "@/context/WebSocketContext";
 import { Poppins, Fugaz_One } from 'next/font/google';
 import { DialogContextProvider } from "@/context/DialogContext";
+import Navbar from "@/components/Navbar/Navbar";
 
 const poppins = Poppins({
 	subsets: ['latin'],
@@ -67,7 +67,7 @@ export default async function RootLayout({
 			<Suspense fallback={<Loading />}> 
 				<body
 					className={`antialiased`}
-					style={{ backgroundColor: "#dbdbdb7a" }}
+					style={{ backgroundColor: "#F7F8FA" }}
 				>
 					<WebSocketProvider>
 						<StoreProvider 
@@ -80,7 +80,7 @@ export default async function RootLayout({
 							allUnreadMessagesCount={authUserData?.unreadChatMessageCount ?? 0}
 						>
 							<DialogContextProvider>
-								<Navbar />
+								<Navbar/>
 								<ConfirmationDialog />
 								<ToastContainer />
 								<FileViewer/>

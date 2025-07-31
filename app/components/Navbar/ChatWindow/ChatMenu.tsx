@@ -22,7 +22,9 @@ const ChatMenu = () => {
             setSearchResultList(null)
         } else {
             setSearchResultList((
-                <UserLazyLoadList 
+                <UserLazyLoadList
+                className='flex-1 overflow-y-auto'
+                recordPerPage={20}
                 key={value} 
                 username={value} 
                 onItemClick={async (result) => {
@@ -38,7 +40,7 @@ const ChatMenu = () => {
 
     return (
         <div className={`${styles['chat-window__menu']}`}>
-            <div className={`flex flex-col gap-2 ${isNewChatSearchOpen && 'hidden'}`}>
+            <div className={`flex flex-col gap-2 h-full ${isNewChatSearchOpen && 'hidden'}`}>
                 <div className='flex items-center justify-between pe-3'>
                     {/* <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300 me-2' strokeWidth={2} width={35} height={35}/> */}
                     <h1 className='font-bold text-2xl text-center'>Chats</h1>
@@ -51,11 +53,11 @@ const ChatMenu = () => {
                         </button>
                     </div>
                 </div>
-                <div className='flex flex-col flex-1 gap-2 pe-2'>
+                <div className='flex flex-col flex-1 gap-2 pe-2 overflow-y-auto'>
                     <ChatRoomList/>
                 </div>
             </div>
-            <div className={`flex flex-col gap-2 pe-2 ${!isNewChatSearchOpen && 'hidden'}`}>
+            <div className={`flex flex-col gap-2 pe-2 h-full ${!isNewChatSearchOpen && 'hidden'}`}>
                 <div className='flex items-center justify-between'>
                     <h1 className='font-bold text-2xl text-center'>New chat</h1>
                     <button onClick={() => setIsNewChatSearchOpen(false)} className='hover:opacity-50 cursor-pointer transition-opacity duration-300'>

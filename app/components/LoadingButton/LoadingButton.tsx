@@ -1,16 +1,15 @@
-import React from 'react'
+import React, { ButtonHTMLAttributes } from 'react'
 import SpinLoader from '../SpinLoader/SpinLoader';
 
 type Props = {
     isLoading: boolean;
+    loaderColor: string;
     text?: string | React.ReactNode;
     loadingText?: string;
-    loaderColor: string;
     loaderWidth?: number;
     className?: string;
-    type?: "button" | "submit" | "reset";
     onClick?: () => void;
-}
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
 const LoadingButton = ({isLoading, text, loaderColor, loadingText, className, type, onClick, loaderWidth}: Props) => {
     return (

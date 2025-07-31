@@ -2,12 +2,10 @@ import React from 'react'
 import SectionToggles from './SectionToggles'
 import ProfileSection from './ProfileSection/ProfileSection'
 import './style.css'
-import Script from 'next/script'
 
 const page = () => {
     return (
         <> 
-            <Script src='/scripts/country-region-selector/crs.min.js' strategy="afterInteractive" />
             <div 
             className="
                 flex-col

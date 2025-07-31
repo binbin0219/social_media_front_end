@@ -1,29 +1,20 @@
 "use client"
-import ImageSkeleton from '@/components/ImageSkeleton/ImageSkeleton'
+import UserCover from '@/components/UserCover'
 import UserIcon from '@/components/UserIcon/UserIcon'
 import { useDialogContext } from '@/context/DialogContext'
 import { logout } from '@/lib/auth'
-import { defaultCoverUrl } from '@/lib/constants'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
-import { generateCurrentTime } from '@/utils/helpers'
-import { IconLogout, IconPencil, IconSettings } from '@tabler/icons-react'
-import dynamic from 'next/dynamic'
+import { IconLogout, IconSettings } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-const DynamicNextImage = dynamic(() => import("next/image"), {
-    loading: () => <ImageSkeleton />,
-    ssr: false,
-});
 
 const LeftSection = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const dialog = useDialogContext();
-    const user = useSelector((state: RootState) => state.currentUser);
-    const coverUrl = user?.coverUrl ?? defaultCoverUrl;
+    const user = useSelector((state: RootState) => state.currentUser)!;
     const containerRef = useRef<HTMLDivElement>(null);
     const [top, setTop] = useState<undefined | number>(undefined);
     const [height, setHeight] = useState<undefined | number>(undefined);
@@ -80,25 +71,20 @@ const LeftSection = () => {
                 top,
                 height
             }}>
-                <div className='flex flex-col bg-white rounded-lg'>
+                <div className='flex flex-col bg-white rounded-lg card-shadow'>
                     <div className='relative w-full h-[150px]'>
-                        <DynamicNextImage 
-                            fill
-                            priority
-                            src={`${coverUrl}?t=${generateCurrentTime()}`}
-                            alt='Profile'
-                            className='rounded-t-md'
-                            style={{objectFit: "cover"}}
-                        />
-                        <button className='absolute top-0 end-0 mt-2 me-2 flex gap-2 bg-blue-400 p-2 rounded text-sm hidden'>
-                            Edit Profile
-                            <IconPencil/>
-                        </button>
+                        <UserCover
+                        className='h-full rounded-t-lg'
+                        userId={user.id}
+                        userUpdatedAt={user.updatedAt}
+                        enableUpdate={true}
+                        >
+                        </UserCover>
                     </div>
                     <div className='relative'>
                         <UserIcon
                             userId={user?.id}
-                            userAvatar={user?.avatar}
+                            updatedAt={user?.updatedAt}
                             width={90}
                             height={90}
                             navigateToUserProfile
@@ -107,7 +93,7 @@ const LeftSection = () => {
                     </div>
                     <div className='flex flex-col items-center gap-3 justify-center p-5' style={{paddingTop: '55px'}}>
                         <p className='font-bold'>{user?.username}</p>
-                        <p className='text-slate-500'>{user?.description ?? "No description yet"}</p>
+                        <p className='text-slate-500 text-center'>{user?.description ?? "No description yet"}</p>
                         <div className='flex w-full mt-5 cursor-pointer'>
                             <div className='flex flex-col gap-2 items-center flex-1 border-e hover:bg-slate-100 py-4'>
                                 <p className='font-bold'>{user?.postCount ?? 0}</p>
@@ -127,14 +113,14 @@ const LeftSection = () => {
                         </button>
                     </div>
                 </div>
-                <div className='bg-white rounded-lg p-2'>
+                <div className='bg-white rounded-lg p-2 card-shadow'>
                     <p className='font-bold mb-2'>Quick accesses</p>
                     <div className='flex flex-col gap-2'>
-                        <div onClick={() => router.push('/settings')} className='flex gap-2 items-center p-3 hover:bg-slate-100 rounded-md cursor-pointer'>
+                        <div onClick={() => router.push('/settings')} className='flex gap-2 items-center list-item-general'>
                             <IconSettings/>
                             Settings
                         </div>
-                        <div onClick={logoutConf} className='flex gap-2 items-center p-3 text-red-500 hover:bg-red-100 rounded-md cursor-pointer'>
+                        <div onClick={logoutConf} className='flex gap-2 items-center list-item-general'>
                             <IconLogout/>
                             Logout
                         </div>

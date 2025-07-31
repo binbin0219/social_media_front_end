@@ -1,18 +1,20 @@
 "use client"
+import { getUserAvatarLink } from '@/lib/services/user';
 import Image from 'next/image';
 import React from 'react'
 
 type Props = {
-    userId? : number,
-    userAvatar?: string | null,
+    userId : number,
+    updatedAt?: string,
     width?: number | string;
     height?: number | string;
     navigateToUserProfile?: boolean;
     className?: string;
 }
 
-const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserProfile = true, className} : Props) => {
-    const userAvatarSrc = userAvatar && userAvatar.trim() !== "" ? userAvatar : '/assets/default_avatar.png';
+const UserIcon = ({userId, updatedAt, width = 45, height = 45, navigateToUserProfile = true, className} : Props) => {
+    const avatarUrl = getUserAvatarLink(userId, updatedAt);
+
     const handleOnclick = () => {
         if (userId) {
             window.location.href = `/user/profile/${userId}`;
@@ -20,6 +22,7 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserPr
             alert('User profile not available');
         }
     }
+
     return (
         <Image 
         onClick={navigateToUserProfile ? handleOnclick : () => {}} 
@@ -30,8 +33,13 @@ const UserIcon = ({userId, userAvatar, width = 45, height = 45, navigateToUserPr
             height: typeof height === 'string' ? height : `${height}px`
         }}
         className={` rounded-full hover:opacity-50 cursor-pointer ${className}`} 
-        src={userAvatarSrc} 
+        src={avatarUrl} 
         alt="User Icon" 
+        onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null;
+            target.src = '/assets/default_avatar.png';
+        }}
         />
     )
 }

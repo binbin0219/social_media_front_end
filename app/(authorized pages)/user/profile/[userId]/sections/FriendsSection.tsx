@@ -11,16 +11,16 @@ type Props = {
 const FriendsSection = ({profileUser}: Props) => {
 
     return (
-        <div id="friends_section" className="w-full mt-4 flex flex-col hidden relative border rounded-lg bg-white">
-            <h5 className="font-bold text-2xl p-3 border-b">Friends</h5>
+        <div id="friends_section" className="w-full mt-4 flex flex-col hidden relative rounded-lg bg-white">
+            <h5 className="font-bold text-2xl p-3">Friends</h5>
             <FriendList 
             userId={profileUser!.id}
             skeletonContainerClassName='flex gap-3 flex-col w-100 p-2'
             onMap={(friend) => {
                 return (
                     <UserProfileLink key={friend.id} userId={friend.id}>
-                        <div className='flex gap-3 items-center p-3 hover:bg-slate-100 cursor-pointer border-b'>
-                            <UserIcon userAvatar={friend.avatar} userId={friend.id}/>
+                        <div className='flex gap-3 items-center p-3 hover:bg-slate-100 cursor-pointer border-t'>
+                            <UserIcon updatedAt={friend.updatedAt} userId={friend.id}/>
                             <p className='font-bold'>{friend.username}</p>
                         </div>
                     </UserProfileLink>

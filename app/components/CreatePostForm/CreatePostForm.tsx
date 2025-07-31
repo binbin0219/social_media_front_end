@@ -1,5 +1,5 @@
 import { addToast } from "@/redux/slices/toastSlice";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import DynamicTooltip from "../Tooltip/DynamicToolTip";
 import { IconMoodSmile, IconPhotoPlus } from "@tabler/icons-react";
@@ -15,6 +15,7 @@ type Props = {
     onSubmit?: (title: string, content: string, attachments: AttachmentUrlAndFile[]) => Promise<void>, 
     onCancel: () => void,
     enableAttachment?: boolean,
+    openAttachmentInputAfterLoad?: boolean,
     initialData?: {
         title?: string,
         content?: string,
@@ -22,7 +23,7 @@ type Props = {
     }
 }
 
-const CreatePostForm = ({onSubmit, onCancel, initialData, enableAttachment = true}: Props) => {
+const CreatePostForm = ({onSubmit, onCancel, initialData, enableAttachment = true, openAttachmentInputAfterLoad}: Props) => {
     const dispatch = useDispatch();
     const MAX_TITLE_SIZE = 70;
     const MAX_CONTENT_SIZE = 2000;
@@ -32,11 +33,23 @@ const CreatePostForm = ({onSubmit, onCancel, initialData, enableAttachment = tru
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [isContentValid, setIsContentValid] = useState(true);
     const [isCreatingPost, setIsCreatingPost] = useState(false);
+    const isAttachmentInputClicked = useRef<boolean>(false);
+    const attachmentInputRef = useRef<HTMLInputElement>(null);
     const attachmentLimit = 10;
     const attachments: PostAttachmentPreview[] = postAttachments.map(attachment => ({
         src: attachment.url,
         mimeType: attachment.file.type
-    }))
+    }));
+
+    useEffect(() => {
+        if(openAttachmentInputAfterLoad && 
+            attachmentInputRef.current && 
+            isAttachmentInputClicked.current === false
+        ) {
+            attachmentInputRef.current.click();
+            isAttachmentInputClicked.current = true;
+        }
+    }, [openAttachmentInputAfterLoad])
 
     const handleSubmit = async () => {
         if(isCreatingPost) return;
@@ -147,6 +160,7 @@ const CreatePostForm = ({onSubmit, onCancel, initialData, enableAttachment = tru
                                     <IconPhotoPlus width={30} height={30}/>
                                 </label>
                                 <input
+                                ref={attachmentInputRef}
                                 multiple
                                 onInput={handleAttachmentInput}
                                 id='postImg'

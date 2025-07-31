@@ -5,6 +5,7 @@ import React from 'react'
 import OccupationSelector from './OccupationSelector';
 import PhoneNumberInput from './PhoneNumberInput';
 import InputField from '@/components/InputField/InputField';
+import CountryRegionSelector from '@/components/CountryRegionSelector';
 
 type Props = {
     user: Partial<User>;
@@ -75,16 +76,15 @@ const DetailsChanger = ({user, updateUserData}: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="flex w-full justify-between">
-                <div className="w-[45%]">
-                    <label htmlFor="country_selector" className="block font-bold">Country</label>
-                    <select onChange={(e) => updateUserData("country", e.target.value)} data-default-value={user?.country} data-region-id="region_selector" id="country_selector" name="country" value={user?.country ?? ""} className="crs-country px-3 py-2 border-2 border-slate-200 rounded-lg w-full"></select>
-                </div>
-                <div className="w-[45%]">
-                    <label htmlFor="region_selector" className="block font-bold">Region</label>
-                    <select onChange={(e) => updateUserData("region", e.target.value)} data-default-value={user?.region} id="region_selector" name="region" className="px-3 py-2 border-2 border-slate-200 rounded-lg w-full"></select>
-                </div>
-            </div>
+            <CountryRegionSelector
+            selectedCountry={user?.country ?? ""}
+            selectedRegion={user?.region ?? ""}
+            onCountryChange={(country) => {
+                updateUserData("country", country);
+                updateUserData("region", "");
+            }}
+            onRegionChange={(region) => updateUserData("region", region)}
+            />
             <div className="flex w-full justify-between">
                 <div className="w-[45%]">
                     <label htmlFor="relationship_status_selector" className="block font-bold">Relationship Status</label>

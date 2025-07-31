@@ -33,8 +33,8 @@ const FriendListDropdown = () => {
         setIsOpen={(isOpen: boolean) => setIsOpen(isOpen)}
         toggleButton={
             <DynamicTooltip text='Friends' className='flex'>
-                <button className='dropdown-toggle' onClick={() => setIsOpen(!isOpen)}>
-                    <IconUsers className='nav-bar-icon hover:stroke-slate-300' strokeWidth={2} width={28} height={28}/>
+                <button className='dropdown-toggle p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition-colors' onClick={() => setIsOpen(!isOpen)}>
+                    <IconUsers className='h-6 w-6'/>
                 </button>
             </DynamicTooltip>
         }
@@ -44,7 +44,7 @@ const FriendListDropdown = () => {
                 {friends.map(friend => (
                     <UserProfileLink key={friend.id} userId={friend.id}>
                         <div className='dropdown-item flex gap-2 items-center'>
-                            <UserIcon userAvatar={friend.avatar} userId={friend.id}/>
+                            <UserIcon updatedAt={friend.updatedAt} userId={friend.id}/>
                             {friend.username}
                         </div>
                     </UserProfileLink>

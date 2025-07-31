@@ -211,7 +211,7 @@ const Notification = ({notification} : Props) => {
             <div className="relative w-[25%]">
                 <UserIcon 
                     userId={notification.senderId} 
-                    userAvatar={notification.senderAvatar} 
+                    updatedAt={notification.senderUpdatedAt} 
                     width={50}
                     height={50}
                 />

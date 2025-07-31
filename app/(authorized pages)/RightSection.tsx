@@ -44,18 +44,18 @@ const RightSection = () => {
                 top,
                 height
             }}>
-                <div className='w-[275px] relative'>
+                <div className='w-[275px] relative card-shadow'>
                     <RecommendedUserList limit={5}/>
                 </div>
-                <div className='w-[275px] relative bg-white rounded-lg p-2'>
+                <div className='w-[275px] relative bg-white rounded-lg p-2 card-shadow'>
                     <p className='font-bold'>Friends ({friendCount})</p>
                     <FriendList 
                     userId={currentUserId}
                     skeletonContainerClassName='flex gap-3 flex-col w-100'
                     onMap={(friend, index) => (
-                        <div key={index} className='flex gap-2 items-center p-2 cursor-pointer hover:bg-slate-100 rounded'>
+                        <div key={index} className='flex gap-2 items-center list-item-general'>
                             <div className='flex items-center gap-2 flex-1'>
-                                <UserIcon userId={friend.id} userAvatar={friend.avatar}/>
+                                <UserIcon userId={friend.id} updatedAt={friend.updatedAt}/>
                                 <p className='text-sm'>{friend.username}</p>
                             </div>
                             <ChatButton targetUserId={friend.id}/>

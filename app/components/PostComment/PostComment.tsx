@@ -10,7 +10,7 @@ type props = {
 }
 
 const PostComment = React.memo(({commentId, postId}: props) => {
-    const currentUser = useSelector((state: RootState) => state.currentUser);
+    const currentUser = useSelector((state: RootState) => state.currentUser)!;
     const comment = useSelector(
         (state: RootState) => state.post.find(post => post.id === postId)?.comments.find((comment: PostCommentType) => comment.id === commentId),
         shallowEqual
@@ -19,7 +19,7 @@ const PostComment = React.memo(({commentId, postId}: props) => {
     const isAuthor = currentUser?.id === user?.id;
     return (
         <div className='w-full flex gap-2'>
-            <UserIcon userId={user?.id} userAvatar={user?.avatar} />
+            <UserIcon userId={user!.id} updatedAt={user?.updatedAt} />
             <div className="p-2 bg-slate-100 rounded-lg flex flex-col gap-2 max-w-[85%]">
                 <div className="flex flex-col">
                     <p className="comment-user-name font-bold">{user ? user.username : "Unknown user"} {isAuthor ? '(You)' : ''}</p>

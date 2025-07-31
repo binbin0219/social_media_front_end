@@ -183,6 +183,11 @@ const FriendshipStatus = memo((props : Props) => {
             } else {
                 dispatch(decrementUnseenNotifCount());
             }
+            setFriendShip({
+                userId: currentUserId!,
+                friendId: userId!,
+                status: 'ACCEPTED'
+            })
             dispatch(addToast({
                 message: "Friend request accepted",
                 type: "success"
@@ -209,6 +214,11 @@ const FriendshipStatus = memo((props : Props) => {
             } else {
                 dispatch(decrementUnseenNotifCount());
             }
+            setFriendShip({
+                userId: userId!,
+                friendId: currentUserId!,
+                status: 'REJECTED'
+            })
             dispatch(addToast({
                 message: "Friend request rejected",
                 type: "success"
@@ -227,9 +237,12 @@ const FriendshipStatus = memo((props : Props) => {
     return (
         <div>
             <DynamicTooltip className={isRejectedByOtherUser ? '' : 'hidden'} text='Friend request rejected' position='bottom'>
-                <button type="button" 
+                <button
+                type="button" 
                 className={`
-                    bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1`}>
+                bg-red-500 text-white text-sm px-4 py-2 rounded-md hover:bg-red-600
+                `}
+                    >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation inline">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -241,10 +254,10 @@ const FriendshipStatus = memo((props : Props) => {
                 </button>
             </DynamicTooltip>
             <DynamicTooltip text='Friend request sent' position='bottom' className={friendship.status === 'PENDING' && isCurrentUserSender ? '' : 'hidden'}>
-                <button ref={unsendFriendReqBtnRef} id="unsend_request_button" type="button" 
+                <button ref={unsendFriendReqBtnRef} type="button" 
                 onClick={() => handleUnsendFriendRequest()}
                 className={`
-                    bg-green-200 border-green-400 text-green-600 hover:bg-green-300 border-2 px-3 py-2 rounded-lg mb-1
+                    bg-green-500 text-white text-sm px-4 py-2 rounded-md hover:bg-green-600
                 `}
                 >
                     <IconUserCheck/>
@@ -260,7 +273,7 @@ const FriendshipStatus = memo((props : Props) => {
                 dropdown
             `}>
                 <DynamicTooltip text='Reply friend request' position='bottom'>
-                    <button onClick={(event) => handleDropdownToggle(event)} type="button" className="dropdown-toggle bg-cyan-200 border-cyan-400 text-cyan-600 hover:bg-cyan-300 border-2 px-3 py-2 rounded-lg mb-1">
+                    <button onClick={(event) => handleDropdownToggle(event)} type="button" className="dropdown-toggle bg-cyan-500 text-white text-sm px-4 py-2 rounded-md hover:bg-cyan-600">
                         {/* Reply friend request */}
                         <IconUserExclamation/>
                     </button>
@@ -305,10 +318,10 @@ const FriendshipStatus = memo((props : Props) => {
                 </div>
             </div>
             <DynamicTooltip text='Unfriend' position='bottom' className={friendship.status === 'ACCEPTED' ? '' : 'hidden'}>
-                <button ref={unfriendReqBtnRef} id="unfriend_button" type="button" 
+                <button ref={unfriendReqBtnRef} type="button" 
                 onClick={() => unfriendBtnHandler()}
                 className={`
-                    bg-red-200 border-red-400 text-red-600 hover:bg-red-300 border-2 px-3 py-2 rounded-lg mb-1
+                    bg-red-500 text-white text-sm px-4 py-2 rounded-md hover:bg-red-600
                 `}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-user-x inline">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -322,7 +335,7 @@ const FriendshipStatus = memo((props : Props) => {
             </DynamicTooltip>
             <DynamicTooltip text='Add friend' position='bottom' className={friendship.status === null || isRejectedByCurrentUser ? '' : 'hidden'}>
                 <LoadingButton
-                className='bg-sky-200 border-sky-400 text-sky-600 hover:bg-sky-300 border-2 px-3 py-2 rounded-lg mb-1'
+                className='bg-sky-500 text-white text-sm px-4 py-2 rounded-md hover:bg-sky-600'
                 isLoading={isSendingFriendReq}
                 loaderColor='#0284c7'
                 loaderWidth={24}
