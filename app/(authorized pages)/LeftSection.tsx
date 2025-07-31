@@ -88,7 +88,8 @@ const LeftSection = () => {
                             width={90}
                             height={90}
                             navigateToUserProfile
-                            className='absolute start-1/2 -translate-x-1/2 -translate-y-2/3'
+                            className='start-1/2 -translate-x-1/2 -translate-y-2/3'
+                            position='absolute'
                         />
                     </div>
                     <div className='flex flex-col items-center gap-3 justify-center p-5' style={{paddingTop: '55px'}}>

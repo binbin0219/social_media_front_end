@@ -1,7 +1,7 @@
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import DynamicTooltip from '../Tooltip/DynamicToolTip';
 import { IconAlertCircle, IconChevronLeft, IconChevronRight, IconTrash } from '@tabler/icons-react';
+import SmartImage from '../SmartImage';
 
 type Props = {
     attachments: Array<PostAttachmentPreview>,
@@ -58,19 +58,22 @@ const PostAttachments = ({attachments, onDelete}: Props) => {
                             </div>
                         ) : attachment.mimeType.startsWith('image') ? (
                             <>
-                                <Image
-                                    src={attachment.src}
-                                    alt="blurred bg"
-                                    fill
-                                    className="object-cover blur-xl scale-110"
-                                    onError={() => handleFail(index)}
+                                <SmartImage
+                                src={attachment.src}
+                                alt="blurred bg"
+                                className="blur-xl scale-110"
+                                objectFit='cover'
+                                width={'100%'}
+                                height={'100%'}
+                                position='absolute'
                                 />
-                                <Image
-                                    src={attachment.src}
-                                    alt="main"
-                                    fill
-                                    className="object-contain"
-                                    onError={() => handleFail(index)}
+                                <SmartImage
+                                src={attachment.src}
+                                alt="main"
+                                objectFit='contain'
+                                width={'100%'}
+                                height={'100%'}
+                                position='absolute'
                                 />
                             </>
                         ) : attachment.mimeType.startsWith('video') ? (

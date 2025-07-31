@@ -1,47 +1,49 @@
-"use client"
+"use client";
 import { getUserAvatarLink } from '@/lib/services/user';
-import Image from 'next/image';
-import React from 'react'
+import React, { CSSProperties } from 'react';
+import SmartImage from '../SmartImage';
+import { defaultUserAvatar } from '@/lib/constants';
 
 type Props = {
-    userId : number,
-    updatedAt?: string,
+    userId: number;
+    updatedAt?: string;
     width?: number | string;
     height?: number | string;
     navigateToUserProfile?: boolean;
     className?: string;
-}
+    position?: CSSProperties['position'];
+};
 
-const UserIcon = ({userId, updatedAt, width = 45, height = 45, navigateToUserProfile = true, className} : Props) => {
-    const avatarUrl = getUserAvatarLink(userId, updatedAt);
+const UserIcon = ({
+    userId,
+    updatedAt,
+    width = 45,
+    height = 45,
+    navigateToUserProfile = true,
+    className,
+    position
+}: Props) => {
 
     const handleOnclick = () => {
         if (userId) {
-            window.location.href = `/user/profile/${userId}`;
+        window.location.href = `/user/profile/${userId}`;
         } else {
-            alert('User profile not available');
+        alert('User profile not available');
         }
-    }
+    };
 
     return (
-        <Image 
-        onClick={navigateToUserProfile ? handleOnclick : () => {}} 
-        width={typeof width === 'string' ? parseInt(width) : width}
-        height={typeof height === 'string' ? parseInt(height) : height}
-        style={{
-            width: typeof width === 'string' ? width : `${width}px`,
-            height: typeof height === 'string' ? height : `${height}px`
-        }}
-        className={` rounded-full hover:opacity-50 cursor-pointer ${className}`} 
-        src={avatarUrl} 
-        alt="User Icon" 
-        onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.onerror = null;
-            target.src = '/assets/default_avatar.png';
-        }}
+        <SmartImage
+            onClick={navigateToUserProfile ? handleOnclick : undefined}
+            className={`rounded-full hover:opacity-50 cursor-pointe ${className}`}
+            src={getUserAvatarLink(userId, updatedAt)}
+            fallbackSrc={defaultUserAvatar}
+            width={width}
+            height={height}
+            alt="User Icon"
+            position={position}
         />
-    )
-}
+    );
+};
 
-export default UserIcon
+export default UserIcon;

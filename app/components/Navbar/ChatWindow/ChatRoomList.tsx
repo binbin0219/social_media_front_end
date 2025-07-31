@@ -65,7 +65,7 @@ const ChatRoomList = () => {
         return (
             <>
                 <UserIcon userId={peer.userId} updatedAt={peer.userUpdatedAt} width={45} height={45} />
-                <div className='flex flex-col gap-1 h-100 w-full'>
+                <div className='flex flex-col gap-1 h-100 flex-1'>
                     <div className='flex w-full justify-between'>
                         <p className='text-sm flex-1'>{peer.username}</p>
                         {unreadCount > 0 && (

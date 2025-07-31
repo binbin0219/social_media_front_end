@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
             <Dropdown
             toggleButton={(
               <div className='relative'>
-                <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px]"></div>
+                <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px] z-10"></div>
                 <UserIcon
                 className={`${isProfileMenuOpen && 'outline-none ring-2 ring-offset-2 ring-indigo-500'}`}
                 userId={user.id} 
