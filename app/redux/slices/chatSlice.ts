@@ -80,7 +80,7 @@ const chatSlice = createSlice({
                     chatRoom.messages = [];
                 }
 
-                chatRoom.messages.unshift(...newChatMessages);
+                chatRoom.messages.push(...newChatMessages);
             }
         },
         sendMessage: (state, action: PayloadAction<{

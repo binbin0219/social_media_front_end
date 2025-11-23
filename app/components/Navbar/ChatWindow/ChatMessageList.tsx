@@ -51,10 +51,10 @@ const ChatMessageList = () => {
 
     const handleDataLoaderVisible = async () => {
         setTimeout(async () => {
-            const oldScrollHeight = messageListRef.current!.scrollHeight;
+            const oldScrollTop = messageListRef.current!.scrollTop;
             await fetchMoreMessages();
-            const newScrollHeight = messageListRef.current!.scrollHeight;
-            messageListRef.current!.scrollTop += (newScrollHeight - oldScrollHeight);
+            const newScrollTop = messageListRef.current!.scrollTop;
+            messageListRef.current!.scrollTop = -(newScrollTop - oldScrollTop);
         }, 500);
     }
 
@@ -145,13 +145,9 @@ const ChatMessageList = () => {
     };
 
     return (
-        <div ref={messageListRef} className='flex flex-1 flex-col overflow-y-auto gap-4 pb-6 pe-1'>
-            {!isAllMessageFetched && (
-                <DataLoader className='flex flex-col gap-4' onVisible={() => handleDataLoaderVisible()}>
-                    <div className={`skeleton opacity-80`} style={{width: '250px', height: '55px', borderRadius: "10px", borderTopLeftRadius: "0"}}></div>
-                    <div className={`skeleton opacity-80`} style={{width: '200px', height: '55px', borderRadius: "10px", borderTopLeftRadius: "0"}}></div>
-                    <div className={`skeleton opacity-80 self-end`} style={{width: '200px', height: '55px', borderRadius: "10px", borderTopRightRadius: "0"}}></div>
-                </DataLoader>
+        <div ref={messageListRef} className='flex flex-1 flex-col-reverse overflow-y-auto gap-4 pb-6 pe-1'>
+            {isAllMessageFetched && (!chatRoom.messages || chatRoom.messages.length === 0) && (
+                <p className='font-bold text-slate-500 text-m text-center my-auto'> Send message to start the chat journey !</p>
             )}
             {chatRoom.messages && chatRoom.messages.map((message, index) => {
                 const amISender = message.senderId === currentUserId;
@@ -168,8 +164,12 @@ const ChatMessageList = () => {
                     </div>
                 )
             })}
-            {isAllMessageFetched && (!chatRoom.messages || chatRoom.messages.length === 0) && (
-                <p className='font-bold text-slate-500 text-m text-center my-auto'> Send message to start the chat journey !</p>
+            {!isAllMessageFetched && (
+                <DataLoader className='flex flex-col gap-4' onVisible={() => handleDataLoaderVisible()}>
+                    <div className={`skeleton opacity-80`} style={{width: '250px', height: '55px', borderRadius: "10px", borderTopLeftRadius: "0"}}></div>
+                    <div className={`skeleton opacity-80`} style={{width: '200px', height: '55px', borderRadius: "10px", borderTopLeftRadius: "0"}}></div>
+                    <div className={`skeleton opacity-80 self-end`} style={{width: '200px', height: '55px', borderRadius: "10px", borderTopRightRadius: "0"}}></div>
+                </DataLoader>
             )}
         </div>
     )
