@@ -97,7 +97,7 @@ const chatSlice = createSlice({
                     chatRoom.messages = [];
                 }
 
-                chatRoom.messages.push(action.payload.chatMessage);
+                chatRoom.messages.unshift(action.payload.chatMessage);
                 chatRoom.lastMessageAt = action.payload.lastMessageAt;
                 chatRoom.messagePreview = action.payload.messagePreview;
             }

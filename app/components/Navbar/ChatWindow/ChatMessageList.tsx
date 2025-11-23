@@ -151,13 +151,15 @@ const ChatMessageList = () => {
             )}
             {chatRoom.messages && chatRoom.messages.map((message, index) => {
                 const amISender = message.senderId === currentUserId;
-                const lastCreateAt = index !== 0 ? new Date(chatRoom.messages![index - 1].createAt.split('T')[0]) : null;
+                const nextCreateAt = index !== chatRoom.messages!.length - 1 ? 
+                    new Date(chatRoom.messages![index + 1].createAt.split('T')[0]) 
+                    : null;
                 const createAt = new Date(message.createAt.split('T')[0]);
 
                 return (
                     <div key={message.id} className={`flex flex-col gap-4 ${amISender && 'items-end'}`}>
-                        {!lastCreateAt && <MessageDateTag createAt={createAt}/>}
-                        {lastCreateAt && lastCreateAt.getDate() !== createAt.getDate() &&
+                        {!nextCreateAt && <MessageDateTag createAt={createAt}/>}
+                        {nextCreateAt && nextCreateAt.getDate() !== createAt.getDate() &&
                             <MessageDateTag createAt={createAt}/>
                         }
                         <Message amISender={amISender} message={message}/>
