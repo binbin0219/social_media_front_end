@@ -15,6 +15,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useDialogContext } from '@/context/DialogContext';
 import Dropdown from '../Dropdown/Dropdown';
 import SearchBar from './SearchBar';
+import ThemeToggle from '../ThemeToggle';
+import { DropdownItem } from '../NewDropdown/DropdownItem/DropdownItem';
 
 const Navbar: React.FC = () => {
   const user = useSelector((state: RootState) => state.currentUser)!;
@@ -49,7 +51,7 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="bg-bgSecondary shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Side: Logo */}
@@ -70,6 +72,8 @@ const Navbar: React.FC = () => {
 
             <ChatWindow/>
 
+            <ThemeToggle/>
+
             <Dropdown
             toggleButton={(
               <div className='relative'>
@@ -88,22 +92,19 @@ const Navbar: React.FC = () => {
             setIsOpen={(isOpen: boolean) => setProfileMenuOpen(isOpen)}
             >
               <UserProfileLink userId={user!.id}>
-                  <li className={`dropdown-item flex items-center gap-2 ${isUserProfileRoute ? 'active' : ''}`}>
-                      <IconUserScan/>
-                      Profile
-                  </li>
+                <DropdownItem className='flex items-center gap-2' isActive={isUserProfileRoute}>
+                    <IconUserScan/>
+                    Profile
+                </DropdownItem>
               </UserProfileLink>
-              <li
-              onClick={() => router.push('/settings')}
-              className={`dropdown-item flex items-center gap-2 ${isSettingRoute ? 'active' : ''}`}
-              >
+              <DropdownItem className='flex items-center gap-2' isActive={isSettingRoute} onClick={() => router.push('/settings')}>
                   <IconSettings/>
                   Settings
-              </li>
-              <li onClick={() => logoutConf()} className="dropdown-item flex items-center gap-2 text-red-500">
+              </DropdownItem>
+              <DropdownItem className='flex items-center gap-2' onClick={() => logoutConf()}>
                   <IconLogout/>
                   Logout
-              </li>
+              </DropdownItem>
             </Dropdown>
 
           </div>

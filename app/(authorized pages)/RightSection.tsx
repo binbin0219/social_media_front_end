@@ -39,28 +39,46 @@ const RightSection = () => {
     }, [top]);
 
     return (
-        <div ref={containerRef} className={`w-[350px] ${shouldHide && 'hidden'}`}>
-            <div className='flex flex-col gap-4 pb-3 sticky overflow-y-auto' style={{
-                top,
-                height
-            }}>
-                <div className='w-[275px] relative card-shadow'>
-                    <RecommendedUserList limit={5}/>
+        <div
+            ref={containerRef}
+            className={`w-[350px] ${shouldHide ? 'hidden' : ''}`}
+        >
+            <div
+                className="flex flex-col gap-4 pb-3 sticky overflow-y-auto"
+                style={{ top, height }}
+            >
+                {/* Recommended Users */}
+                <div className="w-[275px] relative">
+                    <RecommendedUserList limit={5} />
                 </div>
-                <div className='w-[275px] relative bg-white rounded-lg p-2 card-shadow'>
-                    <p className='font-bold'>Friends ({friendCount})</p>
-                    <FriendList 
-                    userId={currentUserId}
-                    skeletonContainerClassName='flex gap-3 flex-col w-100'
-                    onMap={(friend, index) => (
-                        <div key={index} className='flex gap-2 items-center list-item-general'>
-                            <div className='flex items-center gap-2 flex-1'>
-                                <UserIcon userId={friend.id} updatedAt={friend.updatedAt}/>
-                                <p className='text-sm'>{friend.username}</p>
+
+                {/* Friends */}
+                <div className="w-[275px] relative bg-bgSecondary border border-borderPrimary rounded-lg p-2">
+                    <p className="font-bold text-textPrimary">
+                        Friends ({friendCount})
+                    </p>
+
+                    <FriendList
+                        userId={currentUserId}
+                        skeletonContainerClassName="flex gap-3 flex-col w-full"
+                        onMap={(friend) => (
+                            <div
+                                key={friend.id}
+                                className="flex gap-2 items-center list-item-general hover:bg-bgHoverPrimary rounded p-2"
+                            >
+                                <div className="flex items-center gap-2 flex-1">
+                                    <UserIcon
+                                        userId={friend.id}
+                                        updatedAt={friend.updatedAt}
+                                    />
+                                    <p className="text-sm text-textSecondary">
+                                        {friend.username}
+                                    </p>
+                                </div>
+
+                                <ChatButton targetUserId={friend.id} />
                             </div>
-                            <ChatButton targetUserId={friend.id}/>
-                        </div>
-                    )}
+                        )}
                     />
                 </div>
             </div>

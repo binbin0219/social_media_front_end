@@ -20,7 +20,7 @@ const SearchBar = () => {
         } else {
             setSearchResultList((
                 <UserLazyLoadList 
-                className='absolute top-100 mt-2 p-2 bg-white shadow-lg w-full rounded max-h-[300px] overflow-y-auto'
+                className='absolute top-100 mt-2 p-2 bg-bgPrimary shadow-lg w-full rounded max-h-[300px] overflow-y-auto'
                 key={value} 
                 username={value} 
                 onItemClick={(result) => router.push(`/user/profile/${result!.id}`)}
@@ -41,7 +41,7 @@ const SearchBar = () => {
                 }, 150)}
                 value={searchInput} 
                 type="text" 
-                className='block w-full bg-gray-100 border border-transparent rounded-full py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:bg-white transition-all' 
+                className='block w-full bg-bgPrimary border rounded-full py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-appPrimary focus:bg-bgPrimary transition-all' 
                 placeholder='Search users...' 
                 />
                 <IconSearch width={20} height={20} className='absolute top-[8px] start-[10px]'/>

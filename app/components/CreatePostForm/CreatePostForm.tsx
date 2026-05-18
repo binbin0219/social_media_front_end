@@ -122,71 +122,131 @@ const CreatePostForm = ({onSubmit, onCancel, initialData, enableAttachment = tru
     }
 
     return (
-        <div className='w-[800px] flex flex-col gap-5 mt-3' style={{maxWidth: '100%'}}>
+        <div
+            className="w-[800px] flex flex-col gap-5 mt-3"
+            style={{ maxWidth: '100%' }}
+        >
+            {/* Title */}
             <div className="relative">
-                <input 
-                value={title} 
-                onChange={(e) => handleTitleChange(e)} 
-                className={`w-full bg-slate-100 p-5 rounded-lg outline-none font-bold ${!isTitleValid && 'border-red-500 border'}`}
-                name="title" 
-                placeholder="Title" 
-                type="text" 
-                required/>
-                <span className='text-xs text-slate-500 absolute end-0 bottom-0 me-2 mb-2'>{title.length} / {MAX_TITLE_SIZE}</span>
+                <input
+                    value={title}
+                    onChange={(e) => handleTitleChange(e)}
+                    className={`
+                        w-full p-5 rounded-lg outline-none font-bold
+                        bg-bgSecondary text-textPrimary
+                        border border-borderPrimary
+                        focus:border-appPrimary
+                        ${!isTitleValid ? 'border-red-500' : ''}
+                    `}
+                    name="title"
+                    placeholder="Title"
+                    type="text"
+                    required
+                />
+
+                <span className="text-xs text-textSecondary absolute end-0 bottom-0 me-2 mb-2">
+                    {title.length} / {MAX_TITLE_SIZE}
+                </span>
             </div>
-            <div className={`bg-slate-100 rounded-lg p-3 ${!isContentValid && 'border-red-500 border'}`}>
-                <textarea 
-                className={`w-full bg-slate-100 outline-none resize-none`}
-                value={content} 
-                onChange={(e) => handleContentChange(e)} 
-                name="content" 
-                rows={5} 
-                required 
-                placeholder="Write something...">
-                </textarea>
+
+            {/* Content */}
+            <div
+                className={`
+                    rounded-lg p-3
+                    bg-bgSecondary
+                    border border-borderPrimary
+                    ${!isContentValid ? 'border-red-500' : ''}
+                `}
+            >
+                <textarea
+                    className="w-full bg-transparent outline-none resize-none text-textPrimary"
+                    value={content}
+                    onChange={(e) => handleContentChange(e)}
+                    name="content"
+                    rows={5}
+                    required
+                    placeholder="Write something..."
+                />
+
                 <div className="w-full flex justify-end">
-                    <span className='text-xs text-slate-500'>{content.length} / {MAX_CONTENT_SIZE}</span>
+                    <span className="text-xs text-textSecondary">
+                        {content.length} / {MAX_CONTENT_SIZE}
+                    </span>
                 </div>
-                <div className='w-100 justify-end flex items-end mt-4'>
-                    <div className='flex gap-4'>
-                        <DynamicTooltip className="hidden" text='Emoji'>
-                            <button type='button' className='hover:opacity-50'> 
-                                <IconMoodSmile width={30} height={30}/>
+
+                {/* Actions */}
+                <div className="w-full flex justify-end mt-4">
+                    <div className="flex gap-4">
+                        <DynamicTooltip className="hidden" text="Emoji">
+                            <button
+                                type="button"
+                                className="hover:opacity-70 text-textSecondary"
+                            >
+                                <IconMoodSmile width={30} height={30} />
                             </button>
                         </DynamicTooltip>
+
                         {enableAttachment && (
-                            <DynamicTooltip text='Images/Videos'>
-                                <label htmlFor='postImg' className='hover:opacity-50 cursor-pointer'> 
-                                    <IconPhotoPlus width={30} height={30}/>
+                            <DynamicTooltip text="Images/Videos">
+                                <label
+                                    htmlFor="postImg"
+                                    className="hover:opacity-70 cursor-pointer text-textSecondary"
+                                >
+                                    <IconPhotoPlus width={30} height={30} />
                                 </label>
+
                                 <input
-                                ref={attachmentInputRef}
-                                multiple
-                                onInput={handleAttachmentInput}
-                                id='postImg'
-                                type="file"
-                                accept="image/*, video/mp4"
-                                className='hidden'
+                                    ref={attachmentInputRef}
+                                    multiple
+                                    onInput={handleAttachmentInput}
+                                    id="postImg"
+                                    type="file"
+                                    accept="image/*, video/mp4"
+                                    className="hidden"
                                 />
                             </DynamicTooltip>
                         )}
                     </div>
                 </div>
             </div>
+
+            {/* Attachments */}
             {postAttachments.length > 0 && (
-                <PostAttachments attachments={attachments} onDelete={handleDelete}/>
+                <PostAttachments
+                    attachments={attachments}
+                    onDelete={handleDelete}
+                />
             )}
+
+            {/* Actions */}
             <div className="flex gap-5 w-full justify-end mt-7">
-                <button onClick={onCancel} className="bg-white border-black border-2 text-black px-3 py-2 rounded-lg font-bold hover:bg-black hover:text-white">
+                <button
+                    onClick={onCancel}
+                    className="
+                        px-3 py-2 rounded-lg font-bold
+                        border border-borderPrimary
+                        bg-bgPrimary
+                        text-textPrimary
+                        hover:bg-bgHoverPrimary
+                        transition
+                    "
+                >
                     Cancel
                 </button>
+
                 <LoadingButton
-                isLoading={isCreatingPost}
-                loaderColor='white'
-                onClick={handleSubmit}
-                className="bg-red-600 text-white px-3 py-2 rounded-lg font-bold hover:bg-red-800 flex gap-2 justify-center items-center"
-                text={'Publish'}
-                loadingText='Publishing...'
+                    isLoading={isCreatingPost}
+                    loaderColor="white"
+                    onClick={handleSubmit}
+                    className="
+                        bg-appPrimary text-white
+                        px-3 py-2 rounded-lg font-bold
+                        hover:bg-appSecondary
+                        flex gap-2 justify-center items-center
+                        transition
+                    "
+                    text="Publish"
+                    loadingText="Publishing..."
                 />
             </div>
         </div>

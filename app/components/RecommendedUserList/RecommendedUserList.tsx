@@ -16,44 +16,60 @@ const RecommendedUserList = ({ limit }: Props) => {
     const [isAllFetched, setIsAllFetched] = useState(false);
 
     const onVisible = async () => {
-        if(isAllFetched) return;
+        if (isAllFetched) return;
+
         const userRecommendations = await userService.getRecommendations(limit);
         setRecommendedUsers(userRecommendations);
 
-        // Fetch only one time
         setIsAllFetched(true);
-    }
+    };
 
     return (
-        <div className='flex flex-col gap-2 p-2 bg-white rounded-lg'>
-            <p className='font-bold'>People you might know</p>
-            {recommendedUsers.map((recommendedUser, index) => {
-                return (
-                    <div key={index} className='flex gap-2 items-center list-item-general'>
-                        <div className='flex items-center gap-2 flex-1'>
-                            <UserIcon userId={recommendedUser.id} updatedAt={recommendedUser.updatedAt}/>
-                            <p className='text-sm text-gray-700'>{recommendedUser.username}</p>
-                        </div>
-                        <FriendshipStatus userId={recommendedUser.id} friendship={{status: null}}/>
+        <div className="flex flex-col gap-2 p-2 bg-bgSecondary border border-borderPrimary rounded-lg">
+            <p className="font-bold text-textPrimary">
+                People you might know
+            </p>
+
+            {recommendedUsers.map((recommendedUser) => (
+                <div
+                    key={recommendedUser.id}
+                    className="flex gap-2 items-center list-item-general hover:bg-bgHoverPrimary rounded p-2"
+                >
+                    <div className="flex items-center gap-2 flex-1">
+                        <UserIcon
+                            userId={recommendedUser.id}
+                            updatedAt={recommendedUser.updatedAt}
+                        />
+                        <p className="text-sm text-textSecondary">
+                            {recommendedUser.username}
+                        </p>
                     </div>
-                )
-            })}
+
+                    <FriendshipStatus
+                        userId={recommendedUser.id}
+                        friendship={{ status: null }}
+                    />
+                </div>
+            ))}
+
             {isAllFetched && recommendedUsers.length === 0 && (
-                <div className='w-full flex flex-col items-center gap-2 p-3'>
-                    <IconUserOff width={50} height={50}/>
+                <div className="w-full flex flex-col items-center gap-2 p-3 text-textSecondary">
+                    <IconUserOff width={50} height={50} />
+                    <p className="text-sm">No recommendations available</p>
                 </div>
             )}
+
             {!isAllFetched && (
-                <DataLoader className='flex flex-col gap-2' onVisible={onVisible}>
-                    <DropdownItemSkeleton/>
-                    <DropdownItemSkeleton/>
-                    <DropdownItemSkeleton/>
-                    <DropdownItemSkeleton/>
-                    <DropdownItemSkeleton/>
+                <DataLoader className="flex flex-col gap-2" onVisible={onVisible}>
+                    <DropdownItemSkeleton />
+                    <DropdownItemSkeleton />
+                    <DropdownItemSkeleton />
+                    <DropdownItemSkeleton />
+                    <DropdownItemSkeleton />
                 </DataLoader>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default RecommendedUserList
+export default RecommendedUserList;

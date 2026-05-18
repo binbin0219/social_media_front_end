@@ -1,0 +1,19 @@
+.dropdown-item {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    background-color: transparent;
+    transition: background-color 0.2s, color 0.2s;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-hover-primary);
+}
+
+.dropdown-item.active {
+    background-color: var(--app-color-primary);
+    color: white;
+}

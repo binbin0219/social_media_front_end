@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import confDialogReducer, { ConfDialogState } from './slices/confDialogSlice'
 import postReducer from './slices/postSlice';
 import userReducer from './slices/userSlice';
 import chatReducer, { initialState as initialChatState } from './slices/chatSlice';
@@ -17,7 +16,6 @@ export interface RootState {
     currentUser: User;
     notifications: NotificationState;
     chat: ChatState;
-    confDialog: ConfDialogState
 }
 
 export function createStore(preloadedState: Partial<RootState>) {
@@ -29,7 +27,6 @@ export function createStore(preloadedState: Partial<RootState>) {
             currentUser: currentUserReducer,
             notifications: notificationReducer,
             chat: chatReducer,
-            confDialog: confDialogReducer
         },
         preloadedState: {
             post: preloadedState?.post ?? [],

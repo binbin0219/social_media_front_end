@@ -2,7 +2,6 @@ import '../globals.css';
 import Script from "next/script";
 import { Suspense } from "react";
 import Loading from "./loading";
-import ConfirmationDialog from "@/components/ConfirmationDialog/ConfirmationDialog";
 import StoreProvider from "@/context/ReduxContext";
 import ToastContainer from "@/components/ToastContainer/ToastContainer";
 import { cookies } from "next/headers";
@@ -81,7 +80,6 @@ export default async function RootLayout({
 						>
 							<DialogContextProvider>
 								<Navbar/>
-								<ConfirmationDialog />
 								<ToastContainer />
 								<FileViewer/>
 								{children}

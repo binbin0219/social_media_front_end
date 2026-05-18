@@ -91,7 +91,7 @@ const ChatWindow = () => {
             <DynamicTooltip text='Chat'>
                 <button 
                 onClick={() => dispatch(setIsChatOpen(!chatState.isOpen))} 
-                className='p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition-colors'
+                className='nav-btn'
                 >
                     <UnreadMessageCounter/>
                     <IconMessageCircle className='h-6 w-6'/>

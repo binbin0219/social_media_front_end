@@ -7,7 +7,7 @@ import RightSection from './RightSection';
 
 const page = async () => {
     return (
-        <div className='flex justify-center pt-4 gap-5'>
+        <div className='flex justify-center pt-4 gap-5 bg-bgPrimary'>
             <LeftSection/>
             <div className="middle">
                 <HomePageTag />

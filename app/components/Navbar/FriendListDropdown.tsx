@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import DynamicTooltip from '../Tooltip/DynamicToolTip'
 import { friendshipService } from '@/lib/services/friendship'
+import { DropdownItem } from '../NewDropdown/DropdownItem/DropdownItem'
 
 
 const FriendListDropdown = () => {
@@ -33,7 +34,7 @@ const FriendListDropdown = () => {
         setIsOpen={(isOpen: boolean) => setIsOpen(isOpen)}
         toggleButton={
             <DynamicTooltip text='Friends' className='flex'>
-                <button className='dropdown-toggle p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition-colors' onClick={() => setIsOpen(!isOpen)}>
+                <button className='dropdown-toggle nav-btn' onClick={() => setIsOpen(!isOpen)}>
                     <IconUsers className='h-6 w-6'/>
                 </button>
             </DynamicTooltip>
@@ -50,10 +51,10 @@ const FriendListDropdown = () => {
                     </UserProfileLink>
                 ))}
                 {isAllDataFetched && friends.length === 0 && (
-                    <li ref={noDataRef} className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>
+                    <DropdownItem className='flex items-center justify-center gap-2'>
                         <IconUserOff/>
                         <p className="text-sm">No friends</p>
-                    </li>
+                    </DropdownItem>
                 )}
                 {!isAllDataFetched && (
                     <DataLoader onVisible={handleDataLoaderVisible}>

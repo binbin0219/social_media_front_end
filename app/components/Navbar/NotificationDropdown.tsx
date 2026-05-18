@@ -12,12 +12,12 @@ import DynamicTooltip from '../Tooltip/DynamicToolTip';
 import DataLoader from '../DataLoader/DataLoader';
 import { useSubcribeNotifWebSocket } from '@/hooks/useSubcribeNotifWebSocket';
 import { notifService } from '@/lib/services/notification';
+import { DropdownItem } from '../NewDropdown/DropdownItem/DropdownItem';
 
 const NotificationDropdown = memo(() => {
     const dispatch = useDispatch();
     const isOpen = useSelector((state: RootState) => state.notifications.isOpen);
     const notifications = useSelector((state: RootState) => state.notifications.data);
-    const noNotificationRef = useRef<HTMLLIElement>(null);
     const [isAllNotificationFetched, setIsAllNotificationFetched] = useState(false);
     useSubcribeNotifWebSocket(isOpen);
 
@@ -45,7 +45,7 @@ const NotificationDropdown = memo(() => {
                     data-data-loaded="false" 
                     id="notifications_btn" 
                     type="button" 
-                    className="relative p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-indigo-600 transition-colors"
+                    className="relative nav-btn"
                     >
                         <IconBell className='w-6 h-6'/>
                         <NotificationCounter/>
@@ -65,10 +65,10 @@ const NotificationDropdown = memo(() => {
                     <Notification key={notification.id} notification={notification} />
                 ))}
                 {isAllNotificationFetched && Object.keys(notifications).length === 0 ?
-                    <li ref={noNotificationRef} id="no_notification" className="dropdown-item flex items-center gap-2 justify-center py-3" style={{minWidth: "250px"}}>
+                    <DropdownItem className='flex items-center justify-center gap-2'>
                         <IconBellOff/>
                         <p className="text-sm">No notifications</p>
-                    </li>
+                    </DropdownItem>
                 : null}
                 {!isAllNotificationFetched ? 
                     <DataLoader className='flex flex-col gap-2' onVisible={handleDataLoaderVisible}>
