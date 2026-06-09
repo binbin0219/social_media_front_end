@@ -1,8 +1,8 @@
 import { apiAgent } from "../api-agent";
 import { Post, PostWithUserId } from "../models/post";
 
-const fetchPostsByUserId = async (userId: number, offset: number, recordPerPage: number): Promise<PostWithUserId[]> => {
-    const response = await apiAgent.fetchOnClient(`/api/post/get/${userId}?offset=${offset}&recordPerPage=${recordPerPage}`);
+const fetchPostsByUserId = async (userId: number, start: number, length: number): Promise<PostWithUserId[]> => {
+    const response = await apiAgent.fetchOnClient(`/api/post/get/${userId}?start=${start}&length=${length}`);
     if(!response.ok) {
         throw new Error("Failed to fetch posts by user id");
     }

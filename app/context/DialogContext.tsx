@@ -107,9 +107,11 @@ export const DialogContextProvider = ({ children }: { children: React.ReactNode 
                     "
                 >
                     {/* Header */}
-                    <h4 className="text-2xl font-bold text-textPrimary">
-                        {dialogState.header}
-                    </h4>
+                    {dialogState.header && (
+                        <h4 className="text-2xl font-bold text-textPrimary">
+                            {dialogState.header}
+                        </h4>
+                    )}
 
                     {/* Body */}
                     <div className="text-lg w-full max-w-full text-textSecondary">

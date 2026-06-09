@@ -252,3 +252,73 @@ button:disabled {
   background-color: var(--bg-hover-secondary);
   color: var(--app-color-primary);
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                   buttons                                  */
+/* -------------------------------------------------------------------------- */
+
+/* Primary Button */
+.primary-app-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.625rem 1.5rem; /* py-2.5 px-6 */
+  border-radius: 0.75rem; /* rounded-xl */
+
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600;
+
+  color: #ffffff;
+  background: var(--app-color-primary);
+
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--app-color-primary) 20%, transparent);
+
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.primary-app-btn:hover {
+  background: var(--app-color-secondary);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--app-color-secondary) 25%, transparent);
+}
+
+.primary-app-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* Secondary Button */
+.secondary-app-btn {
+  padding: 0.625rem 1.25rem; /* py-2.5 px-5 */
+  border-radius: 0.75rem;
+
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  color: color-mix(in srgb, var(--text-primary) 70%, transparent);
+  background: var(--bg-secondary);
+
+  border: 1px solid var(--border-primary);
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.secondary-app-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover-secondary);
+
+  border-color: color-mix(in srgb, var(--border-primary) 80%, transparent);
+}

@@ -28,21 +28,3 @@
 .post .icon-comment-closed {
     display: none;
 }
-.post[data-comment-expanded="true"] {
-    .icon-comment-opened {
-        display: block;
-    }
-
-    .post-comment-section {
-        display: block;
-    }
-}
-.post[data-comment-expanded="false"] {
-    .icon-comment-closed {
-        display: block;
-    }
-
-    .post-comment-section {
-        display: none;
-    }
-}

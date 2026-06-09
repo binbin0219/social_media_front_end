@@ -26,16 +26,16 @@ const UserIcon = ({
 
     const handleOnclick = () => {
         if (userId) {
-        window.location.href = `/user/profile/${userId}`;
+            window.location.href = `/user/profile/${userId}`;
         } else {
-        alert('User profile not available');
+            alert('User profile not available');
         }
     };
 
     return (
         <SmartImage
             onClick={navigateToUserProfile ? handleOnclick : undefined}
-            className={`rounded-full hover:opacity-50 cursor-pointe ${className}`}
+            className={`rounded-full hover:opacity-50 cursor-pointer transition-opacity ${className}`}
             src={getUserAvatarLink(userId, updatedAt)}
             fallbackSrc={defaultUserAvatar}
             width={width}

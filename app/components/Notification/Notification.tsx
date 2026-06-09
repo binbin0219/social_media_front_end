@@ -6,7 +6,7 @@ import { User } from '@/lib/models/user'
 import { deleteNotifWithCountById } from '@/redux/slices/notificationSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { RootState } from '@/redux/store'
-import { IconCheck, IconTrash, IconX } from '@tabler/icons-react'
+import { Heart, MessageCircle, UserPlus, Check, X, Trash2 } from 'lucide-react'
 import React, { JSX, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import UserIcon from '../UserIcon/UserIcon'
@@ -16,11 +16,13 @@ import { notifService } from '@/lib/services/notification'
 import LoadingButton from '../LoadingButton/LoadingButton'
 
 type Props = {
-    notification: NotificationType,
+    notification: NotificationType;
 }
 
-const Notification = ({notification} : Props) => {
-    const friendship = useSelector((state: RootState) => state.user.find((user: User) => user?.id == notification.senderId)?.friendship);
+const Notification = ({ notification }: Props) => {
+    const friendship = useSelector((state: RootState) =>
+        state.user.find((user: User) => user?.id == notification.senderId)?.friendship
+    );
     const acceptFriendRequestOnClient = useAcceptFriendRequest();
     const rejectFriendRequestOnClient = useRejectFriendRequest();
     const deleteNotificationOnClient = useDeleteNotification();
@@ -28,206 +30,160 @@ const Notification = ({notification} : Props) => {
     const [isAcceptingFriendReq, setIsAcceptingFriendReq] = useState(false);
     const [isRejectingFriendReq, setIsRejectingFriendReq] = useState(false);
     const [isDeletingNotification, setIsDeletingNotification] = useState(false);
-    
-    const notificationIcons: Record<NotificationTypes, () => JSX.Element> = {
-        "LIKE": function () {
-            return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-heart absolute bottom-0 right-0 stroke-red-600 fill-red-600">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
-            </svg>
-        },
-        "COMMENT": function () {
-            return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-message absolute bottom-0 right-0 fill-sky-300 stroke-sky-300">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M8 9h8" />
-                <path d="M8 13h6" />
-                <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
-            </svg>
-        },
-        "FRIEND_REQUEST": function () {
-            return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-users-plus absolute bottom-0 right-0 fill-red-500 stroke-red-500">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M5 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                <path d="M3 21v-2a4 4 0 0 1 4 -4h4c.96 0 1.84 .338 2.53 .901" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                <path d="M16 19h6" />
-                <path d="M19 16v6" />
-            </svg>
-        }
-    }
 
-    const renderIcon = (type: NotificationTypes) => {
-        return notificationIcons[type]();
+    const notificationIconConfig: Record<NotificationTypes, { icon: JSX.Element; bg: string }> = {
+        LIKE: {
+            icon: <Heart size={11} className="fill-white stroke-white" />,
+            bg: "bg-red-500",
+        },
+        COMMENT: {
+            icon: <MessageCircle size={11} className="fill-white stroke-white" />,
+            bg: "bg-appPrimary",
+        },
+        FRIEND_REQUEST: {
+            icon: <UserPlus size={11} className="stroke-white" />,
+            bg: "bg-appSecondary",
+        },
     };
 
-    const FriendRequestButtons = () => {
-        return (
-            <>
-                <LoadingButton
-                loaderWidth={16}
-                className='reject-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600'
-                isLoading={isRejectingFriendReq}
-                onClick={() => handleRejectFriendRequest()}
-                text={(
-                    <IconX width={16} height={16}/>
-                )}
-                loaderColor='#fca5a5'
-                />
-                <LoadingButton
-                loaderWidth={16}
-                className='accept-friend-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600'
-                isLoading={isAcceptingFriendReq}
-                onClick={() => handleAcceptFriendRequest()}
-                text={(
-                    <IconCheck width={16} height={16}/>
-                )}
-                loaderColor='#86efac'
-                />
-            </>
-        )
-    }
-
-    const LikeButtons = () => {
-        return (
-            <>
-                {/* <button type="button" className="delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600">
-                    <IconX width={16} height={16}/>
-                </button>
-                <button type="button" className="mark-as-read-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-green-300 bg-green-100 text-sm text-green-600">
-                    <IconCheck width={16} height={16}/>
-                </button> */}
-                <LoadingButton
-                loaderWidth={16}
-                className='delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600'
-                isLoading={isDeletingNotification}
-                onClick={() => handleDeleteNotification()}
-                text={(
-                    <IconTrash width={16} height={16}/>
-                )}
-                loaderColor='#fca5a5'
-                />
-            </>
-        )
-    }
-
-    const CommentButtons = () => {
-        return (
-            <>
-                <LoadingButton
-                loaderWidth={16}
-                className='delete-notification-btn flex gap-1 items-center rounded-lg px-2 py-1 border-2 border-red-300 bg-red-100 text-sm text-red-600'
-                isLoading={isDeletingNotification}
-                onClick={() => handleDeleteNotification()}
-                text={(
-                    <IconTrash width={16} height={16}/>
-                )}
-                loaderColor='#fca5a5'
-                />
-            </>
-        )
-    }
-
-    const content: Record<NotificationTypes, () => JSX.Element> = {
-        "FRIEND_REQUEST": function () {
-            return <><b>{notification.senderUsername}</b> sent you a friend request</>
-        },
-        "COMMENT": function () {
-            return <><b>{notification.senderUsername}</b> commented on your post <b>{notification.content ?? ""}</b></>
-        },
-        "LIKE": function () {
-            return <><b>{notification.senderUsername}</b> liked your post <b>{notification.content ?? ""}</b></>
-        },
-    }
+    const notificationContent: Record<NotificationTypes, JSX.Element> = {
+        FRIEND_REQUEST: (
+            <><span className="font-bold text-textPrimary">{notification.senderUsername}</span>{" "}
+            <span className="text-textSecondary">sent you a friend request</span></>
+        ),
+        COMMENT: (
+            <><span className="font-bold text-textPrimary">{notification.senderUsername}</span>{" "}
+            <span className="text-textSecondary">commented on your post</span>{" "}
+            {notification.content && <span className="font-bold text-textPrimary">{notification.content}</span>}</>
+        ),
+        LIKE: (
+            <><span className="font-bold text-textPrimary">{notification.senderUsername}</span>{" "}
+            <span className="text-textSecondary">liked your post</span>{" "}
+            {notification.content && <span className="font-bold text-textPrimary">{notification.content}</span>}</>
+        ),
+    };
 
     const handleDeleteNotification = async () => {
         try {
-            if(isDeletingNotification) return;
+            if (isDeletingNotification) return;
             setIsDeletingNotification(true);
             await notifService.deleteNotificationOnServer(notification.id);
             deleteNotificationOnClient(notification.id);
-            dispatch(addToast({
-                message: "Notification deleted",
-                type: "success"
-            }))
-        } catch (error) {
-            console.log(error);
-            dispatch(addToast({
-                message: "Failed to delete notification",
-                type: "error"
-            }))
+            dispatch(addToast({ message: "Notification deleted", type: "success" }));
+        } catch {
+            dispatch(addToast({ message: "Failed to delete notification", type: "error" }));
         } finally {
             setIsDeletingNotification(false);
         }
-    }
+    };
 
     const handleAcceptFriendRequest = async () => {
         try {
-            if(isRejectingFriendReq) return;
-            if(isAcceptingFriendReq) return;
+            if (isRejectingFriendReq || isAcceptingFriendReq) return;
             setIsAcceptingFriendReq(true);
             await friendshipService.acceptFriendRequestOnServer(notification.senderId);
             acceptFriendRequestOnClient(friendship);
             dispatch(deleteNotifWithCountById(notification.id));
-            dispatch(addToast({
-                message: "Friend request accepted",
-                type: "success"
-            }))
-        } catch (error) {
-            console.log(error);
-            dispatch(addToast({
-                message: "Failed to accept friend request",
-                type: "error"
-            }))
+            dispatch(addToast({ message: "Friend request accepted", type: "success" }));
+        } catch {
+            dispatch(addToast({ message: "Failed to accept friend request", type: "error" }));
         } finally {
             setIsAcceptingFriendReq(false);
         }
-    }
+    };
 
     const handleRejectFriendRequest = async () => {
         try {
-            if(isRejectingFriendReq) return;
-            if(isAcceptingFriendReq) return;
+            if (isRejectingFriendReq || isAcceptingFriendReq) return;
             setIsRejectingFriendReq(true);
             await friendshipService.rejectFriendRequestOnServer(notification.senderId);
             rejectFriendRequestOnClient(friendship);
             dispatch(deleteNotifWithCountById(notification.id));
-            dispatch(addToast({
-                message: "Friend request rejected",
-                type: "success"
-            }))
-        } catch (error) {
-            console.log(error);
-            dispatch(addToast({
-                message: "Failed to reject friend request",
-                type: "error"
-            }))
+            dispatch(addToast({ message: "Friend request rejected", type: "success" }));
+        } catch {
+            dispatch(addToast({ message: "Failed to reject friend request", type: "error" }));
         } finally {
             setIsRejectingFriendReq(false);
         }
-    }
+    };
+
+    const iconConfig = notificationIconConfig[notification.type];
+    const actionBtn = "w-7 h-7 flex items-center justify-center rounded-md transition-colors duration-150";
 
     return (
-        <div className={`notification dropdown-item flex gap-2 items-center w-100 ${notification.seen ? '' : 'bg-indigo-100'}`}>
-            <div className="relative w-[25%]">
-                <UserIcon 
-                    userId={notification.senderId} 
-                    updatedAt={notification.senderUpdatedAt} 
-                    width={50}
-                    height={50}
+        <div className={`
+            flex gap-3 items-start px-3 py-2.5 rounded-xl
+            transition-colors duration-150
+            hover:bg-bgHoverSecondary cursor-pointer
+            ${!notification.seen
+                ? 'bg-appPrimary/5 dark:bg-appPrimary/10'
+                : 'bg-transparent'}
+        `}>
+            {/* Avatar + type badge */}
+            <div className="relative flex-shrink-0">
+                <UserIcon
+                    userId={notification.senderId}
+                    updatedAt={notification.senderUpdatedAt}
+                    width={40}
+                    height={40}
                 />
-                {renderIcon(notification.type)}
+                <span className={`
+                    absolute -bottom-0.5 -right-0.5
+                    w-4 h-4 rounded-full
+                    flex items-center justify-center
+                    ring-2 ring-bgSecondary
+                    ${iconConfig.bg}
+                `}>
+                    {iconConfig.icon}
+                </span>
             </div>
-            <div className="flex flex-col gap-1 relative w-[75%]">
-                <p className="text-sm text-start">{content[notification.type]()}</p>
-                <div className="flex justify-between w-full items-end">
-                    <p className="font-semibold text-indigo-600 text-xs">{timeAgo(notification.createAt)}</p>
-                    {notification.type === "LIKE" ? <LikeButtons/> : ''}
-                    {notification.type === "FRIEND_REQUEST" ? <FriendRequestButtons />: ''}
-                    {notification.type === "COMMENT" ? <CommentButtons />: ''}
-                </div>
+
+            {/* Content */}
+            <div className="flex-1 min-w-0 flex flex-col gap-1">
+                <p className="text-[13px] leading-snug">
+                    {notificationContent[notification.type]}
+                </p>
+                <span className="text-[11px] font-medium text-appPrimary">
+                    {timeAgo(notification.createAt)}
+                </span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+                {notification.type === 'FRIEND_REQUEST' && (
+                    <>
+                        <LoadingButton
+                            className={`${actionBtn} text-textSecondary/50 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10`}
+                            isLoading={isRejectingFriendReq}
+                            loaderWidth={14}
+                            loaderColor="#9691a5"
+                            onClick={handleRejectFriendRequest}
+                            text={<X size={14} />}
+                        />
+                        <LoadingButton
+                            className={`${actionBtn} text-textSecondary/50 hover:bg-appPrimary/10 hover:text-appPrimary`}
+                            isLoading={isAcceptingFriendReq}
+                            loaderWidth={14}
+                            loaderColor="var(--app-color-primary)"
+                            onClick={handleAcceptFriendRequest}
+                            text={<Check size={14} />}
+                        />
+                    </>
+                )}
+
+                {(notification.type === 'LIKE' || notification.type === 'COMMENT') && (
+                    <LoadingButton
+                        className={`${actionBtn} text-textSecondary/50 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10`}
+                        isLoading={isDeletingNotification}
+                        loaderWidth={14}
+                        loaderColor="#9691a5"
+                        onClick={handleDeleteNotification}
+                        text={<Trash2 size={14} />}
+                    />
+                )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Notification
+export default Notification;

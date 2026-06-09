@@ -2,8 +2,8 @@ import { apiAgent } from "@/lib/api-agent";
 import { ChatRoom, ChatRoomType } from "@/lib/models/ChatRoom";
 import { ChatMessage } from "../models/ChatMessage";
 
-const fetchChatRooms = async (offset: number, recordPerPage: number): Promise<ChatRoom[]> => {
-    const response = await apiAgent.fetchOnClient(`/api/chatroom/get?offset=${offset}&recordPerPage=${recordPerPage}`);
+const fetchChatRooms = async (start: number, length: number): Promise<ChatRoom[]> => {
+    const response = await apiAgent.fetchOnClient(`/api/chatroom/get?start=${start}&length=${length}`);
     if(!response.ok) {
         throw new Error("Failed to fetch chat rooms");
     }
@@ -61,8 +61,8 @@ function getPeerFromPrivateChatRoom(chatRoom: ChatRoom, meId: number) {
     return chatRoom.members.filter(member => member.userId !== meId)[0];
 }
 
-const fetchChatMessages = async (chatRoomId: string, offset: number, recordPerPage: number): Promise<ChatMessage[]> => {
-    const response = await apiAgent.fetchOnClient(`/api/chatmessage/get?offset=${offset}&recordPerPage=${recordPerPage}&chatRoomId=${chatRoomId}`);
+const fetchChatMessages = async (chatRoomId: string, start: number, length: number): Promise<ChatMessage[]> => {
+    const response = await apiAgent.fetchOnClient(`/api/chatmessage/get?start=${start}&length=${length}&chatRoomId=${chatRoomId}`);
     if(!response.ok) {
         throw new Error("Failed to fetch chat messages");
     }

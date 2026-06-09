@@ -1,5 +1,7 @@
+import { FriendDTO } from "@/components/FriendlazyloadList";
 import { PostComment } from "./comment";
 import { User } from "./user";
+import { Friendship } from "./friendship";
 
 export type Post = {
     id: number;
@@ -13,6 +15,11 @@ export type Post = {
     isNew?: boolean;
     liked: boolean;
     user: User;
+    privacySetting: PrivacySetting;
+    commentStatus: CommentStatus;
+    isSensitive: boolean;
+    canComment: boolean;
+    friendship: Friendship;
 }
 
 export type PostWithUserId = {
@@ -44,3 +51,20 @@ export type PostAttachments = {
     format: string;
     mimeType: string;
 }
+
+export type PrivacySetting = "PUBLIC" | "FRIENDS" | "PRIVATE" | "WCV" | "WCNV";
+export type CommentStatus = "OPEN" | "CLOSED" | "ONLY_FRIENDS";
+
+export type CreateEditPost = {
+    content: string,
+    attachments: AttachmentUrlAndFile[],
+    privacySetting: PrivacySetting,
+    commentStatus: CommentStatus,
+    isSensitive: boolean,
+    selectedFriends: FriendDTO[],
+}
+
+export type AttachmentUrlAndFile = {
+    url: string;
+    file: File;
+};

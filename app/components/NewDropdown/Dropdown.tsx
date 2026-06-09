@@ -35,7 +35,7 @@ function Dropdown({ toggleButton, children, isOpen, setIsOpen }: Props) {
             {renderedToggleButton}
 
             <div
-                className={`dropdown-menu shadow-lg`}
+                className="absolute"
                 style={{ 
                     top: "120%",
                     display: isOpen ? 'flex' : 'none'

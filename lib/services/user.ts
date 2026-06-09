@@ -22,8 +22,8 @@ async function fetchProfileUserFromServer (userId: number) : Promise<{user: User
     return { user , posts};
 }
 
-const fetchUsersByUsername = async (username: string, offset: number, recordPerPage: number): Promise<User[]> => {
-    const response = await apiAgent.fetchOnClient(`/api/user/search?offset=${offset}&recordPerPage=${recordPerPage}&username=${username}`);
+const fetchUsersByUsername = async (username: string, start: number, length: number): Promise<User[]> => {
+    const response = await apiAgent.fetchOnClient(`/api/user/search?start=${start}&length=${length}&username=${username}`);
     if(!response.ok) {
         throw new Error("Failed to fetch users by username");
     }

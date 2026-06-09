@@ -5,7 +5,7 @@ import DropdownItemSkeleton from '../Skeletons/DropdownItemSkeleton';
 import { RecommendedUsers } from '@/lib/models/user';
 import UserIcon from '../UserIcon/UserIcon';
 import { IconUserOff } from '@tabler/icons-react';
-import FriendshipStatus from '@/(authorized pages)/user/profile/[userId]/FriendshipStatus';
+import FriendshipStatus from '@/components/FriendshipStatus/FriendshipStatus';
 
 type Props = {
     limit: number;
@@ -48,6 +48,7 @@ const RecommendedUserList = ({ limit }: Props) => {
                     <FriendshipStatus
                         userId={recommendedUser.id}
                         friendship={{ status: null }}
+                        showText={false}
                     />
                 </div>
             ))}

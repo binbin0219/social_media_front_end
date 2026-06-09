@@ -1,7 +1,7 @@
 import DynamicTooltip from '@/components/Tooltip/DynamicToolTip';
 import { chatService } from '@/lib/services/chat';
 import { addChatRooms, setActiveChatRoomId, setIsChatOpen } from '@/redux/slices/chatSlice';
-import { IconMessageCircle } from '@tabler/icons-react'
+import { MessageCircle } from 'lucide-react';
 import React from 'react'
 import { useDispatch } from 'react-redux';
 
@@ -21,12 +21,17 @@ const ChatButton = ({targetUserId} : Props) => {
 
     return (
         <DynamicTooltip text='Chat'>
-            <button 
-            onClick={() => handleCharButtonClick()}
-            type='button'
-            className='bg-green-500 text-white text-sm px-4 py-2 rounded-md hover:bg-green-600'
+            <button
+                onClick={handleCharButtonClick}
+                type="button"
+                className="
+                    w-8 h-8 flex items-center justify-center rounded-lg
+                    text-textSecondary/50
+                    hover:bg-appPrimary/10 hover:text-appPrimary
+                    transition-colors duration-150
+                "
             >
-                <IconMessageCircle/>
+                <MessageCircle size={15} />
             </button>
         </DynamicTooltip>
     )

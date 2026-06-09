@@ -24,7 +24,7 @@ const ChatMenu = () => {
             setSearchResultList((
                 <UserLazyLoadList
                 className='flex-1 overflow-y-auto'
-                recordPerPage={20}
+                length={20}
                 key={value} 
                 username={value} 
                 onItemClick={async (result) => {

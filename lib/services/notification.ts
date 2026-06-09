@@ -18,8 +18,8 @@ const deleteNotificationOnServer = async (notificationId: number) => {
     return data;
 }
 
-const fetchNotifications = async (offset: number) => {
-    const response = await apiAgent.fetchOnClient(`/api/notification/get?offset=${offset}&recordPerPage=6`);
+const fetchNotifications = async (start: number) => {
+    const response = await apiAgent.fetchOnClient(`/api/notification/get?start=${start}&length=6`);
     if(!response.ok) {
         throw new Error("Failed to fetch notifications");
     }

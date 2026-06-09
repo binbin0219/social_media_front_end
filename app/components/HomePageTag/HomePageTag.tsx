@@ -1,31 +1,41 @@
 "use client"
 import React from 'react'
 import UserIcon from '../UserIcon/UserIcon'
-import './style.css'
+import './style.module.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { useDialogContext } from '@/context/DialogContext'
-import CreatePostForm, { AttachmentUrlAndFile } from '../CreatePostForm/CreatePostForm'
+import CreatePostForm from '../CreatePostForm/CreatePostForm'
 import { postService } from '@/lib/services/post'
 import { addPost } from '@/redux/slices/postSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { incrementPostCount } from '@/redux/slices/currentUserSlice'
 import { IconPhoto, IconVideo } from '@tabler/icons-react'
+import { CreateEditPost } from '@/lib/models/post'
 
 const HomePageTag = () => {
     const currentUser = useSelector((state: RootState) => state.currentUser)!;
     const dialog = useDialogContext();
     const dispatch = useDispatch();
 
-    const handleSubmit = async (
-        title: string,
-        content: string,
-        attachments: AttachmentUrlAndFile[]
-    ) => {
+    const handleSubmit = async ({
+        content,
+        attachments,
+        privacySetting,
+        commentStatus,
+        isSensitive,
+        selectedFriends,
+    }: CreateEditPost) => {
         try {
             const formData = new FormData();
-            formData.set('title', title);
             formData.set('content', content);
+            formData.set('privacySetting', privacySetting);
+            formData.set('commentStatus', commentStatus);
+            formData.set('isSensitive', isSensitive ? 'true' : 'false');
+
+            selectedFriends.forEach((friend) => {
+                formData.append('selectedFriendIds[]', friend.id.toString());
+            });
 
             attachments.forEach((attachment) => {
                 formData.append('attachments[]', attachment.file);
@@ -77,7 +87,7 @@ const HomePageTag = () => {
 
     const handleOpenCreatePostDialog = (openAttachmentInputAfterLoad?: boolean) => {
         dialog.open(
-            'Create post',
+            null,
             <CreatePostForm
                 onCancel={dialog.close}
                 onSubmit={handleSubmit}

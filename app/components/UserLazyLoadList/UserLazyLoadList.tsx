@@ -10,10 +10,10 @@ type Props = {
     username: string;
     onItemClick: (result: User) => void;
     className?: string;
-    recordPerPage?: number;
+    length?: number;
 }
 
-const UserLazyLoadList = ({username, className, onItemClick, recordPerPage = 6}: Props) => {
+const UserLazyLoadList = ({username, className, onItemClick, length = 6}: Props) => {
     const [searchResults, setSearchResults] = useState<User[]>([]);
     const [isAllResultFetched, setIsAllResultFetched] = useState(false);
 
@@ -22,7 +22,7 @@ const UserLazyLoadList = ({username, className, onItemClick, recordPerPage = 6}:
             const users = await userService.fetchUsersByUsername(
                 username,
                 searchResults.length,
-                recordPerPage
+                length
             );
 
             const uniqueNewUsers = users.filter(
@@ -30,7 +30,7 @@ const UserLazyLoadList = ({username, className, onItemClick, recordPerPage = 6}:
             );
 
             setSearchResults(prev => [...prev, ...uniqueNewUsers]);
-            if (users.length < (recordPerPage)) {
+            if (users.length < (length)) {
                 setIsAllResultFetched(true);
             }
         }, 1000);

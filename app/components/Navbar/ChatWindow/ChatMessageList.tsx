@@ -59,15 +59,15 @@ const ChatMessageList = () => {
     }
 
     const fetchMoreMessages = async () => {
-        const offset = chatRoom.messages?.length ?? 0;
-        const recordPerPage = 10;
-        const messages = await chatService.fetchChatMessages(chatRoom.id, offset, recordPerPage);
+        const start = chatRoom.messages?.length ?? 0;
+        const length = 10;
+        const messages = await chatService.fetchChatMessages(chatRoom.id, start, length);
         dispatch(addMessages({
             chatRoomId: chatRoom.id,
             chatMessages: messages
         }));
 
-        const isAllMessageFetched = messages.length < recordPerPage;
+        const isAllMessageFetched = messages.length < length;
         if(isAllMessageFetched) {
             dispatch(setAllChatMessagesLoaded({
                 chatRoomId: chatRoom.id,

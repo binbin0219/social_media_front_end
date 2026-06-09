@@ -3,7 +3,7 @@ import { User } from '@/lib/models/user';
 import { RootState } from '@/redux/store';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import FriendshipStatus from './FriendshipStatus';
+import FriendshipStatus from '../../../../components/FriendshipStatus/FriendshipStatus';
 import SectionToggles from './SectionToggles';
 import './style.css'
 import { addUser } from '@/redux/slices/userSlice';
