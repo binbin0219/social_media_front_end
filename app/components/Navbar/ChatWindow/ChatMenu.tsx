@@ -1,4 +1,4 @@
-import { IconMessagePlus, IconSearch, IconX } from '@tabler/icons-react'
+import { MessageSquarePlus, Search, X } from 'lucide-react'
 import React, { useRef, useState } from 'react'
 import ChatRoomList from './ChatRoomList'
 import UserLazyLoadList from '@/components/UserLazyLoadList/UserLazyLoadList';
@@ -13,72 +13,102 @@ const ChatMenu = () => {
     const [searchResultList, setSearchResultList] = useState<React.JSX.Element | null>(null);
     const [isNewChatSearchOpen, setIsNewChatSearchOpen] = useState(false);
     const searchInputRef = useRef(null);
-    
+
     const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchInput(value);
 
-        if(value.trim() === "") {
-            setSearchResultList(null)
+        if (value.trim() === "") {
+            setSearchResultList(null);
         } else {
             setSearchResultList((
                 <UserLazyLoadList
-                className='flex-1 overflow-y-auto'
-                length={20}
-                key={value} 
-                username={value} 
-                onItemClick={async (result) => {
-                    const chatRoom = await chatService.fetchPrivateChatRoom(result!.id);
-                    dispatch(addPrivateChat(chatRoom));
-                    dispatch(setActiveChatRoomId(chatRoom.id));
-                    setIsNewChatSearchOpen(false);
-                }}
+                    className="flex-1 overflow-y-auto"
+                    length={20}
+                    key={value}
+                    username={value}
+                    onItemClick={async (result) => {
+                        const chatRoom = await chatService.fetchPrivateChatRoom(result!.id);
+                        dispatch(addPrivateChat(chatRoom));
+                        dispatch(setActiveChatRoomId(chatRoom.id));
+                        setIsNewChatSearchOpen(false);
+                    }}
                 />
-            ))
+            ));
         }
-    }
+    };
+
+    const iconBtn = "w-7 h-7 flex items-center justify-center rounded-lg text-textSecondary/50 hover:bg-bgHoverSecondary hover:text-textPrimary transition-colors duration-150";
 
     return (
-        <div className={`${styles['chat-window__menu']}`}>
-            <div className={`flex flex-col gap-2 h-full ${isNewChatSearchOpen && 'hidden'}`}>
-                <div className='flex items-center justify-between pe-3'>
-                    {/* <IconMessageCircleFilled className='nav-bar-icon hover:stroke-slate-300 me-2' strokeWidth={2} width={35} height={35}/> */}
-                    <h1 className='font-bold text-2xl text-center'>Chats</h1>
-                    <div className='flex gap-4'>
-                        <button onClick={() => setIsNewChatSearchOpen(true)} className='hover:opacity-50 cursor-pointer transition-opacity duration-300'>
-                            <IconMessagePlus color='black'/>
+        <div className={styles['chat-window__menu']}>
+
+            {/* Main — chat list */}
+            <div className={`flex flex-col gap-3 h-full p-3 ${isNewChatSearchOpen ? 'hidden' : ''}`}>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-[15px] font-medium text-textPrimary">Chats</h2>
+                    <div className="flex items-center gap-1">
+                        <button
+                            onClick={() => setIsNewChatSearchOpen(true)}
+                            className={iconBtn}
+                            title="New chat"
+                        >
+                            <MessageSquarePlus size={16} />
                         </button>
-                        <button className={`${styles['close']}`} onClick={() => dispatch(setIsChatOpen(false))}>
-                            <IconX/>
+                        <button
+                            className={`${iconBtn} ${styles['close']}`}
+                            onClick={() => dispatch(setIsChatOpen(false))}
+                            title="Close"
+                        >
+                            <X size={16} />
                         </button>
                     </div>
                 </div>
-                <div className='flex flex-col flex-1 gap-2 pe-2 overflow-y-auto'>
-                    <ChatRoomList/>
+
+                <div className="flex flex-col flex-1 gap-2 overflow-y-auto">
+                    <ChatRoomList />
                 </div>
             </div>
-            <div className={`flex flex-col gap-2 pe-2 h-full ${!isNewChatSearchOpen && 'hidden'}`}>
-                <div className='flex items-center justify-between'>
-                    <h1 className='font-bold text-2xl text-center'>New chat</h1>
-                    <button onClick={() => setIsNewChatSearchOpen(false)} className='hover:opacity-50 cursor-pointer transition-opacity duration-300'>
-                        <IconX color='black'/>
+
+            {/* New chat — user search */}
+            <div className={`flex flex-col gap-3 h-full p-3 ${!isNewChatSearchOpen ? 'hidden' : ''}`}>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-[15px] font-medium text-textPrimary">New chat</h2>
+                    <button
+                        onClick={() => setIsNewChatSearchOpen(false)}
+                        className={iconBtn}
+                        title="Back"
+                    >
+                        <X size={16} />
                     </button>
                 </div>
-                <div className='mt-2 relative'>
-                    <input 
-                    ref={searchInputRef} 
-                    onChange={(e) => handleSearchInput(e)} 
-                    value={searchInput} 
-                    type="text" 
-                    className='rounded-3xl p-1 border indent-8 outline-none w-full' 
-                    placeholder='Search...' 
+
+                <div className="relative">
+                    <Search
+                        size={14}
+                        className="absolute top-1/2 -translate-y-1/2 start-3 text-textSecondary/40 pointer-events-none"
                     />
-                    <IconSearch width={20} height={20} className='absolute top-[4px] start-[6px]'/>
+                    <input
+                        ref={searchInputRef}
+                        onChange={handleSearchInput}
+                        value={searchInput}
+                        type="text"
+                        className="
+                            w-full rounded-xl py-2 ps-8 pe-3
+                            bg-bgPrimary border border-borderPrimary
+                            text-[13px] text-textPrimary
+                            placeholder:text-textSecondary/40
+                            outline-none focus:border-appPrimary/50 focus:ring-1 focus:ring-appPrimary/20
+                            transition-colors duration-150
+                        "
+                        placeholder="Search users…"
+                    />
                 </div>
+
                 {searchResultList}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ChatMenu
+export default ChatMenu;
