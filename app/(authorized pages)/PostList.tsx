@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import PostSkeleton from '../components/PostSkeleton/PostSkeleton';
 import { addToast } from '@/redux/slices/toastSlice';
 import DataLoader from '@/components/DataLoader/DataLoader';
+import HomePageTag from '@/components/HomePageTag/HomePageTag';
 
 type Props = {
     postLink: string
@@ -58,73 +59,84 @@ const PostList = ({postLink} : Props) => {
         );
     };
 
+    const handleAddPost = (post: Post) => {
+        setPosts([post, ...posts]);
+    }
+
+    const handleDeletePost = (postId: Number) => {
+        setPosts(posts.filter(p => p.id !== postId));
+    }
+
     return (
-        <div
-            ref={postListRef}
-            id="post_list"
-            className="w-full mt-4 gap-8 flex flex-col"
-        >
-            {posts.map((post: Post) => (
-                <DynamicPost key={post.id} post={post} handleEditPost={handleEditPost} />
-            ))}
+        <>
+            <HomePageTag handleAddPost={handleAddPost}/>
+            <div
+                ref={postListRef}
+                id="post_list"
+                className="w-full mt-4 gap-8 flex flex-col"
+            >
+                {posts.map((post: Post) => (
+                    <DynamicPost key={post.id} post={post} handleEditPost={handleEditPost} handleDeletePost={handleDeletePost} />
+                ))}
 
-            {isFetchPostFailed ? (
-                <p className="font-bold mt-3 text-center text-textSecondary">
-                    Failed to load posts, try refreshing the page
-                </p>
-            ) : (
-                <>
-                    {/* Empty state */}
-                    {posts.length === 0 && isAllPostFetched && (
-                        <div
-                            id="no_posts_yet"
-                            className="w-full flex flex-col items-center mt-10 gap-4 text-textSecondary"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="80"
-                                height="80"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                className="text-textSecondary"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                {isFetchPostFailed ? (
+                    <p className="font-bold mt-3 text-center text-textSecondary">
+                        Failed to load posts, try refreshing the page
+                    </p>
+                ) : (
+                    <>
+                        {/* Empty state */}
+                        {posts.length === 0 && isAllPostFetched && (
+                            <div
+                                id="no_posts_yet"
+                                className="w-full flex flex-col items-center mt-10 gap-4 text-textSecondary"
                             >
-                                <path stroke="none" d="M0 0h24h24" fill="none" />
-                                <path d="M7 3h10a2 2 0 0 1 2 2v10m0 4a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-14" />
-                                <path d="M11 7h4" />
-                                <path d="M9 11h2" />
-                                <path d="M9 15h4" />
-                                <path d="M3 3l18 18" />
-                            </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="80"
+                                    height="80"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    className="text-textSecondary"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path stroke="none" d="M0 0h24h24" fill="none" />
+                                    <path d="M7 3h10a2 2 0 0 1 2 2v10m0 4a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-14" />
+                                    <path d="M11 7h4" />
+                                    <path d="M9 11h2" />
+                                    <path d="M9 15h4" />
+                                    <path d="M3 3l18 18" />
+                                </svg>
 
-                            <h1 className="text-2xl font-bold text-center text-textSecondary">
-                                No posts yet
-                            </h1>
-                        </div>
-                    )}
-
-                    {/* Loading skeleton */}
-                    {!isAllPostFetched && (
-                        <DataLoader onVisible={handleDataLoaderVisible}>
-                            <div className="flex flex-col gap-8">
-                                <PostSkeleton />
-                                <PostSkeleton />
+                                <h1 className="text-2xl font-bold text-center text-textSecondary">
+                                    No posts yet
+                                </h1>
                             </div>
-                        </DataLoader>
-                    )}
+                        )}
 
-                    {/* End state */}
-                    {posts.length > 0 && isAllPostFetched && (
-                        <p className="font-bold mt-3 mb-7 text-center text-textSecondary">
-                            No more posts
-                        </p>
-                    )}
-                </>
-            )}
-        </div>
+                        {/* Loading skeleton */}
+                        {!isAllPostFetched && (
+                            <DataLoader onVisible={handleDataLoaderVisible}>
+                                <div className="flex flex-col gap-8">
+                                    <PostSkeleton />
+                                    <PostSkeleton />
+                                </div>
+                            </DataLoader>
+                        )}
+
+                        {/* End state */}
+                        {posts.length > 0 && isAllPostFetched && (
+                            <p className="font-bold mt-3 mb-7 text-center text-textSecondary">
+                                No more posts
+                            </p>
+                        )}
+                    </>
+                )}
+            </div>
+        </>
     )
 }
 

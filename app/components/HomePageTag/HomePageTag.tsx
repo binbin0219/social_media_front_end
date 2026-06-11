@@ -7,13 +7,16 @@ import { RootState } from '@/redux/store'
 import { useDialogContext } from '@/context/DialogContext'
 import CreatePostForm from '../CreatePostForm/CreatePostForm'
 import { postService } from '@/lib/services/post'
-import { addPost } from '@/redux/slices/postSlice'
 import { addToast } from '@/redux/slices/toastSlice'
 import { incrementPostCount } from '@/redux/slices/currentUserSlice'
 import { IconPhoto, IconVideo } from '@tabler/icons-react'
-import { CreateEditPost } from '@/lib/models/post'
+import { CreateEditPost, Post } from '@/lib/models/post'
 
-const HomePageTag = () => {
+type Props = {
+    handleAddPost?: (post: Post) => void;
+}
+
+const HomePageTag = ({ handleAddPost }: Props) => {
     const currentUser = useSelector((state: RootState) => state.currentUser)!;
     const dialog = useDialogContext();
     const dispatch = useDispatch();
@@ -68,7 +71,7 @@ const HomePageTag = () => {
                 }
             }
 
-            dispatch(addPost(post));
+            handleAddPost?.(post)
             dispatch(incrementPostCount());
             dispatch(addToast({
                 type: 'success',

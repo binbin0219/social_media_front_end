@@ -7,7 +7,7 @@ import { addToast } from '@/redux/slices/toastSlice'
 import PostCommentSection from '../PostCommentSection/PostCommentSection'
 import { User } from '@/lib/models/user'
 import { RootState } from '@/redux/store'
-import { deletePost, updatePost } from '@/redux/slices/postSlice'
+import { updatePost } from '@/redux/slices/postSlice'
 import { useDialogContext } from '@/context/DialogContext'
 import PostAttachments from '../PostAttachments/PostAttachments'
 import { IconDotsVertical, IconPencil, IconTrash } from '@tabler/icons-react'
@@ -26,9 +26,10 @@ import { mergeByKey } from '@/utils/helpers';
 type Props = {
     post: Post;
     handleEditPost: (newPost: Post) => void;
+    handleDeletePost: (postId: Number) => void;
 }
 
-const Post = memo(({ post, handleEditPost }: Props) => {
+const Post = memo(({ post, handleEditPost, handleDeletePost }: Props) => {
     const dispatch = useDispatch();
     const dialog = useDialogContext();
     const currentUser : User = useSelector((state: RootState) => state.currentUser);
@@ -166,7 +167,7 @@ const Post = memo(({ post, handleEditPost }: Props) => {
             async () => {
                 try {
                     await deletePostFromServer();
-                    dispatch(deletePost(post.id));
+                    handleDeletePost(post.id);
                     dispatch(decrementPostCount());
                     dispatch(decrementCurrentUserLikeCount({count: post.likeCount}));
                     dispatch(addToast({

@@ -1,4 +1,3 @@
-import HomePageTag from '@/components/HomePageTag/HomePageTag';
 import React from 'react'
 import './style.css'
 import PostList from '@/(authorized pages)/PostList';
@@ -10,7 +9,6 @@ const page = async () => {
         <div className='flex justify-center pt-4 gap-5 bg-bgPrimary'>
             <LeftSection/>
             <div className="middle">
-                <HomePageTag />
                 <PostList postLink={`${process.env.NEXT_PUBLIC_API_URL}/api/post/get`} />
             </div>
             <RightSection/>
