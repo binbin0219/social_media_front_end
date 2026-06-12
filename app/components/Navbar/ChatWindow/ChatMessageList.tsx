@@ -77,7 +77,7 @@ const ChatMessageList = () => {
         return (
             <div className={`flex items-end gap-1.5 w-full ${amISender ? 'justify-end' : 'justify-start'}`}>
                 {/* Timestamp + sender name */}
-                <div className={`flex flex-col gap-0.5 mb-0.5 ${amISender ? 'items-end' : 'items-start'}`}>
+                <div className={`flex flex-col gap-0.5 mb-0.5 ${amISender ? 'items-end order-1' : 'items-start order-2'}`}>
                     {!isPrivateRoom && (
                         <p className="text-[10px] text-textSecondary/50 px-1">
                             {message.senderUsername}
@@ -90,8 +90,8 @@ const ChatMessageList = () => {
                 <div className={`
                     w-fit max-w-[60%] px-3 py-2 text-[13px] leading-relaxed
                     ${amISender
-                        ? 'bg-appPrimary text-white rounded-2xl rounded-tr-sm'
-                        : 'bg-bgHoverSecondary text-textPrimary rounded-2xl rounded-tl-sm border border-borderPrimary'
+                        ? 'bg-appPrimary text-white rounded-2xl rounded-tr-sm order-2'
+                        : 'bg-bgHoverSecondary text-textPrimary rounded-2xl rounded-tl-sm border border-borderPrimary order-1'
                     }
                 `}>
                     {message.attachments.length > 0 && (
