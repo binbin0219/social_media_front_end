@@ -9,7 +9,7 @@ import { useRejectFriendRequest } from '@/hooks/useRejectFriendRequest'
 import { useDialogContext } from '@/context/DialogContext'
 import { RootState } from '@/redux/store'
 
-export const useFriendshipActions = (userId: number, initialFriendship: Friendship) => {
+export const useFriendshipActions = (userId: number, initialFriendship?: Friendship) => {
     const dispatch = useDispatch();
     const dialog = useDialogContext();
     const acceptFriendRequestOnClient = useAcceptFriendRequest();

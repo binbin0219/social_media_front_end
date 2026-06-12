@@ -67,11 +67,10 @@ const PostCommentSection = memo(({ post, commentStatus, canComment, handleAddCom
                         return res.json();
                     })
                     .then((data: {
-                        isAllFetched: boolean;
-                        comments: PostCommentType[]
+                        data: PostCommentType[];
                     }) => {
-                        setIsAllCommentsFetched(data.isAllFetched);
-                        handleAddComments(data.comments);
+                        if(data.data.length < 4) setIsAllCommentsFetched(true);
+                        handleAddComments(data.data);
                     })
                 }
             }, 500);

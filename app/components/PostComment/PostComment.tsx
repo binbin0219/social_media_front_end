@@ -1,8 +1,9 @@
 import React from 'react'
 import UserIcon from '../UserIcon/UserIcon'
-import { shallowEqual, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { PostComment as PostCommentType } from '@/lib/models/comment'
+import FriendshipStatusCompact from '../FriendshipStatus/FriendshipStatusCompact'
 
 type props = {
     comment: PostCommentType
@@ -10,7 +11,7 @@ type props = {
 
 const PostComment = React.memo(({ comment }: props) => {
     const currentUser = useSelector((state: RootState) => state.currentUser)!;
-    const user = comment?.user;
+    const user = comment.user;
     const isAuthor = currentUser?.id === user?.id;
 
     return (
@@ -35,6 +36,7 @@ const PostComment = React.memo(({ comment }: props) => {
                     <span className="text-[11px] text-textSecondary/70">
                         {timeAgo(comment?.createAt.split(' ')[0])}
                     </span>
+                    <FriendshipStatusCompact userId={user!.id} friendship={user?.friendship}/>
                 </div>
                 <p className="text-[13px] text-textPrimary leading-relaxed break-words">
                     {comment?.content.split('\n').map((line: string, i: number) => (

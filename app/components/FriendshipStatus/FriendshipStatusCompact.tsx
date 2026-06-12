@@ -6,7 +6,7 @@ import LoadingButton from '@/components/LoadingButton/LoadingButton'
 import { useFriendshipActions } from '@/hooks/useFriendshipActions'
 
 type Props = {
-    friendship: Friendship;
+    friendship?: Friendship;
     userId: number;
 }
 
