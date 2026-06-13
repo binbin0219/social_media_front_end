@@ -3,7 +3,7 @@ import { Friend } from "@/lib/models/user";
 
 const fetchFriends = async (userId: number, start: number): Promise<Friend[]> => {
     const length = 6;
-    const response = await apiAgent.fetchOnClient(`/api/friendship/${userId}/friends?userId=${userId}&start=${start}&length=${length}`);
+    const response = await apiAgent.fetchOnClient(`/api/friendship/${userId}/friends?userId=${userId}&status=ACCEPTED&start=${start}&length=${length}`);
     if(!response.ok) {
         throw new Error("Failed to fetch friends");
     }
