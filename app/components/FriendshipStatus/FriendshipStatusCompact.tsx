@@ -92,7 +92,7 @@ const FriendshipStatusCompact = memo(({ friendship: initialFriendship, userId }:
             {friendship.status === 'ACCEPTED' && (
                 <DynamicTooltip text="Unfriend" position="bottom">
                     <button type="button" onClick={handleUnfriend} className={`${iconBtn}
-                        text-textSecondary/50
+                        text-green-500
                         hover:bg-red-50 hover:text-red-500
                         dark:hover:bg-red-500/10
                         group
