@@ -24,7 +24,9 @@ const UserIcon = ({
     position
 }: Props) => {
 
-    const handleOnclick = () => {
+    const handleOnclick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+
         if (userId) {
             window.location.href = `/user/profile/${userId}`;
         } else {
@@ -34,7 +36,7 @@ const UserIcon = ({
 
     return (
         <SmartImage
-            onClick={navigateToUserProfile ? handleOnclick : undefined}
+            onClick={navigateToUserProfile ? (e) => handleOnclick(e) : undefined}
             className={`rounded-full hover:opacity-50 cursor-pointer transition-opacity ${className}`}
             src={getUserAvatarLink(userId, updatedAt)}
             fallbackSrc={defaultUserAvatar}

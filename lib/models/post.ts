@@ -7,9 +7,10 @@ export type Post = {
     id: number;
     title: string;
     content: string;
-    create_at: string;
+    createdAt: string;
     commentCount: number;
     likeCount: number;
+    shareCount: number;
     comments: Array<PostComment>;
     attachments: PostAttachments[];
     isNew?: boolean;
@@ -20,6 +21,7 @@ export type Post = {
     isSensitive: boolean;
     canComment: boolean;
     friendship: Friendship;
+    sharedPost?: Post;
 }
 
 export type PostWithUserId = {

@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* tailwind.css */
+@layer base {
+  /* Scrollbars */
+  *::-webkit-scrollbar {
+    width: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded-full;
+  }
+  *::-webkit-scrollbar-track {
+    @apply bg-gray-200;
+  }
+
+  .dark *::-webkit-scrollbar-thumb {
+    @apply bg-gray-500;
+  }
+  .dark *::-webkit-scrollbar-track {
+    @apply bg-gray-700;
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #9ca3af #e5e7eb;
+  }
+  .dark * {
+    scrollbar-color: #6b7280 #374151;
+  }
+}
+
 :root {
   /* Fonts */
   --font-poppins: 'Poppins', sans-serif;

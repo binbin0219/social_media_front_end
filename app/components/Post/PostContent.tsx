@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-function PostContent({ content }: { content: string }) {
+function PostContent({ content }: { content: string | null }) {
     const [expanded, setExpanded] = useState(false);
     const MAX_LENGTH = 200;
 
-    const shouldTruncate = content.length > MAX_LENGTH;
-    const displayedContent = expanded ? content : content.slice(0, MAX_LENGTH);
+    const shouldTruncate = content && content.length > MAX_LENGTH;
+    const displayedContent = expanded ? content : content?.slice(0, MAX_LENGTH);
 
     return (
         <div>

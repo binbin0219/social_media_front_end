@@ -10,8 +10,8 @@ const ShowMoreText = ({ content, className, maxLength }: Props) => {
     const [expanded, setExpanded] = useState(false);
     const MAX_LENGTH = maxLength ?? 200;
 
-    const shouldTruncate = content.length > MAX_LENGTH;
-    const displayedContent = expanded ? content : content.slice(0, MAX_LENGTH);
+    const shouldTruncate = content?.length > MAX_LENGTH;
+    const displayedContent = expanded ? content : content?.slice(0, MAX_LENGTH);
     return (
         <div>
             <p

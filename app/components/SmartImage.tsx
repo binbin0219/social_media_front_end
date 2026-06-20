@@ -11,7 +11,7 @@ type Props = {
     objectFit?: CSSProperties['objectFit'];
     width: string | number;
     height: string | number;
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent) => void;
 }
 
 const SmartImage = ({
@@ -31,7 +31,7 @@ const SmartImage = ({
     return (
         <div 
         className={`overflow-hidden ${className}`} 
-        onClick={onClick} 
+        onClick={(e) => onClick?.(e)} 
         style={{
             position,
             width: typeof width === 'string' ? width : `${width}px`,

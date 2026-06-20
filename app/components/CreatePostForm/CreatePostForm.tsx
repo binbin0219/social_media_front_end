@@ -19,7 +19,7 @@ import LoadingButton from "../LoadingButton/LoadingButton";
 import { RootState } from "@/redux/store";
 import Selector from "../Selector/Selector";
 import UserIcon from "../UserIcon/UserIcon";
-import { AttachmentUrlAndFile, CommentStatus, CreateEditPost, PrivacySetting } from "@/lib/models/post";
+import { AttachmentUrlAndFile, CommentStatus, CreateEditPost, Post, PrivacySetting } from "@/lib/models/post";
 import { FriendDTO } from "../FriendlazyloadList";
 import FriendSelector from "./FriendSelector";
 
@@ -36,6 +36,11 @@ type Props = {
         commentStatus?: CommentStatus;
         isSensitive?: boolean;
         visibilityList?: FriendDTO[];
+    };
+    // ── Share mode ──────────────────────────────────────────
+    shareMode?: {
+        originalPost: Post;
+        onShare: (payload: CreateEditPost) => Promise<void>;
     };
 };
 
@@ -75,6 +80,7 @@ const CreatePostForm = ({
     initialData,
     enableAttachment = true,
     openAttachmentInputAfterLoad,
+    shareMode,
 }: Props) => {
     const dispatch = useDispatch();
     const MAX_TITLE_SIZE = 70;
@@ -89,23 +95,20 @@ const CreatePostForm = ({
     const [privacySetting, setPrivacySetting] = useState<PrivacySetting>(initialData?.privacySetting ?? "PUBLIC");
     const [commentStatus, setCommentStatus] = useState<CommentStatus>(initialData?.commentStatus ?? "OPEN");
     const [isSensitive, setIsSensitive] = useState(initialData?.isSensitive ?? false);
-
     // Friend selector state
     const [selectedFriends, setSelectedFriends] = useState<FriendDTO[]>(initialData?.visibilityList ?? []);
     // Key to reset the FriendLazyLoadList when privacy changes between WCV/WCNV
     const [friendListKey, setFriendListKey] = useState(0);
 
     const currentUser = useSelector((state: RootState) => state.currentUser);
-
     const isAttachmentInputClicked = useRef<boolean>(false);
     const attachmentInputRef = useRef<HTMLInputElement>(null);
     const attachmentLimit = 10;
-
+    const isShareMode = !!shareMode;
     const attachments: PostAttachmentPreview[] = postAttachments.map((a) => ({
         src: a.url,
         mimeType: a.file.type,
     }));
-
     const showFriendSelector = FRIEND_SELECTOR_SETTINGS.includes(privacySetting);
 
     // Clear selected friends when switching away from WCV/WCNV
@@ -128,18 +131,23 @@ const CreatePostForm = ({
         }
     }, [openAttachmentInputAfterLoad]);
 
+    // Replace the submit handler to branch on mode
     const handleSubmit = async () => {
         if (isCreatingPost) return;
-        if (content.trim() === "") setIsContentValid(false);
+        if (content.trim() === "" && !isShareMode) {
+            setIsContentValid(false);
+            return;
+        }
         setIsCreatingPost(true);
-        await onSubmit?.({
+        const payload: CreateEditPost = {
             content,
             attachments: postAttachments,
             privacySetting,
             commentStatus,
             isSensitive,
             selectedFriends,
-        });
+        };
+        await (isShareMode ? shareMode!.onShare(payload) : onSubmit?.(payload));
         setIsCreatingPost(false);
     };
 
@@ -194,6 +202,26 @@ const CreatePostForm = ({
                 </div>
             </div>
 
+            {/* ── Original post preview (share mode only) ── */}
+            {isShareMode && (
+                <div className="rounded-xl border border-borderPrimary bg-bgSecondary px-4 py-3 space-y-1">
+                    <p className="text-xs font-semibold text-textPrimary/50 uppercase tracking-wider">
+                        Sharing
+                    </p>
+                    <p className="text-sm font-medium text-textPrimary">
+                        {shareMode!.originalPost.user?.firstName} {shareMode!.originalPost.user?.lastName}
+                    </p>
+                    <p className="text-sm text-textSecondary line-clamp-3">
+                        {shareMode!.originalPost.content}
+                    </p>
+                    {shareMode!.originalPost.attachments?.length > 0 && (
+                        <p className="text-xs text-textPrimary/40 pt-1">
+                            {shareMode!.originalPost.attachments.length} attachment{shareMode!.originalPost.attachments.length > 1 ? 's' : ''}
+                        </p>
+                    )}
+                </div>
+            )}
+
             {/* ── Content ── */}
             <div className={`
                 rounded-xl overflow-hidden bg-bgSecondary transition-all duration-300
@@ -222,7 +250,7 @@ const CreatePostForm = ({
                             </button>
                         </DynamicTooltip>
 
-                        {enableAttachment && (
+                        {enableAttachment && !isShareMode && (
                             <DynamicTooltip text="Images/Videos">
                                 <label htmlFor="postImg" className="p-2 rounded-lg cursor-pointer text-textPrimary/40 hover:text-appPrimary hover:bg-appPrimary/8 transition-all duration-200 flex items-center">
                                     <IconPhotoPlus size={20} />
@@ -324,8 +352,8 @@ const CreatePostForm = ({
                     friendListKey={friendListKey}/>
             )}
 
-            {/* ── Attachments ── */}
-            {postAttachments.length > 0 && (
+            {/* ── Attachments (hidden in share mode) ── */}
+            {!isShareMode && postAttachments.length > 0 && (
                 <>
                     <div className="flex items-center gap-2">
                         <span className="text-xs font-medium text-textPrimary/50 uppercase tracking-wider">Attachments</span>
@@ -347,8 +375,8 @@ const CreatePostForm = ({
                     loaderColor="white"
                     onClick={handleSubmit}
                     className="primary-app-btn"
-                    text="Publish"
-                    loadingText="Publishing…"
+                    text={isShareMode ? 'Share' : 'Publish'}
+                    loadingText={isShareMode ? 'Sharing…' : 'Publishing…'}
                 />
             </div>
         </div>
