@@ -64,27 +64,15 @@ const PostAttachments = ({ attachments, onDelete }: Props) => {
                                 <p className="text-sm font-medium">Failed to load media</p>
                             </div>
                         ) : attachment.mimeType.startsWith('image') ? (
-                            <>
-                                {/* Blurred background */}
-                                <SmartImage
-                                    src={attachment.src}
-                                    alt="blurred bg"
-                                    className="blur-2xl scale-110 opacity-60"
-                                    objectFit="cover"
-                                    width="100%"
-                                    height="100%"
-                                    position="absolute"
-                                />
-                                {/* Main image */}
-                                <SmartImage
-                                    src={attachment.src}
-                                    alt="main"
-                                    objectFit="contain"
-                                    width="100%"
-                                    height="100%"
-                                    position="absolute"
-                                />
-                            </>
+                            <SmartImage
+                                src={attachment.src}
+                                alt="main"
+                                objectFit="contain"
+                                width="100%"
+                                height="100%"
+                                position="absolute"
+                                withBlurredBackground
+                            />
                         ) : attachment.mimeType.startsWith('video') ? (
                             <video
                                 controls

@@ -63,7 +63,18 @@ const ChatRoomList = () => {
 
         return (
             <>
-                <UserIcon userId={peer.userId} updatedAt={peer.userUpdatedAt} width={40} height={40} />
+                <UserIcon 
+                    userId={peer.userId} 
+                    updatedAt={peer.userUpdatedAt} 
+                    width={40} 
+                    height={40} 
+                    storyUser={{
+                        id: peer.userId,
+                        username: peer.username,
+                        stories: peer.stories,
+                        updatedAt: peer.userUpdatedAt,
+                    }} 
+                    stories={peer.stories} />
                 <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                         <p className="text-[13px] font-medium truncate">

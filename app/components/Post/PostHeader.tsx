@@ -28,6 +28,8 @@ export default function PostHeader({ post, size = 'default', className = '' }: P
                 updatedAt={author?.updatedAt}
                 width={isSmall ? 30 : undefined}
                 height={isSmall ? 30 : undefined}
+                storyUser={author}
+                stories={author.stories}
             />
 
             <div className="flex flex-col">

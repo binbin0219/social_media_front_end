@@ -47,15 +47,14 @@ export default function Dialog({ children, isOpen, showCloseBtn = true, onClose 
       <div
         className={`
           relative z-10 flex flex-col bg-bgPri dark:bg-bgSec border border-borderPri
-          w-full transition-all duration-300
+          transition-all duration-300
 
           /* Mobile — bottom sheet */
-          self-end rounded-t-2xl max-h-[90svh]
+          self-end rounded-t-2xl
           ${isOpen ? 'translate-y-0' : 'translate-y-full'}
 
           /* Desktop — centered modal */
           md:self-center md:rounded-2xl md:mx-auto
-          md:min-w-[700px] md:max-w-3xl md:max-h-[85vh]
           md:shadow-2xl md:shadow-black/20
           ${isOpen ? 'md:scale-100 md:opacity-100' : 'md:scale-95 md:opacity-0'}
           md:translate-y-0

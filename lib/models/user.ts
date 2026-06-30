@@ -1,4 +1,5 @@
 import { Friendship } from "./friendship";
+import { Story } from "./Story";
 
 export type User = {
     id: number;
@@ -23,7 +24,8 @@ export type User = {
     postCount: number | null;
     likeCount: number | null;
     friendCount: number | null;
-} | null
+    stories: Story[];
+}
 
 export type Gender = "male" | "female"
 
@@ -35,6 +37,8 @@ export type PhoneNumber = {
     phoneNumberBody: string;
 }
 
-export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'updatedAt'>;
+export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'stories' | 'updatedAt'>;
 
 export type RecommendedUsers = Pick<NonNullable<User>, 'id' | 'username' | 'updatedAt'>;
+
+export type StoryUser = Pick<NonNullable<User>, 'id' | 'username' | 'stories' | 'updatedAt'>;

@@ -15,12 +15,14 @@ type Props = {
 export default function PostDialog({ post, isOpen, showCloseBtn, onClose, handleAddPost, handleEditPost, handleDeletePost }: Props) {
     return (
         <Dialog isOpen={isOpen} onClose={onClose} showCloseBtn={showCloseBtn}>
-            <Post 
-                post={post} 
-                alwaysOpenCommentSection={true}
-                handleAddPost={handleAddPost} 
-                handleEditPost={handleEditPost} 
-                handleDeletePost={handleDeletePost} />
+            <div className="max-h-[800px] w-[80vh] max-w-[1000px]">
+                <Post 
+                    post={post} 
+                    alwaysOpenCommentSection={true}
+                    handleAddPost={handleAddPost} 
+                    handleEditPost={handleEditPost} 
+                    handleDeletePost={handleDeletePost} />
+            </div>
         </Dialog>
     )
 }

@@ -70,6 +70,8 @@ const RightSection = () => {
                                     <UserIcon
                                         userId={friend.id}
                                         updatedAt={friend.updatedAt}
+                                        storyUser={friend}
+                                        stories={friend.stories}
                                     />
                                     <p className="text-sm text-textSecondary">
                                         {friend.username}

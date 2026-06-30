@@ -2,7 +2,7 @@ import { userService } from '@/lib/services/user';
 import React, { useState } from 'react'
 import DataLoader from '../DataLoader/DataLoader';
 import DropdownItemSkeleton from '../Skeletons/DropdownItemSkeleton';
-import { RecommendedUsers } from '@/lib/models/user';
+import { User } from '@/lib/models/user';
 import UserIcon from '../UserIcon/UserIcon';
 import { IconUserOff } from '@tabler/icons-react';
 import FriendshipStatus from '@/components/FriendshipStatus/FriendshipStatus';
@@ -12,7 +12,7 @@ type Props = {
 }
 
 const RecommendedUserList = ({ limit }: Props) => {
-    const [recommendedUsers, setRecommendedUsers] = useState<RecommendedUsers[]>([]);
+    const [recommendedUsers, setRecommendedUsers] = useState<User[]>([]);
     const [isAllFetched, setIsAllFetched] = useState(false);
 
     const onVisible = async () => {
@@ -39,6 +39,8 @@ const RecommendedUserList = ({ limit }: Props) => {
                         <UserIcon
                             userId={recommendedUser.id}
                             updatedAt={recommendedUser.updatedAt}
+                            storyUser={recommendedUser}
+                            stories={recommendedUser.stories}
                         />
                         <p className="text-sm text-textSecondary">
                             {recommendedUser.username}

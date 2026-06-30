@@ -33,12 +33,12 @@ const fetchUsersByUsername = async (username: string, start: number, length: num
     return data.searchResults;
 }
 
-async function getRecommendations(limit: number): Promise<RecommendedUsers[]> {
+async function getRecommendations(limit: number): Promise<User[]> {
     const response = await apiAgent.fetchOnClient(`/api/user/recommendations?limit=${limit}`);
     if(!response.ok) {
         throw new Error("Failed to fetch user recommendations");
     }
-    const userRecommendations: RecommendedUsers[] = await response.json();
+    const userRecommendations: User[] = await response.json();
     return userRecommendations;
 }
 

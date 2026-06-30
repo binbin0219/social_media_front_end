@@ -45,7 +45,7 @@ const FriendListDropdown = () => {
                 {friends.map(friend => (
                     <UserProfileLink key={friend.id} userId={friend.id}>
                         <div className='dropdown-item flex gap-2 items-center'>
-                            <UserIcon updatedAt={friend.updatedAt} userId={friend.id}/>
+                            <UserIcon updatedAt={friend.updatedAt} userId={friend.id} storyUser={friend} stories={friend.stories}/>
                             {friend.username}
                         </div>
                     </UserProfileLink>

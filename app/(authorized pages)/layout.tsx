@@ -13,6 +13,7 @@ import { WebSocketProvider } from "@/context/WebSocketContext";
 import { Poppins, Fugaz_One } from 'next/font/google';
 import { DialogContextProvider } from "@/context/DialogContext";
 import Navbar from "@/components/Navbar/Navbar";
+import { StoryViewerProvider } from "@/context/StoryViewerContext";
 
 const poppins = Poppins({
 	subsets: ['latin'],
@@ -78,12 +79,14 @@ export default async function RootLayout({
 							initialPosts={[]}
 							allUnreadMessagesCount={authUserData?.unreadChatMessageCount ?? 0}
 						>
-							<DialogContextProvider>
-								<Navbar/>
-								<ToastContainer />
-								<FileViewer/>
-								{children}
-							</DialogContextProvider>
+							<StoryViewerProvider>
+								<DialogContextProvider>
+									<Navbar/>
+									<ToastContainer />
+									<FileViewer/>
+									{children}
+								</DialogContextProvider>
+							</StoryViewerProvider>
 						</StoreProvider>
 					</WebSocketProvider>
 				</body>

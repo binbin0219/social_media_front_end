@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import NextImage from 'next/image';
 import { defaultCoverUrl } from '@/lib/constants';
 
@@ -12,6 +12,7 @@ type Props = {
     width: string | number;
     height: string | number;
     onClick?: (e: React.MouseEvent) => void;
+    withBlurredBackground?: boolean;
 }
 
 const SmartImage = ({
@@ -23,10 +24,16 @@ const SmartImage = ({
     height,
     position = "relative",
     objectFit = "cover",
-    onClick
+    onClick,
+    withBlurredBackground = false
 }: Props) => {
     const [imageSrc, setImageSrc] = useState(src);
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setImageSrc(src);
+        setIsLoading(true);
+    }, [src]);
 
     return (
         <div 
@@ -44,20 +51,31 @@ const SmartImage = ({
                 />
             )}
             
+            {withBlurredBackground && (
+                <NextImage
+                fill
+                src={imageSrc}
+                alt=""
+                aria-hidden
+                className={`blur-2xl scale-110 opacity-60 transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-60'}`}
+                style={{ objectFit: "cover" }}
+                />
+            )}
+
             <NextImage
-            fill
-            src={imageSrc}
-            alt={alt}
-            className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-            style={{
-                objectFit
-            }}
-            onLoad={() => setIsLoading(false)}
-            onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.onerror = null;
-                setImageSrc(fallbackSrc);
-            }}
+                fill
+                src={imageSrc}
+                alt={alt}
+                className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                style={{
+                    objectFit
+                }}
+                onLoad={() => setIsLoading(false)}
+                onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    setImageSrc(fallbackSrc);
+                }}
             />
         </div>
     )

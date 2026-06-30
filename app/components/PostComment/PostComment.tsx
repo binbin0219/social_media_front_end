@@ -16,7 +16,7 @@ const PostComment = React.memo(({ comment }: props) => {
 
     return (
         <div className='w-full flex gap-2.5 items-start'>
-            <UserIcon userId={user!.id} updatedAt={user?.updatedAt} />
+            <UserIcon userId={user!.id} updatedAt={user?.updatedAt} storyUser={user} stories={user.stories} />
             <div className={`
                 p-2.5 px-3.5 rounded-tr-xl rounded-b-xl flex flex-col gap-1.5 max-w-[85%]
                 border border-borderPrimary

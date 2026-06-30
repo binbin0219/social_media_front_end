@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "pub-b2cd6b49f6f042109b750b07ab45d1ff.r2.dev",
-        pathname: "/**", // Allow all images from this domain
+        pathname: "/**", // Allow all images from this domain@
       },
       // Production r2 bucket
       {
@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "mdxblog.io",
         pathname: "/**", // Allow all images from this domain
+      },
+      {
+        protocol: "https",
+        hostname: "**",
+        pathname: "/**", // Allow images from any HTTPS domain
       },
     ]
   }
