@@ -9,3 +9,45 @@
 .gender-radio-container[data-gender="female"] .gender-radio-female{
     opacity: 1;
 }
+
+.settings-page input,
+.settings-page select {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+}
+
+.settings-page input::placeholder {
+    color: color-mix(in srgb, var(--text-primary) 45%, transparent);
+}
+
+.settings-page input:focus,
+.settings-page select:focus {
+    border-color: var(--app-color-primary);
+}
+
+.settings-page select:disabled,
+.settings-page input:disabled {
+    background-color: var(--bg-hover-secondary);
+    color: color-mix(in srgb, var(--text-primary) 50%, transparent);
+}
+
+.settings-page .iti {
+    width: 100%;
+}
+
+.settings-page .iti__selected-flag {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.settings-page .iti__country-list {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+}
+
+.settings-page .iti__country:hover,
+.settings-page .iti__highlight {
+    background-color: var(--bg-hover-secondary);
+}

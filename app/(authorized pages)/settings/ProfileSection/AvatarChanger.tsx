@@ -120,17 +120,18 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
     }
 
     return (
-        <div className="flex gap-7 mt-8 justify-center">
+        <div className="flex flex-col gap-5 mt-8 items-center justify-center rounded-2xl border border-borderPrimary bg-bgPrimary p-5 sm:flex-row sm:gap-7">
             {avatar && (
                 <Image 
                     width={100}
                     height={100}
                     src={avatar!}
                     alt={'image'}
+                    className="rounded-2xl border border-borderPrimary"
                 />
             )}
             <div className="flex flex-col gap-3">
-                <label htmlFor="upload_img_input" className="flex gap-2 items-center rounded-lg px-3 py-2 border-2 border-green-300 bg-green-100 text-sm text-green-600 hover:bg-green-200 cursor-pointer">
+                <label htmlFor="upload_img_input" className="flex gap-2 items-center rounded-lg px-3 py-2 border-2 border-appPrimary bg-bgHoverPrimary text-sm font-semibold text-appPrimary hover:bg-bgHoverSecondary cursor-pointer transition-colors">
                     <IconUpload/>
                     Upload image
                     <input onInput={() => handleImgUpload()} ref={avatarInputRef} id="upload_img_input" accept="image/jpeg, image/png" type="file" name="avatar" className="hidden"/>
@@ -146,7 +147,7 @@ const AvatarChanger = ({avatar, updateUserData} : Props) => {
                     </>
                 )}
                 loadingText='Generating...'
-                className='flex gap-2 items-center rounded-lg px-3 py-2 border-2 border-indigo-300 bg-indigo-100 text-sm text-indigo-600 hover:bg-indigo-200'
+                className='flex gap-2 items-center rounded-lg px-3 py-2 border-2 border-appPrimary bg-bgSecondary text-sm font-semibold text-appPrimary hover:bg-bgHoverSecondary transition-colors'
                 >
                 </LoadingButton>
             </div>

@@ -85,7 +85,7 @@ const PostList = ({
         setPosts(prev => [post, ...prev]);
     };
 
-    const handleDeletePost = (postId: Number) => {
+    const handleDeletePost = (postId: number) => {
         setPosts(prev => prev.filter(p => p.id !== postId));
         setSelectedPost(null);
     };

@@ -116,8 +116,12 @@ const ProfileSection = () => {
     }
 
     return (
-        <>
-            <h1 className="font-extrabold text-4xl">Public Profile</h1>
+        <div>
+            <div className="pb-5">
+                <p className="text-sm font-bold uppercase text-appPrimary">Settings</p>
+                <h1 className="mt-1 font-extrabold text-3xl text-textPrimary sm:text-4xl">Public Profile</h1>
+                <p className="mt-2 text-sm text-textPrimary/60">Update the details people see on your profile.</p>
+            </div>
             <AvatarChanger
                 avatar={editingUserData?.avatar}
                 updateUserData={updateUserField}
@@ -141,14 +145,14 @@ const ProfileSection = () => {
                 loadingText='Saving...'
                 disabled={!isEdited}
                 className={`
-                    ${!isEdited ? 'bg-slate-100 border-slate-300 text-slate-600' : ''}
-                    ${isEdited ? 'bg-green-100 border-green-300 text-green-600 hover:bg-green-200' : ''}
-                    border-2 px-3 py-2 rounded-lg flex gap-2 relative
+                    ${!isEdited ? 'bg-bgHoverSecondary border-borderPrimary text-textPrimary/55' : ''}
+                    ${isEdited ? 'bg-bgHoverPrimary border-appPrimary text-appPrimary hover:bg-bgHoverSecondary' : ''}
+                    border-2 px-3 py-2 rounded-lg flex gap-2 relative transition-colors
                 `}
                 >
                 </LoadingButton>
             </div>
-        </>
+        </div>
     )
 }
 

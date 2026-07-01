@@ -52,7 +52,7 @@ const PhoneNumberInput = ({phoneNumber, setterFunction} : Props) => {
         <input onChange={(e) => handleInput(e)} ref={inputRef} id="phone_number_input" 
             value={phoneNumberBody}
             name="phoneNumber" 
-            className={`px-3 py-2 border-2 rounded-lg w-full outline-none ${isInputValid ? 'border-slate-200' : 'border-red-500'}`}
+            className={`px-3 py-2 border-2 rounded-lg w-full bg-bgSecondary text-textPrimary outline-none ${isInputValid ? 'border-borderPrimary' : 'border-red-500'}`}
         />
     )
 }

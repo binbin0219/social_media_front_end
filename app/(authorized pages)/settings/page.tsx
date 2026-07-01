@@ -8,13 +8,15 @@ const page = () => {
         <> 
             <div 
             className="
+                settings-page
                 flex-col
-                md:mt-[70px] md:max-w-[1000px] md:w-full md:mx-auto md:flex md:items-center md:justify-center md:flex-row
+                text-textPrimary
+                md:mt-[70px] md:max-w-[1200px] md:w-full md:mx-auto md:flex md:items-start md:justify-center md:flex-row
             ">
                 <SectionToggles/>
                 <div 
                 className="
-                    flex flex-col p-10 w-full 
+                    flex flex-col p-4 w-full sm:p-8 md:p-10
                     md:pt-[80px]
                 ">
                     <ProfileSection/>
