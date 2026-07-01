@@ -17,6 +17,7 @@ import ShowMoreText from '@/components/ShowMoreText';
 import AboutCard from './AboutCards/AboutCard';
 import UserCover from '@/components/UserCover';
 import UserIcon from '@/components/UserIcon/UserIcon';
+import { CalendarDays } from 'lucide-react';
 
 type Props = {
     profileUser: User
@@ -39,54 +40,65 @@ const PageClient = ({profileUser} : Props) => {
     }, [profileUser, dispatch])
 
     return (
-        <div className="w-full max-w-7xl mx-auto text-textPrimary">
-            <UserCover
-            className='h-60'
-            userId={profileUser!.id}
-            userUpdatedAt={profileUser?.updatedAt}
-            enableUpdate={isCurrentUserProfile}
-            >
-                <div className="absolute bottom-0 left-4 transform translate-y-1/2">
-                    <UserIcon
-                    userId={profileUser!.id}
-                    updatedAt={profileUser?.updatedAt}
-                    navigateToUserProfile={false}
-                    width={135}
-                    height={135}
-                    className='border-4 border-bgSecondary'
-                    />
-                </div>
-            </UserCover>
-
-            {/* Profile Info */}
-            <div className="pt-20 px-4 flex flex-col md:flex-row justify-between items-start md:items-center bg-bgSecondary pb-4 rounded-b-lg border border-borderPrimary border-t-0">
-                <div>
-                    <h2 className="text-2xl font-bold">{profileUser?.username}</h2>
-                    <div className='flex gap-2'>
-                        <ShowMoreText
-                        maxLength={150}
-                        className='mt-2 max-w-2xl'
-                        content={profileUser?.description && profileUser?.description?.trim() !== "" ? profileUser.description : "No description yet"}
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 pb-10 text-textPrimary">
+            <div className="overflow-hidden rounded-b-2xl border border-t-0 border-borderPrimary bg-bgSecondary shadow-sm">
+                <UserCover
+                className='h-56 sm:h-64'
+                userId={profileUser!.id}
+                userUpdatedAt={profileUser?.updatedAt}
+                enableUpdate={isCurrentUserProfile}
+                >
+                    <div className="absolute bottom-0 left-5 sm:left-8 translate-y-1/2">
+                        <UserIcon
+                        userId={profileUser!.id}
+                        updatedAt={profileUser?.updatedAt}
+                        navigateToUserProfile={false}
+                        width={140}
+                        height={140}
+                        className='border-4 border-bgSecondary shadow-xl'
                         />
-                        {isCurrentUserProfile && (
-                            <UserDescriptionEditBtn 
-                            description={profileUser!.description ?? ""}
-                            onDone={(newDes) => {
-                                dispatch(updateProfile({
-                                    description: newDes
-                                }));
-                            }}
-                            />
-                        )}
                     </div>
-                </div>
-                <div className="flex items-center gap-2 mt-4 md:mt-0">
-                    {!isCurrentUserProfile && <ChatButton targetUserId={profileUser!.id}/>}
-                    {!isCurrentUserProfile && <FriendshipStatus friendship={profileUser!.friendship!} userId={profileUser!.id}/>}
+                </UserCover>
+
+                <div className="px-5 pb-6 pt-20 sm:px-8">
+                    <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+                        <div className="min-w-0">
+                            <h2 className="break-words text-3xl font-bold tracking-normal text-textPrimary sm:text-4xl">{profileUser?.username}</h2>
+                            <div className="mt-3 flex items-start gap-2 text-sm leading-6 text-textPrimary/70">
+                                <div className="min-w-0 max-w-3xl">
+                                    <ShowMoreText
+                                    maxLength={180}
+                                    className='max-w-3xl'
+                                    content={profileUser?.description && profileUser?.description?.trim() !== "" ? profileUser.description : "No description yet"}
+                                    />
+                                </div>
+                                {isCurrentUserProfile && (
+                                    <UserDescriptionEditBtn 
+                                    description={profileUser!.description ?? ""}
+                                    onDone={(newDes) => {
+                                        dispatch(updateProfile({
+                                            description: newDes
+                                        }));
+                                    }}
+                                    />
+                                )}
+                            </div>
+                            {profileUser?.create_at && (
+                                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-borderPrimary bg-bgPrimary px-3 py-1 text-xs font-medium text-textPrimary/70">
+                                    <CalendarDays size={14} />
+                                    Joined {new Date(profileUser.create_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                            {!isCurrentUserProfile && <ChatButton targetUserId={profileUser!.id}/>}
+                            {!isCurrentUserProfile && <FriendshipStatus friendship={profileUser!.friendship!} userId={profileUser!.id}/>}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="mt-8 px-4 grid grid-cols-1 lg:grid-cols-[minmax(260px,475px)_1fr] gap-6">
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(280px,390px)_1fr]">
                 <aside className="lg:sticky lg:top-24 h-fit">
                     <AboutCard profileUser={profileUser}/>
                 </aside>

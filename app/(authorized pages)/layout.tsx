@@ -71,7 +71,7 @@ export default async function RootLayout({
 				>
 					<WebSocketProvider>
 						<StoreProvider 
-							currentUser={authUserData} 
+							currentUser={authUserData!} 
 							notifications={{
 								...notificationsInitialState,
 								newNotificationCount: authUserData?.newNotificationCount ?? 0,

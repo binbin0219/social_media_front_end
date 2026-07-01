@@ -1,28 +1,41 @@
 .userProfilePage :global(#section_buttons_container .active) {
-    border-bottom-width: 4px;
+    background: var(--bg-hover-primary);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     color: var(--text-secondary);
 }
 
 .userProfilePage :global(.section-btn) {
-    height: 100%; /* h-full */
-    padding: 0.75rem; /* p-3 */
-    font-weight: bold; /* font-bold */
-    display: flex; /* flex */
-    align-items: center; /* items-center */
+    min-height: 2.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     color: color-mix(in srgb, var(--text-primary) 60%, transparent);
-    border-color: transparent; /* border-sky-400 */
-    transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .userProfilePage :global(.section-btn:hover) {
+    background: var(--bg-hover-secondary);
     color: var(--text-secondary);
-    border-bottom: 4px solid transparent;
-    border-bottom-color: rgb(56 189 248); /* hover:border-b-4 */
+}
+
+.userProfilePage :global(.section-btn:disabled) {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.userProfilePage :global(.section-btn:disabled:hover) {
+    background: transparent;
+    color: color-mix(in srgb, var(--text-primary) 60%, transparent);
 }
 
 .userProfilePage[data-section="posts"] :global(.posts-section-btn) {
-    border-bottom-width: 4px;
-    border-bottom-color: rgb(56 189 248);
+    background: var(--bg-hover-primary);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--app-color-primary) 24%, transparent);
     color: var(--text-secondary);
 }
 
@@ -31,8 +44,8 @@
 }
 
 .userProfilePage[data-section="about"] :global(.about-section-btn) {
-    border-bottom-width: 4px;
-    border-bottom-color: rgb(56 189 248);
+    background: var(--bg-hover-primary);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--app-color-primary) 24%, transparent);
     color: var(--text-secondary);
 }
 
@@ -41,8 +54,8 @@
 }
 
 .userProfilePage[data-section="friends"] :global(.friends-section-btn) {
-    border-bottom-width: 4px;
-    border-bottom-color: rgb(56 189 248);
+    background: var(--bg-hover-primary);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--app-color-primary) 24%, transparent);
     color: var(--text-secondary);
 }
 
@@ -51,8 +64,8 @@
 }
 
 .userProfilePage[data-section="photos"] :global(.photos-section-btn) {
-    border-bottom-width: 4px;
-    border-bottom-color: rgb(56 189 248);
+    background: var(--bg-hover-primary);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--app-color-primary) 24%, transparent);
     color: var(--text-secondary);
 }
 
