@@ -22,7 +22,7 @@ const Toast = (props: ToastType) => {
     }
 
     return (
-        <div ref={toastRef} className="toast relative p-2 flex gap-3 items-center bg-white border rounded-lg shadow-lg w-[300px] overflow-x-hidden" style={{zIndex: "9999"}}>
+        <div ref={toastRef} className="toast relative p-3 flex gap-3 items-center bg-bgSecondary border border-borderPrimary rounded-lg shadow-lg w-[300px] overflow-x-hidden text-textPrimary" style={{zIndex: "9999"}}>
             {props.type === "success" ? <div className="toast-sidebar absolute h-full w-[5px] bg-green-600 start-[-1px] top-0"></div> : null}
             {props.type === "error" ? <div className="toast-sidebar absolute h-full w-[5px] bg-red-600 start-[-1px] top-0"></div> : null}
             {props.type === "info" ? <div className="toast-sidebar absolute h-full w-[5px] bg-blue-600 start-[-1px] top-0"></div> : null}
@@ -46,11 +46,11 @@ const Toast = (props: ToastType) => {
                 </svg>
                 : null}
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col pe-4">
                 <p className="toast-header font-bold">{props.type[0].toUpperCase() + props.type.slice(1)}</p>
-                <p className="toast-body text-slate-600">{props.message}</p>
+                <p className="toast-body text-sm text-textPrimary/70">{props.message}</p>
             </div>
-            <svg onClick={() => hideToast()} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x absolute top-0 end-0 cursor-pointer hover:opacity-50 me-2 mt-2">
+            <svg onClick={() => hideToast()} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x absolute top-0 end-0 cursor-pointer text-textPrimary/60 hover:text-textPrimary hover:opacity-80 me-2 mt-2 transition-colors">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M18 6l-12 12" />
                 <path d="M6 6l12 12" />
