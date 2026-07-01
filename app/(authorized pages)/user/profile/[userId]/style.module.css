@@ -1,0 +1,61 @@
+.userProfilePage :global(#section_buttons_container .active) {
+    border-bottom-width: 4px;
+    color: var(--text-secondary);
+}
+
+.userProfilePage :global(.section-btn) {
+    height: 100%; /* h-full */
+    padding: 0.75rem; /* p-3 */
+    font-weight: bold; /* font-bold */
+    display: flex; /* flex */
+    align-items: center; /* items-center */
+    color: color-mix(in srgb, var(--text-primary) 60%, transparent);
+    border-color: transparent; /* border-sky-400 */
+    transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.userProfilePage :global(.section-btn:hover) {
+    color: var(--text-secondary);
+    border-bottom: 4px solid transparent;
+    border-bottom-color: rgb(56 189 248); /* hover:border-b-4 */
+}
+
+.userProfilePage[data-section="posts"] :global(.posts-section-btn) {
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(56 189 248);
+    color: var(--text-secondary);
+}
+
+.userProfilePage[data-section="posts"] :global(#posts_section) {
+    display: flex;
+}
+
+.userProfilePage[data-section="about"] :global(.about-section-btn) {
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(56 189 248);
+    color: var(--text-secondary);
+}
+
+.userProfilePage[data-section="about"] :global(#about_section) {
+    display: block;
+}
+
+.userProfilePage[data-section="friends"] :global(.friends-section-btn) {
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(56 189 248);
+    color: var(--text-secondary);
+}
+
+.userProfilePage[data-section="friends"] :global(#friends_section) {
+    display: block;
+}
+
+.userProfilePage[data-section="photos"] :global(.photos-section-btn) {
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(56 189 248);
+    color: var(--text-secondary);
+}
+
+.userProfilePage[data-section="photos"] :global(#photos_section) {
+    display: block;
+}

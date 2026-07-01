@@ -1,6 +1,6 @@
 import { getBackendJwtToken } from "@/lib/auth";
 import { Post } from "@/lib/models/post";
-import { User, RecommendedUsers } from "@/lib/models/user";
+import { User } from "@/lib/models/user";
 import { apiAgent } from "../api-agent";
 
 async function fetchProfileUserFromServer (userId: number) : Promise<{user: User; posts: Post[]} | null> {

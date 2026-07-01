@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import FriendshipStatus from '../../../../components/FriendshipStatus/FriendshipStatus';
 import SectionToggles from './SectionToggles';
-import './style.css'
+import styles from './style.module.css'
 import { addUser } from '@/redux/slices/userSlice';
 import ChatButton from '@/components/ChatButton';
 import PostSection from './sections/PostSection';
@@ -39,7 +39,7 @@ const PageClient = ({profileUser} : Props) => {
     }, [profileUser, dispatch])
 
     return (
-        <div className="w-full max-w-7xl mx-auto">
+        <div className="w-full max-w-7xl mx-auto text-textPrimary">
             <UserCover
             className='h-60'
             userId={profileUser!.id}
@@ -53,13 +53,13 @@ const PageClient = ({profileUser} : Props) => {
                     navigateToUserProfile={false}
                     width={135}
                     height={135}
-                    className='border-4 border-white'
+                    className='border-4 border-bgSecondary'
                     />
                 </div>
             </UserCover>
 
             {/* Profile Info */}
-            <div className="pt-20 px-4 flex flex-col md:flex-row justify-between items-start md:items-center bg-white pb-4 rounded-b-lg">
+            <div className="pt-20 px-4 flex flex-col md:flex-row justify-between items-start md:items-center bg-bgSecondary pb-4 rounded-b-lg border border-borderPrimary border-t-0">
                 <div>
                     <h2 className="text-2xl font-bold">{profileUser?.username}</h2>
                     <div className='flex gap-2'>
@@ -91,7 +91,7 @@ const PageClient = ({profileUser} : Props) => {
                     <AboutCard profileUser={profileUser}/>
                 </aside>
 
-                <section id='userProfilePage' data-section={currentSection} className="space-y-4 relative min-w-0">
+                <section id='userProfilePage' data-section={currentSection} className={`${styles.userProfilePage} space-y-4 relative min-w-0`}>
                     <SectionToggles setCurrentSection={setCurrentSection}/>
                     <PostSection profileUser={profileUser}/>
                     <FriendsSection profileUser={profileUser!}/>

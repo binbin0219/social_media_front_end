@@ -9,22 +9,22 @@ type InfoItemProps = {
 
 const ModernInfoItem: React.FC<InfoItemProps> = ({ icon, label, children }) => (
     <div className="flex items-center gap-4">
-        <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+        <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-bgHoverPrimary text-appPrimary">
             {icon}
         </div>
         <div>
-            <p className="text-sm font-medium text-gray-500">{label}</p>
-            <p className="text-base font-semibold text-gray-800">{children}</p>
+            <p className="text-sm font-medium text-textPrimary/60">{label}</p>
+            <p className="text-base font-semibold text-textPrimary">{children}</p>
         </div>
     </div>
 );
 
 const AboutCard = ({ profileUser }: {profileUser: User}) => {
     return (
-        <div className="w-full mx-auto flex flex-col rounded-2xl bg-white shadow-lg">
+        <div className="w-full mx-auto flex flex-col rounded-2xl bg-bgSecondary border border-borderPrimary shadow-lg">
             {/* Header */}
-            <div className="p-6 border-b border-gray-100">
-                <h1 className="text-xl font-bold text-gray-900">
+            <div className="p-6 border-b border-borderPrimary">
+                <h1 className="text-xl font-bold text-textPrimary">
                     Profile Information
                 </h1>
             </div>

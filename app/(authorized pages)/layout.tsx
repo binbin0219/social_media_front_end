@@ -66,8 +66,8 @@ export default async function RootLayout({
 			</head>
 			<Suspense fallback={<Loading />}> 
 				<body
-					className={`antialiased`}
-					style={{ backgroundColor: "#F7F8FA" }}
+					className={`antialiased bg-bgPrimary`}
+					// style={{ backgroundColor: "#F7F8FA" }}
 				>
 					<WebSocketProvider>
 						<StoreProvider 

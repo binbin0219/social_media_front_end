@@ -11,7 +11,7 @@ type Props = {
 const FriendsSection = ({profileUser}: Props) => {
 
     return (
-        <div id="friends_section" className="w-full mt-4 flex flex-col hidden relative rounded-lg bg-white">
+        <div id="friends_section" className="w-full mt-4 flex flex-col hidden relative rounded-lg bg-bgSecondary border border-borderPrimary text-textPrimary">
             <h5 className="font-bold text-2xl p-3">Friends</h5>
             <FriendList 
             userId={profileUser!.id}
@@ -19,7 +19,7 @@ const FriendsSection = ({profileUser}: Props) => {
             onMap={(friend) => {
                 return (
                     <UserProfileLink key={friend.id} userId={friend.id}>
-                        <div className='flex gap-3 items-center p-3 hover:bg-slate-100 cursor-pointer border-t'>
+                        <div className='flex gap-3 items-center p-3 hover:bg-bgHoverSecondary cursor-pointer border-t border-borderPrimary'>
                             <UserIcon updatedAt={friend.updatedAt} userId={friend.id}/>
                             <p className='font-bold'>{friend.username}</p>
                         </div>
