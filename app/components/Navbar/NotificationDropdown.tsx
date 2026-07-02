@@ -1,5 +1,5 @@
 "use client"
-import React, { memo, useRef, useState } from 'react'
+import React, { memo, useState } from 'react'
 import NotificationSkeleton from '../Skeletons/NotificationSkeleton';
 import Notification from '../Notification/Notification';
 import NotificationCounter from './NotificationCounter';

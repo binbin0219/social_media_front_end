@@ -45,13 +45,14 @@ const ProfileSection = () => {
 
     useEffect(() => {
         const changes: Partial<User> = {};
+        const changedFields = changes as Record<string, unknown>;
 
         for (const key in editingUserData) {
             const oldVal = originalUserData?.[key as keyof User];
             const newVal = editingUserData[key as keyof User];
 
             if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
-                changes[key as keyof User] = newVal;
+                changedFields[key] = newVal;
             }
         }
 

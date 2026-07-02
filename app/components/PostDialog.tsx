@@ -9,7 +9,7 @@ type Props = {
     onClose: () => void;
     handleAddPost: (newPost: PostType) => void;
     handleEditPost: (newPost: PostType) => void;
-    handleDeletePost: (postId: Number) => void;
+    handleDeletePost: (postId: number) => void;
 }
 
 export default function PostDialog({ post, isOpen, showCloseBtn, onClose, handleAddPost, handleEditPost, handleDeletePost }: Props) {

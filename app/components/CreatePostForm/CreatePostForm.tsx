@@ -83,11 +83,9 @@ const CreatePostForm = ({
     shareMode,
 }: Props) => {
     const dispatch = useDispatch();
-    const MAX_TITLE_SIZE = 70;
     const MAX_CONTENT_SIZE = 2000;
 
     const [postAttachments, setPostAttachments] = useState<AttachmentUrlAndFile[]>([]);
-    const [title, setTitle] = useState(initialData?.title ?? "");
     const [content, setContent] = useState(initialData?.content ?? "");
     const [isContentValid, setIsContentValid] = useState(true);
     const [isCreatingPost, setIsCreatingPost] = useState(false);
@@ -181,8 +179,6 @@ const CreatePostForm = ({
     };
 
     const contentProgress = (content.length / MAX_CONTENT_SIZE) * 100;
-    const avatarFallback = currentUser?.username?.charAt(0).toUpperCase() ?? "U";
-
     const friendSelectorLabel = privacySetting === "WCV"
         ? { heading: "Who can view", hint: "Only selected friends will be able to see this post.", icon: <IconUserCheck size={14} /> }
         : { heading: "Who cannot view", hint: "Selected friends will be excluded from seeing this post.", icon: <IconUserX size={14} /> };

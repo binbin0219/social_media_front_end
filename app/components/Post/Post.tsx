@@ -30,7 +30,7 @@ type Props = {
     handleExpandCommentSection?: (post: Post) => void;
     handleAddPost: (newPost: Post) => void;
     handleEditPost: (newPost: Post) => void;
-    handleDeletePost: (postId: Number) => void;
+    handleDeletePost: (postId: number) => void;
     onPostClick?: (post: Post) => void;
 }
 
@@ -92,7 +92,7 @@ const Post = memo(({ post, alwaysOpenCommentSection = false, handleExpandComment
             dispatch(updatePost({ postId: post.id, content: payload.content }));
             dispatch(addToast({ type: 'success', message: 'Post updated' }));
             dialog.close();
-        } catch (error) {
+        } catch {
             dialog.close();
             dispatch(addToast({ type: 'error', message: 'Failed to update post' }));
         }
@@ -147,7 +147,7 @@ const Post = memo(({ post, alwaysOpenCommentSection = false, handleExpandComment
                     dispatch(decrementPostCount());
                     dispatch(decrementCurrentUserLikeCount({ count: post.likeCount }));
                     dispatch(addToast({ type: 'success', message: 'Post deleted successfully' }));
-                } catch (error) {
+                } catch {
                     dispatch(addToast({ type: 'error', message: 'Failed to delete post' }));
                 } finally {
                     dialog.close();

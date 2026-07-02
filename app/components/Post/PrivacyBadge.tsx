@@ -4,6 +4,7 @@ import {
     Lock,
     Eye,
     EyeOff,
+    type LucideIcon,
 } from "lucide-react";
 
 import { PrivacySetting } from "@/lib/models/post";
@@ -15,13 +16,12 @@ type Props = {
 
 export default function PrivacyBadge({
     privacy,
-    isAuthor,
 }: Props) {
     const config: Record<
         PrivacySetting,
         {
             label: string;
-            icon: any;
+            icon: LucideIcon;
             className: string;
             authorOnly?: boolean;
         }

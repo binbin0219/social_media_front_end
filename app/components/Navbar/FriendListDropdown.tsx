@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import Dropdown from '../Dropdown/Dropdown'
 import { IconUserOff, IconUsers } from '@tabler/icons-react'
 import DropdownItemSkeleton from '../Skeletons/DropdownItemSkeleton'
@@ -14,7 +14,6 @@ import { DropdownItem } from '../NewDropdown/DropdownItem/DropdownItem'
 
 
 const FriendListDropdown = () => {
-    const noDataRef = useRef<HTMLLIElement>(null);
     const currentUserId = useSelector((state: RootState) => state.currentUser!.id);
     const [isAllDataFetched, setIsAllDataFetched] = useState(false);
     const [friends, setFriends] = useState<Friend[]>([]);
