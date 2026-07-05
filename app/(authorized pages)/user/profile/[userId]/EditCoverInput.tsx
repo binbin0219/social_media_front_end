@@ -1,12 +1,9 @@
 import { addToast } from '@/redux/slices/toastSlice';
-import { generateCurrentTime } from '@/utils/helpers';
 import React, { memo, useRef } from 'react'
 import { useDispatch } from 'react-redux';
 import "croppie/croppie.css";
 import Croppie from 'croppie';
 import { useDialogContext } from '@/context/DialogContext';
-import { Media } from '@/lib/models/Media';
-
 type Props = {
     setCoverUrl: React.Dispatch<React.SetStateAction<string>>
 }

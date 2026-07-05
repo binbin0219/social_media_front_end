@@ -44,8 +44,6 @@ const PageClient = ({profileUser} : Props) => {
             <div className="overflow-hidden rounded-b-2xl border border-t-0 border-borderPrimary bg-bgSecondary shadow-sm">
                 <UserCover
                 className='h-56 sm:h-64'
-                userId={profileUser!.id}
-                userUpdatedAt={profileUser?.updatedAt}
                 backgroundUrl={profileUser?.background?.url}
                 enableUpdate={isCurrentUserProfile}
                 >

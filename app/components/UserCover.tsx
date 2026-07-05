@@ -4,15 +4,13 @@ import React, { useEffect, useState } from 'react'
 import SmartImage from './SmartImage';
 
 type Props = {
-    userId: number;
     enableUpdate?: boolean;
-    userUpdatedAt?: string;
     backgroundUrl?: string | null;
     children?: React.ReactNode;
     className?: string;
 }
 
-const UserCover = ({ enableUpdate, userId, backgroundUrl, children, className }: Props) => {
+const UserCover = ({ enableUpdate, backgroundUrl, children, className }: Props) => {
     const [coverUrl, setCoverUrl] = useState(backgroundUrl ?? defaultCoverUrl);
 
     useEffect(() => {

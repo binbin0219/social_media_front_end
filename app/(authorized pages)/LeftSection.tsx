@@ -76,8 +76,6 @@ const LeftSection = () => {
                     <div className="relative w-full h-[150px]">
                         <UserCover
                             className="h-full rounded-t-lg overflow-hidden"
-                            userId={user.id}
-                            userUpdatedAt={user.updatedAt}
                             backgroundUrl={user.background?.url}
                             enableUpdate
                         />
