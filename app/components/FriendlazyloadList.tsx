@@ -9,11 +9,14 @@ import UserIcon from './UserIcon/UserIcon';
 import DataLoader from './DataLoader/DataLoader';
 import DropdownItemSkeleton from './Skeletons/DropdownItemSkeleton';
 import { apiAgent } from '@/lib/api-agent';
+import { Media } from '@/lib/models/Media';
 
 export type FriendDTO = {
     id: number;
     username: string;
     updatedAt?: string;
+    avatar?: Media | null;
+    background?: Media | null;
 };
 
 type Props = {
@@ -202,7 +205,7 @@ const FriendLazyLoadList = ({
                                 width={36}
                                 height={36}
                                 userId={friend.id}
-                                updatedAt={friend.updatedAt}
+                                avatarUrl={friend.avatar?.url}
                             />
 
                             <span className="text-sm text-textPrimary flex-1">

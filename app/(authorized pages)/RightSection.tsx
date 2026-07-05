@@ -69,7 +69,7 @@ const RightSection = () => {
                                 <div className="flex items-center gap-2 flex-1">
                                     <UserIcon
                                         userId={friend.id}
-                                        updatedAt={friend.updatedAt}
+                                        avatarUrl={friend.avatar?.url}
                                         storyUser={friend}
                                         stories={friend.stories}
                                     />

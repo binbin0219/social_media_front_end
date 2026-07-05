@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
                 <UserIcon
                 className={`${isProfileMenuOpen && 'outline-none ring-2 ring-offset-2 ring-indigo-500'}`}
                 userId={user.id} 
-                updatedAt={user.updatedAt} 
+                avatarUrl={user.avatar?.url}
                 navigateToUserProfile={false} 
                 width={40} 
                 height={40} 

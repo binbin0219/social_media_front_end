@@ -38,7 +38,7 @@ const RecommendedUserList = ({ limit }: Props) => {
                     <div className="flex items-center gap-2 flex-1">
                         <UserIcon
                             userId={recommendedUser.id}
-                            updatedAt={recommendedUser.updatedAt}
+                            avatarUrl={recommendedUser.avatar?.url}
                             storyUser={recommendedUser}
                             stories={recommendedUser.stories}
                         />

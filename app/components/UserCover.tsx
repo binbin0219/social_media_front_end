@@ -1,6 +1,5 @@
 import EditCoverInput from '@/(authorized pages)/user/profile/[userId]/EditCoverInput';
 import { defaultCoverUrl } from '@/lib/constants';
-import { getUserCoverLink } from '@/lib/services/user';
 import React, { useEffect, useState } from 'react'
 import SmartImage from './SmartImage';
 
@@ -8,12 +7,17 @@ type Props = {
     userId: number;
     enableUpdate?: boolean;
     userUpdatedAt?: string;
+    backgroundUrl?: string | null;
     children?: React.ReactNode;
     className?: string;
 }
 
-const UserCover = ({ enableUpdate, userId, userUpdatedAt, children, className }: Props) => {
-    const [coverUrl, setCoverUrl] = useState(getUserCoverLink(userId, userUpdatedAt));
+const UserCover = ({ enableUpdate, userId, backgroundUrl, children, className }: Props) => {
+    const [coverUrl, setCoverUrl] = useState(backgroundUrl ?? defaultCoverUrl);
+
+    useEffect(() => {
+        setCoverUrl(backgroundUrl ?? defaultCoverUrl);
+    }, [backgroundUrl]);
 
     useEffect(() => {
         const img = new Image();

@@ -1,5 +1,4 @@
 "use client";
-import { getUserAvatarLink } from '@/lib/services/user';
 import React, { CSSProperties, useState } from 'react';
 import SmartImage from '../SmartImage';
 import { defaultUserAvatar } from '@/lib/constants';
@@ -9,7 +8,7 @@ import { StoryUser } from '@/lib/models/user';
 
 type Props = {
     userId: number;
-    updatedAt?: string;
+    avatarUrl?: string | null;
     width?: number | string;
     height?: number | string;
     navigateToUserProfile?: boolean;
@@ -35,7 +34,7 @@ function getSizeValue(size: number | string) {
 const UserIcon = ({
     userId,
     storyUser,
-    updatedAt,
+    avatarUrl,
     width = 45,
     height = 45,
     navigateToUserProfile = true,
@@ -84,7 +83,7 @@ const UserIcon = ({
         <SmartImage
             onClick={(hasStories || navigateToUserProfile) ? (e) => handleOnclick(e) : undefined}
             className={`rounded-full hover:opacity-50 cursor-pointer transition-opacity ${className}`}
-            src={getUserAvatarLink(userId, updatedAt)}
+            src={avatarUrl ?? storyUser?.avatar?.url ?? defaultUserAvatar}
             fallbackSrc={defaultUserAvatar}
             width={width}
             height={height}

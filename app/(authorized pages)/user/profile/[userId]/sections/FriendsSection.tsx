@@ -29,7 +29,7 @@ const FriendsSection = ({profileUser}: Props) => {
                 return (
                     <UserProfileLink key={friend.id} userId={friend.id}>
                         <div className='flex gap-3 items-center p-4 hover:bg-bgHoverSecondary cursor-pointer border-t border-borderPrimary transition-colors'>
-                            <UserIcon updatedAt={friend.updatedAt} userId={friend.id}/>
+                            <UserIcon userId={friend.id} avatarUrl={friend.avatar?.url}/>
                             <div className="min-w-0">
                                 <p className='truncate font-bold'>{friend.username}</p>
                                 <p className="text-sm text-textPrimary/60">View profile</p>

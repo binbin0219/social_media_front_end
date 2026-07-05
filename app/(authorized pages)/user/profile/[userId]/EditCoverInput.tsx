@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import "croppie/croppie.css";
 import Croppie from 'croppie';
 import { useDialogContext } from '@/context/DialogContext';
+import { Media } from '@/lib/models/Media';
 
 type Props = {
     setCoverUrl: React.Dispatch<React.SetStateAction<string>>
@@ -42,8 +43,8 @@ const EditCoverInputComponent = ({ setCoverUrl }: Props) => {
                     if(!response.ok) {
                         throw new Error('Failed to save cover image');
                     }
-                    const data = await response.json();
-                    setCoverUrl(data.coverPublicUrl + `?t=${generateCurrentTime()}`);
+                    const { background } = await response.json();
+                    setCoverUrl(background.url);
                     dispatch(addToast({
                         message: "Your cover image has been updated",
                         type: 'success'

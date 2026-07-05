@@ -190,7 +190,7 @@ const CreatePostForm = ({
             <div className="flex items-center gap-3">
                 <div className="relative">
                     <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px] z-10" />
-                    <UserIcon userId={currentUser!.id} />
+                    <UserIcon userId={currentUser!.id} avatarUrl={currentUser?.avatar?.url} />
                 </div>
                 <div className="flex flex-col leading-tight">
                     <span className="text-sm font-semibold text-textPrimary">{currentUser?.username}</span>

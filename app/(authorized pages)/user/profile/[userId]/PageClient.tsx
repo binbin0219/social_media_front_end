@@ -46,12 +46,13 @@ const PageClient = ({profileUser} : Props) => {
                 className='h-56 sm:h-64'
                 userId={profileUser!.id}
                 userUpdatedAt={profileUser?.updatedAt}
+                backgroundUrl={profileUser?.background?.url}
                 enableUpdate={isCurrentUserProfile}
                 >
                     <div className="absolute bottom-0 left-5 sm:left-8 translate-y-1/2">
                         <UserIcon
                         userId={profileUser!.id}
-                        updatedAt={profileUser?.updatedAt}
+                        avatarUrl={profileUser?.avatar?.url}
                         navigateToUserProfile={false}
                         width={140}
                         height={140}

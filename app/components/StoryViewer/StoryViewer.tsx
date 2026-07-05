@@ -254,7 +254,7 @@ const StoryViewer = ({
             <div className="flex items-center gap-2 px-3 pb-2">
               <UserIcon
                 userId={user.id}
-                updatedAt={user.updatedAt}
+                avatarUrl={user.avatar?.url}
                 width={32}
                 height={32}
                 navigateToUserProfile={false}
@@ -334,7 +334,7 @@ const StoryViewer = ({
                           <div key={viewer.userId} className="flex items-center gap-2 py-1.5">
                             <UserIcon
                               userId={viewer.userId}
-                              updatedAt={viewer.updatedAt}
+                              avatarUrl={viewer.avatar?.url}
                               width={28}
                               height={28}
                               navigateToUserProfile={false}

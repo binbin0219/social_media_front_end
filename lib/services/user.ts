@@ -42,7 +42,12 @@ async function getRecommendations(limit: number): Promise<User[]> {
     return userRecommendations;
 }
 
-export const updateUserProfileOnServer = async (newProfile: Partial<User>) => {
+export type UpdateUserProfilePayload = Omit<Partial<User>, 'avatar' | 'background'> & {
+    avatarId?: number;
+    backgroundId?: number;
+};
+
+export const updateUserProfileOnServer = async (newProfile: UpdateUserProfilePayload) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile/update`, {
         method: 'POST',
         credentials: 'include',

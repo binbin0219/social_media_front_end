@@ -78,6 +78,7 @@ const LeftSection = () => {
                             className="h-full rounded-t-lg overflow-hidden"
                             userId={user.id}
                             userUpdatedAt={user.updatedAt}
+                            backgroundUrl={user.background?.url}
                             enableUpdate
                         />
                     </div>
@@ -85,7 +86,7 @@ const LeftSection = () => {
                     <div className="relative">
                         <UserIcon
                             userId={user.id}
-                            updatedAt={user.updatedAt}
+                            avatarUrl={user.avatar?.url}
                             width={90}
                             height={90}
                             navigateToUserProfile

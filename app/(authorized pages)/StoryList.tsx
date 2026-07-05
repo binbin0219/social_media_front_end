@@ -12,7 +12,6 @@ import { apiAgent } from '@/lib/api-agent'
 import { FriendStory } from '@/lib/models/FriendStory'
 import { Story } from '@/lib/models/Story'
 import { PaginatedResponse } from '@/lib/models/PaginatedResponse'
-import { getUserAvatarLink } from '@/lib/services/user'
 import { defaultUserAvatar } from '@/lib/constants'
 
 // ---- helpers ----
@@ -80,7 +79,7 @@ function StoryAvatarButton({ friendStory, onClick }: StoryAvatarButtonProps) {
       >
         <SmartImage
           className="rounded-full"
-          src={getUserAvatarLink(user.id, user.updatedAt)}
+          src={user.avatar?.url ?? ''}
           fallbackSrc={defaultUserAvatar}
           width="100%"
           height="100%"

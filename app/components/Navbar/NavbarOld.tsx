@@ -55,7 +55,7 @@ export const NavbarOld = () => {
                 <ChatWindow/>
                 <NotificationDropdown />
                 <div className="dropdown hover">
-                    <UserIcon userId={currentUser!.id} updatedAt={currentUser?.updatedAt} navigateToUserProfile={false} />
+                    <UserIcon userId={currentUser!.id} avatarUrl={currentUser?.avatar?.url} navigateToUserProfile={false} />
                     <div className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-green-400 rounded-full me-[3px]"></div>
                     <div className="dropdown-menu">
                         <ul className="dropdown-content">

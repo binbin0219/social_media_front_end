@@ -82,7 +82,7 @@ const HomePageTag = ({ handleAddPost }: Props) => {
             <div className="flex items-center gap-3">
                 <UserIcon
                     userId={currentUser.id}
-                    updatedAt={currentUser.updatedAt}
+                    avatarUrl={currentUser.avatar?.url}
                 />
 
                 <button

@@ -8,7 +8,7 @@ import InputField from '@/components/InputField/InputField';
 import CountryRegionSelector from '@/components/CountryRegionSelector';
 
 type Props = {
-    user: Partial<User>;
+    user: Omit<Partial<User>, 'avatar' | 'background'>;
     updateUserData: (field: string, value: unknown) => void;
 }
 

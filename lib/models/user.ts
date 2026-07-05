@@ -1,4 +1,5 @@
 import { Friendship } from "./friendship";
+import { Media } from "./Media";
 import { Story } from "./Story";
 
 export type User = {
@@ -15,7 +16,8 @@ export type User = {
     relationshipStatus: string | null;
     create_at: string;
     updatedAt?: string;
-    avatar?: string | null;
+    avatar?: Media | null;
+    background?: Media | null;
     coverUrl?: string;
     friendship?: Friendship;
     newNotificationCount? : number;
@@ -37,8 +39,8 @@ export type PhoneNumber = {
     phoneNumberBody: string;
 }
 
-export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'stories' | 'updatedAt'>;
+export type Friend = Pick<NonNullable<User>, 'id' | 'username' | 'stories' | 'updatedAt' | 'avatar' | 'background'>;
 
-export type RecommendedUsers = Pick<NonNullable<User>, 'id' | 'username' | 'updatedAt'>;
+export type RecommendedUsers = Pick<NonNullable<User>, 'id' | 'username' | 'updatedAt' | 'avatar' | 'background'>;
 
-export type StoryUser = Pick<NonNullable<User>, 'id' | 'username' | 'stories' | 'updatedAt'>;
+export type StoryUser = Pick<NonNullable<User>, 'id' | 'username' | 'stories' | 'updatedAt' | 'avatar' | 'background'>;

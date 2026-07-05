@@ -52,7 +52,7 @@ const UserLazyLoadList = ({username, className, onItemClick, length = 6}: Props)
             )}
             {searchResults.map((result, index) => (
                 <div key={index} onClick={() => onItemClick(result)} className='flex gap-2 items-center list-item-general'>
-                    <UserIcon width={45} height={45} updatedAt={result?.updatedAt} userId={result!.id}/>
+                    <UserIcon width={45} height={45} userId={result!.id} avatarUrl={result?.avatar?.url}/>
                     <p className='text-sm'>{result?.username}</p>
                 </div>
             ))}

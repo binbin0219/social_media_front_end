@@ -59,7 +59,7 @@ export default function FriendSelector({
                             key={friend.id}
                             className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-appPrimary/10 border border-appPrimary text-xs text-appPrimary font-medium"
                         >
-                            <UserIcon width={18} height={18} userId={friend.id} updatedAt={friend.updatedAt} />
+                            <UserIcon width={18} height={18} userId={friend.id} avatarUrl={friend.avatar?.url} />
                             <span>{friend.username}</span>
                             <button
                                 type="button"

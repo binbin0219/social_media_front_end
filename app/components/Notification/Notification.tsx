@@ -123,7 +123,6 @@ const Notification = ({ notification }: Props) => {
             <div className="relative flex-shrink-0">
                 <UserIcon
                     userId={notification.senderId}
-                    updatedAt={notification.senderUpdatedAt}
                     width={40}
                     height={40}
                 />

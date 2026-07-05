@@ -25,7 +25,7 @@ export default function PostHeader({ post, size = 'default', className = '' }: P
         <div className={`flex gap-1 cursor-pointer items-center w-fit ${className}`}>
             <UserIcon
                 userId={author!.id}
-                updatedAt={author?.updatedAt}
+                avatarUrl={author?.avatar?.url}
                 width={isSmall ? 30 : undefined}
                 height={isSmall ? 30 : undefined}
                 storyUser={author}
