@@ -14,10 +14,12 @@ export default function SharedPostPreview({ sharedPost, onPostClick }: Props) {
     const [sensitiveRevealed, setSensitiveRevealed] = useState(false);
     const showSensitiveOverlay = sharedPost.isSensitive && !sensitiveRevealed;
 
-    const attachments = sharedPost.attachments?.map((a: PostAttachmentsType) => ({
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/post/${sharedPost.id}/attachments/${a.id}/data.${a.format}`,
-        mimeType: a.mimeType,
-    })) ?? [];
+    const attachments = sharedPost.attachments
+        ?.filter((a: PostAttachmentsType) => a.media)
+        .map((a: PostAttachmentsType) => ({
+            src: a.media!.url,
+            mimeType: a.media!.mimeType,
+        })) ?? [];
 
     return (
         <div

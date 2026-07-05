@@ -1,6 +1,6 @@
 "use client"
 import React, { memo, useState } from 'react'
-import type { CreateEditPost, Post } from '@/lib/models/post'
+import type { CreateEditPost, Post, PostAttachments as PostAttachmentsType } from '@/lib/models/post'
 import { useDispatch, useSelector } from 'react-redux'
 import './style.module.css';
 import { addToast } from '@/redux/slices/toastSlice'
@@ -23,6 +23,7 @@ import { Eye, EyeOff, Repeat2 } from 'lucide-react';
 import { PostComment } from '@/lib/models/comment';
 import { mergeByKey } from '@/utils/helpers';
 import SharedPostPreview from './SharedPostPreview';
+import { mediaService } from '@/lib/services/media';
 
 type Props = {
     post: Post;
@@ -43,10 +44,12 @@ const Post = memo(({ post, alwaysOpenCommentSection = false, handleExpandComment
 
     const isRepost = !!post.sharedPost;
 
-    const attachments = post.attachments.map(attachment => ({
-        src: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/post/${post.id}/attachments/${attachment.id}/data.${attachment.format}`,
-        mimeType: attachment.mimeType
-    }));
+    const attachments = post.attachments
+        .filter(attachment => attachment.media)
+        .map(attachment => ({
+            src: attachment.media!.url,
+            mimeType: attachment.media!.mimeType
+        }));
 
     const isCurrentUserAuthor = currentUser?.id === post?.user?.id;
     const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState(false);
@@ -72,7 +75,16 @@ const Post = memo(({ post, alwaysOpenCommentSection = false, handleExpandComment
                     initialData={{
                         title: data.title,
                         content: data.content,
-                        attachments: isRepost ? [] : data.attachments,
+                        attachments: 
+                            isRepost 
+                            ? [] 
+                            : (data.attachments || [])
+                                .filter((attachment: PostAttachmentsType) => attachment.media)
+                                .map((attachment: PostAttachmentsType) => ({
+                                    url: attachment.media!.url,
+                                    mimeType: attachment.media!.mimeType,
+                                    mediaId: attachment.media!.id,
+                                })),
                         privacySetting: data.privacySetting,
                         commentStatus: data.commentStatus,
                         isSensitive: data.isSensitive,
@@ -106,21 +118,36 @@ const Post = memo(({ post, alwaysOpenCommentSection = false, handleExpandComment
         isSensitive,
         selectedFriends,
     }: CreateEditPost) => {
-        const formData = new FormData();
-        formData.set('content', content ?? '');
-        formData.set('privacySetting', privacySetting);
-        formData.set('commentStatus', commentStatus);
-        formData.set('isSensitive', isSensitive ? 'true' : 'false');
-        selectedFriends.forEach(f => formData.append('selectedFriendIds[]', f.id.toString()));
-
-        // Reposts carry no attachments — skip appending entirely
-        if (!isRepost) {
-            attachments.forEach(a => formData.append('attachments[]', a.file));
-        }
+        const uploadedMedias = isRepost
+            ? []
+            : await Promise.all(
+                attachments
+                    .filter(a => a.file)
+                    .map(a => mediaService.createMedia(a.file!))
+            );
 
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/api/post/update/${post.id}`,
-            { method: 'POST', credentials: 'include', body: formData }
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    content: content ?? '',
+                    privacySetting,
+                    commentStatus,
+                    isSensitive,
+                    selectedFriendIds: selectedFriends.map(f => f.id),
+                    mediaIds: [
+                        ...attachments
+                            .map(attachment => attachment.mediaId)
+                            .filter((mediaId): mediaId is number => mediaId !== undefined),
+                        ...uploadedMedias.map(media => media.id),
+                    ],
+                }),
+            }
         );
         if (!response.ok) throw new Error('Failed to update post');
         return await response.json();

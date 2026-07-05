@@ -7,6 +7,7 @@ import { RootState } from '@/redux/store'
 import { useDialogContext } from '@/context/DialogContext'
 import CreatePostForm from '../CreatePostForm/CreatePostForm'
 import { postService } from '@/lib/services/post'
+import { mediaService } from '@/lib/services/media'
 import { addToast } from '@/redux/slices/toastSlice'
 import { incrementPostCount } from '@/redux/slices/currentUserSlice'
 import { IconPhoto, IconVideo } from '@tabler/icons-react'
@@ -30,46 +31,22 @@ const HomePageTag = ({ handleAddPost }: Props) => {
         selectedFriends,
     }: CreateEditPost) => {
         try {
-            const formData = new FormData();
-            formData.set('content', content);
-            formData.set('privacySetting', privacySetting);
-            formData.set('commentStatus', commentStatus);
-            formData.set('isSensitive', isSensitive ? 'true' : 'false');
+            const medias = await Promise.all(
+                attachments
+                    .filter((attachment) => attachment.file)
+                    .map((attachment) => mediaService.createMedia(attachment.file!))
+            );
 
-            selectedFriends.forEach((friend) => {
-                formData.append('selectedFriendIds[]', friend.id.toString());
+            const post = await postService.createPostOnServer({
+                content,
+                privacySetting,
+                commentStatus,
+                isSensitive,
+                selectedFriendIds: selectedFriends.map((friend) => friend.id),
+                mediaIds: medias.map((media) => media.id),
             });
-
-            attachments.forEach((attachment) => {
-                formData.append('attachments[]', attachment.file);
-            });
-
-            const post = await postService.createPostOnServer(formData);
             post.user = currentUser;
             post.isNew = true;
-
-            if (post.attachments?.length) {
-                let i = 0;
-
-                for (const attachment of post.attachments) {
-                    const file = attachments[i].file;
-                    if (!attachment.presignedUrl) continue;
-
-                    const response = await fetch(attachment.presignedUrl, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": file.type,
-                        },
-                        body: file,
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Failed to upload file");
-                    }
-
-                    i++;
-                }
-            }
 
             handleAddPost?.(post)
             dispatch(incrementPostCount());

@@ -85,7 +85,7 @@ const CreatePostForm = ({
     const dispatch = useDispatch();
     const MAX_CONTENT_SIZE = 2000;
 
-    const [postAttachments, setPostAttachments] = useState<AttachmentUrlAndFile[]>([]);
+    const [postAttachments, setPostAttachments] = useState<AttachmentUrlAndFile[]>(initialData?.attachments ?? []);
     const [content, setContent] = useState(initialData?.content ?? "");
     const [isContentValid, setIsContentValid] = useState(true);
     const [isCreatingPost, setIsCreatingPost] = useState(false);
@@ -105,7 +105,7 @@ const CreatePostForm = ({
     const isShareMode = !!shareMode;
     const attachments: PostAttachmentPreview[] = postAttachments.map((a) => ({
         src: a.url,
-        mimeType: a.file.type,
+        mimeType: a.mimeType,
     }));
     const showFriendSelector = FRIEND_SELECTOR_SETTINGS.includes(privacySetting);
 
@@ -169,7 +169,7 @@ const CreatePostForm = ({
             }
         }
         Array.from(files).forEach((file) => {
-            setPostAttachments((prev) => [...prev, { url: URL.createObjectURL(file), file }]);
+            setPostAttachments((prev) => [...prev, { url: URL.createObjectURL(file), mimeType: file.type, file }]);
         });
         input.value = "";
     };

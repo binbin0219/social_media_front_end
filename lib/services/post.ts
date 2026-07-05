@@ -1,5 +1,5 @@
 import { apiAgent } from "../api-agent";
-import { Post } from "../models/post";
+import { CreatePostRequest, Post } from "../models/post";
 
 const fetchPostsByUserId = async (userId: number, start: number, length: number): Promise<Post[]> => {
     const response = await apiAgent.fetchOnClient(`/api/post/get/${userId}?start=${start}&length=${length}`);
@@ -10,10 +10,13 @@ const fetchPostsByUserId = async (userId: number, start: number, length: number)
     return data;
 }
 
-const createPostOnServer = async (formData: FormData): Promise<Post> => {
+const createPostOnServer = async (payload: CreatePostRequest): Promise<Post> => {
     const response = await apiAgent.fetchOnClient(`/api/post/create`, { 
         method: 'POST',
-        body: formData
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
     });
     if (!response.ok) {
         throw new Error("Failed to create post on server");
