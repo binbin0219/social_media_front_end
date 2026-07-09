@@ -32,7 +32,7 @@ const FriendshipStatusCompact = memo(({ friendship: initialFriendship, userId }:
     if(!canBeFriend) return null;
 
     return (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
 
             {/* Rejected by other user */}
             {isRejectedByOtherUser && (

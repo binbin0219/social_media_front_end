@@ -27,14 +27,72 @@ const UsernameInput = ({username, setUsername, isUsernameValid, setIsUsernameVal
         'Desmond', 'Alice', 'Maya', 'Liam', 'Noah', 'Emma', 'Olivia', 'Ethan', 'Ava',
         'Sophia', 'Jackson', 'Isabella', 'Lucas', 'Mia', 'Amelia', 'Elijah', 'Charlotte',
         'Benjamin', 'Harper', 'James', 'Ella', 'Logan', 'Grace', 'Alexander', 'Chloe',
-        'Henry', 'Lily', 'Sebastian', 'Zoe'
+        'Henry', 'Lily', 'Sebastian', 'Zoe',
+
+        'Daniel', 'Michael', 'David', 'Matthew', 'Joseph', 'Samuel', 'Nathan', 'Andrew',
+        'Ryan', 'Christopher', 'Joshua', 'Anthony', 'Isaac', 'Caleb', 'Julian', 'Levi',
+        'Wyatt', 'Dylan', 'Nathaniel', 'Aaron', 'Connor', 'Adrian', 'Charles', 'Christian',
+        'Jonathan', 'Hunter', 'Eli', 'Adam', 'Cameron', 'Aiden', 'Leo', 'Isaiah',
+
+        'Abigail', 'Emily', 'Scarlett', 'Victoria', 'Madison', 'Elizabeth', 'Aria',
+        'Penelope', 'Layla', 'Riley', 'Nora', 'Hazel', 'Aurora', 'Violet', 'Hannah',
+        'Addison', 'Stella', 'Natalie', 'Leah', 'Savannah', 'Brooklyn', 'Claire',
+        'Lucy', 'Paisley', 'Everly', 'Anna', 'Caroline', 'Sarah', 'Naomi', 'Eva',
+        'Ruby', 'Alice', 'Samantha', 
+
+        'Owen', 'Asher', 'Lincoln', 'Maverick', 'Ezra', 'Jack', 'Luke', 'Thomas',
+        'Robert', 'Ian', 'Miles', 'Dominic', 'Vincent', 'George', 'Jasper', 'Arthur',
+        'Damian', 'Xavier', 'Jace', 'Finn', 'Cole', 'Dean', 'Blake', 'Max',
+        'Nolan', 'Rowan', 'Zachary', 'Oscar', 'Kai', 'Ryder', 'Beau', 'Silas',
+        'Emmett', 'Micah', 'Axel', 'Theo', 'Declan', 'Roman', 'Sawyer', 'Finnley',
+
+        'Aaliyah', 'Allison', 'Ashley', 'Autumn', 'Bella', 'Brianna', 'Camila',
+        'Catherine', 'Celeste', 'Daisy', 'Delilah', 'Elena', 'Elise', 'Faith',
+        'Gabriella', 'Genevieve', 'Georgia', 'Gianna', 'Hailey', 'Hope', 'Iris',
+        'Jade', 'Jasmine', 'Julia', 'Kayla', 'Kennedy', 'Kiara', 'Luna',
+        'Mackenzie', 'Margaret', 'Maria', 'Melanie', 'Nicole', 'Phoebe',
+        'Rose', 'Serenity', 'Skylar', 'Valentina', 'Vivian', 'Willow',
+        'Ximena', 'Yvonne', 'Zara', 'Ariana', 'Bianca', 'Celine',
+        'Daphne', 'Esther', 'Fiona', 'Gloria'
     ];
 
     const lastNames = [
         'Smith', 'Johnson', 'Brown', 'Lee', 'Wilson', 'Nguyen', 'Garcia', 'Martinez',
         'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'White', 'Harris',
         'Clark', 'Lewis', 'Robinson', 'Walker', 'Perez', 'Hall', 'Young', 'Allen',
-        'King', 'Wright', 'Scott', 'Torres'
+        'King', 'Wright', 'Scott', 'Torres',
+
+        'Adams', 'Baker', 'Bailey', 'Brooks', 'Campbell', 'Carter', 'Collins', 'Cook',
+        'Cooper', 'Cox', 'Davis', 'Edwards', 'Evans', 'Flores', 'Foster', 'Gonzalez',
+        'Green', 'Griffin', 'Hill', 'Howard', 'Hughes', 'Jenkins', 'Kelly', 'Long',
+        'Lopez', 'Mitchell', 'Morgan', 'Morris', 'Murphy', 'Nelson', 'Ortiz', 'Parker',
+        'Phillips', 'Price', 'Ramirez', 'Reed', 'Richardson', 'Rivera', 'Rogers',
+        'Ross', 'Russell', 'Sanders', 'Sanchez', 'Stewart', 'Sullivan', 'Turner',
+        'Ward', 'Watson', 'Wood', 'Bell', 'Barnes', 'Coleman', 'Diaz', 'Fisher',
+        'Gomez', 'Gray', 'Hayes', 'Henderson', 'James', 'Kim', 'Kumar', 'Patel',
+        'Singh', 'Sharma', 'Lim', 'Tan', 'Chan', 'Ong', 'Cheong', 'Teo', 'Goh',
+        'Chong', 'Yap', 'Low', 'Lau', 'Ho', 'Chew', 'Khoo',
+
+        'Ahmed', 'Ali', 'Aziz', 'Bennett', 'Black', 'Bowman', 'Bryant',
+        'Butler', 'Carr', 'Castillo', 'Chavez', 'Cruz', 'Curtis', 'Daniels',
+        'Douglas', 'Dunn', 'Ellis', 'Espinoza', 'Ford', 'Franklin',
+        'George', 'Gibson', 'Graham', 'Grant', 'Hamilton', 'Hansen',
+        'Harvey', 'Hawkins', 'Henry', 'Hicks', 'Holmes', 'Hunter',
+        'Jordan', 'Keller', 'Knight', 'Lane', 'Larson', 'Lawrence',
+        'Lin', 'Liu', 'Lu', 'Ma', 'Marshall', 'Mason', 'McDonald',
+        'Mendoza', 'Meyer', 'Mills', 'Murray', 'Navarro', 'Nichols',
+        'Owens', 'Palmer', 'Park', 'Payne', 'Pierce', 'Porter',
+        'Powell', 'Quinn', 'Ray', 'Reyes', 'Rice', 'Rose',
+        'Ruiz', 'Salazar', 'Santos', 'Schmidt', 'Shah', 'Shaw',
+        'Silva', 'Simpson', 'Snyder', 'Spencer', 'Stephens', 'Stone',
+        'Sun', 'Tam', 'Tang', 'Terry', 'Tran', 'Truong',
+        'Tsai', 'Vasquez', 'Vega', 'Wagner', 'Wallace', 'Wang',
+        'Weber', 'Wells', 'West', 'Wong', 'Wu', 'Xu',
+        'Yeoh', 'Yeo', 'Yong', 'Yu', 'Yuen', 'Zhang',
+        'Zhao', 'Zheng', 'Zhu', 'Rahman', 'Rahim', 'Hamid',
+        'Ismail', 'Salleh', 'Razak', 'Hashim', 'Mahmud', 'Mustafa',
+        'Abdullah', 'Ibrahim', 'Hassan', 'Yusof', 'Roslan', 'Rashid',
+        'Anwar', 'Tanaka', 'Sato', 'Suzuki', 'Yamamoto', 'Kobayashi'
     ];
 
     const generateRandomUsername = (): string => {

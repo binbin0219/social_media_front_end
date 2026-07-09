@@ -9,6 +9,8 @@ import DataLoader from '@/components/DataLoader/DataLoader';
 import HomePageTag from '@/components/HomePageTag/HomePageTag';
 import PostDialog from '@/components/PostDialog';
 
+const POSTS_PAGE_SIZE = 6;
+
 type Props = {
     postLink?: string;
     fetchPosts?: (start: number, length: number) => Promise<Post[]>;
@@ -37,42 +39,49 @@ const PostList = ({
     const [isAllPostFetched, setIsAllPostsFetched] = useState(false);
     const [isFetchPostFailed, setIsFetchPostFailed] = useState(false);
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+    const isLoadingPostsRef = useRef(false);
 
-    const fetchPosts = useCallback(async () => {
+    const fetchPosts = useCallback(async (start: number) => {
         if (fetchPostsProp) {
-            return fetchPostsProp(posts.length, 6);
+            return fetchPostsProp(start, POSTS_PAGE_SIZE);
         }
 
         if (!postLink) {
             throw new Error("PostList requires either postLink or fetchPosts");
         }
 
-        const response = await fetch(`${postLink}?start=${posts.length}&length=6`, {
+        const response = await fetch(`${postLink}?start=${start}&length=${POSTS_PAGE_SIZE}`, {
             method: 'GET',
             credentials: 'include'
         });
         if (!response.ok) throw new Error("Failed to fetch posts");
         const { data } = await response.json();
         return data;
-    }, [fetchPostsProp, postLink, posts.length]);
+    }, [fetchPostsProp, postLink]);
 
     const handleDataLoaderVisible = async () => {
-        setTimeout(() => {
-            fetchPosts()
-                .then(newPosts => {
-                    setPosts(prev => {
-                        const existingPostIds = new Set(prev.map(post => post.id));
-                        const uniqueNewPosts = newPosts.filter((post: Post) => !existingPostIds.has(post.id));
-                        return [...prev, ...uniqueNewPosts];
-                    });
-                    if (newPosts.length < 6) setIsAllPostsFetched(true);
-                })
-                .catch(error => {
-                    console.log(error);
-                    dispatch(addToast({ type: 'error', message: 'Failed to load posts' + error }));
-                    setIsFetchPostFailed(true);
-                });
-        }, 500);
+        if (isLoadingPostsRef.current || isAllPostFetched || isFetchPostFailed) return;
+
+        isLoadingPostsRef.current = true;
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const newPosts = await fetchPosts(posts.length);
+
+            setPosts(prev => {
+                const existingPostIds = new Set(prev.map(post => post.id));
+                const uniqueNewPosts = newPosts.filter((post: Post) => !existingPostIds.has(post.id));
+                return [...prev, ...uniqueNewPosts];
+            });
+
+            if (newPosts.length < POSTS_PAGE_SIZE) setIsAllPostsFetched(true);
+        } catch (error) {
+            console.log(error);
+            dispatch(addToast({ type: 'error', message: 'Failed to load posts' + error }));
+            setIsFetchPostFailed(true);
+        } finally {
+            isLoadingPostsRef.current = false;
+        }
     };
 
     const handleEditPost = (newPost: Post) => {

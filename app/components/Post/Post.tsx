@@ -290,7 +290,10 @@ const Post = memo(({ post, alwaysOpenCommentSection = false, handleExpandComment
                                 </p>
                             </div>
                             <button
-                                onClick={() => setSensitiveRevealed(true)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSensitiveRevealed(true);
+                                }}
                                 className="
                                     mt-1 flex items-center gap-1.5 text-xs font-medium
                                     px-3 py-1.5 rounded-lg
@@ -322,7 +325,7 @@ const Post = memo(({ post, alwaysOpenCommentSection = false, handleExpandComment
                             </h1> */}
                             <PostContent content={post.content} />
                             {attachments.length > 0 && (
-                                <div className="mt-2">
+                                <div className="mt-2" onClick={e => e.stopPropagation()}>
                                     <PostAttachments attachments={attachments} />
                                 </div>
                             )}

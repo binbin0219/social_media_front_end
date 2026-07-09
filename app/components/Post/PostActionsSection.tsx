@@ -32,6 +32,7 @@ export default function PostActionsSection({
     const shareBtnRef = useRef<HTMLButtonElement>(null);
 
     const [likeState, setLikeState] = useState({ liked: post?.liked });
+    const isCurrentUserAuthor = post.user?.id === currentUser?.id;
 
     const disableBtnFor1s = (element: RefObject<HTMLButtonElement | null>) => {
         disableBtn(element);
@@ -80,6 +81,8 @@ export default function PostActionsSection({
 
     // ── Share ───────────────────────────────────────────────────────────────
     const shareOnClickHandler = () => {
+        if (isCurrentUserAuthor) return;
+
         dialog.open(
             null,
             <CreatePostForm
@@ -177,22 +180,29 @@ export default function PostActionsSection({
                 </button>
 
                 {/* Share */}
-                {post.user?.id !== currentUser?.id && (
-                    <button
-                        ref={shareBtnRef}
-                        onClick={shareOnClickHandler}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm
-                            text-textSecondary hover:bg-bgHoverPrimary transition-colors duration-150"
-                    >
-                        <Repeat2 size={17} style={{ pointerEvents: 'none' }} />
-                        <span>Share</span>
-                        {post.shareCount > 0 && (
-                            <span className="text-xs px-1.5 py-px rounded-full font-medium bg-bgHoverSecondary text-textSecondary">
-                                {post.shareCount}
-                            </span>
-                        )}
-                    </button>
-                )}
+                <button
+                    ref={shareBtnRef}
+                    type="button"
+                    onClick={shareOnClickHandler}
+                    disabled={isCurrentUserAuthor}
+                    aria-disabled={isCurrentUserAuthor}
+                    title={isCurrentUserAuthor ? "You can't share your own post" : undefined}
+                    className={`
+                        flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm
+                        text-textSecondary transition-colors duration-150
+                        ${isCurrentUserAuthor
+                            ? 'cursor-not-allowed opacity-70'
+                            : 'hover:bg-bgHoverPrimary'}
+                    `}
+                >
+                    <Repeat2 size={17} style={{ pointerEvents: 'none' }} />
+                    <span>Share</span>
+                    {post.shareCount > 0 && (
+                        <span className="text-xs px-1.5 py-px rounded-full font-medium bg-bgHoverSecondary text-textSecondary">
+                            {post.shareCount}
+                        </span>
+                    )}
+                </button>
             </div>
         </>
     );

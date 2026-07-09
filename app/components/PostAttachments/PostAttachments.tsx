@@ -43,7 +43,10 @@ const PostAttachments = ({ attachments, onDelete }: Props) => {
     const current = currentAttachmentIndex + 1;
 
     return (
-        <div className="relative w-full h-[420px] overflow-hidden rounded-2xl bg-bgSecondary ring-1 ring-borderPrimary group">
+        <div
+            className="relative w-full h-[420px] overflow-hidden rounded-2xl bg-bgSecondary ring-1 ring-borderPrimary group"
+            onClick={e => e.stopPropagation()}
+        >
 
             {/* Slides */}
             {attachments.map((attachment, index) => {
@@ -113,7 +116,10 @@ const PostAttachments = ({ attachments, onDelete }: Props) => {
                             <button
                                 key={i}
                                 type="button"
-                                onClick={() => setCurrentAttachmentIndex(i)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentAttachmentIndex(i);
+                                }}
                                 className={`
                                     rounded-full transition-all duration-300
                                     ${i === currentAttachmentIndex
@@ -131,7 +137,10 @@ const PostAttachments = ({ attachments, onDelete }: Props) => {
                     <div className="pointer-events-auto">
                         <DynamicTooltip text="Delete">
                             <button
-                                onClick={() => onDelete(currentAttachmentIndex)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(currentAttachmentIndex);
+                                }}
                                 type="button"
                                 className="
                                     flex items-center justify-center
@@ -159,7 +168,10 @@ const PostAttachments = ({ attachments, onDelete }: Props) => {
                 ">
                     <DynamicTooltip text="Previous">
                         <button
-                            onClick={handleBack}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleBack();
+                            }}
                             type="button"
                             className="
                                 flex items-center justify-center
@@ -187,7 +199,10 @@ const PostAttachments = ({ attachments, onDelete }: Props) => {
                 ">
                     <DynamicTooltip text="Next">
                         <button
-                            onClick={handleNext}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleNext();
+                            }}
                             type="button"
                             className="
                                 flex items-center justify-center
