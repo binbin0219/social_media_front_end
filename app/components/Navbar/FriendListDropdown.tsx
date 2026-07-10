@@ -43,10 +43,10 @@ const FriendListDropdown = () => {
                 <h5 className="font-semibold">Friends</h5>
                 {friends.map(friend => (
                     <UserProfileLink key={friend.id} userId={friend.id}>
-                        <div className='dropdown-item flex gap-2 items-center'>
+                        <DropdownItem className='flex items-center gap-2'>
                             <UserIcon userId={friend.id} avatarUrl={friend.avatar?.url} storyUser={friend} stories={friend.stories}/>
                             {friend.username}
-                        </div>
+                        </DropdownItem>
                     </UserProfileLink>
                 ))}
                 {isAllDataFetched && friends.length === 0 && (
